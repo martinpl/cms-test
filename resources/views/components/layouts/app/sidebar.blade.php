@@ -14,6 +14,11 @@
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+                    @foreach (App\PostType::list() as $postType)
+                        <flux:navlist.item :icon="$postType['icon']" :href="route('list', $postType['name'])" :current="request()->routeIs('list') && request()->route('postType') == $postType['name']" wire:navigate>
+                            {{ $postType['plural'] }}
+                        </flux:navlist.item>
+                    @endforeach
                 </flux:navlist.group>
             </flux:navlist>
 
