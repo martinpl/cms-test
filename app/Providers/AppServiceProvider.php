@@ -12,7 +12,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(PostType::class);
     }
 
     /**
@@ -21,14 +21,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // TODO: Move out to dedicated post type classes with register via config
-        PostType::register('page', [
+        app(PostType::class)->register('page', [
             'title' => __('Page'),
             'plural' => __('Pages'),
             'icon' => 'document-text',
             'route' => false, // TODO: false probably should disable single post page
         ]);
 
-        PostType::register('post', [
+        app(PostType::class)->register('post', [
             'title' => __('Post'),
             'plural' => __('Posts'),
             'icon' => 'newspaper',

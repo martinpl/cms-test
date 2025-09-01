@@ -43,7 +43,7 @@ class Post extends Model
 
     public function link()
     {
-        $route = PostType::find($this->type)['route'];
+        $route = app(PostType::class)->find($this->type)['route'];
 
         return route('single', [
             $route,

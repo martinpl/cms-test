@@ -1,5 +1,5 @@
 @php
-    $postType = App\PostType::find($postType);
+    $postType = app(App\PostType::class)->find($postType);
     if (!$postType) {
         abort(404);
     }

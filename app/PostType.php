@@ -5,13 +5,13 @@ namespace App;
 // TODO: Move to facade?
 class PostType
 {
-    protected static $list = []; // TODO Asymmetric Visibility
+    public private(set) array $list;
 
     // TODO: Move to builder
-    public static function register($postType, $args = [])
+    public function register($postType, $args = [])
     {
         // TODO: Namespace to prevent conflicts?
-        if (isset(self::$list[$postType])) {
+        if (isset($this->list[$postType])) {
             throw new \Exception("Post type '{$postType}' already exists.");
         }
 
@@ -24,20 +24,13 @@ class PostType
             'route' => $postType,
         ];
 
-        $args = array_merge($defaults, $args);
-
-        self::$list[$postType] = $args;
+        $this->list[$postType] = array_merge($defaults, $args);
     }
 
-    public static function list()
+    public function find($name)
     {
-        return self::$list;
-    }
-
-    public static function find($name)
-    {
-        if (! empty(self::$list[$name])) {
-            return self::$list[$name];
+        if (! empty($this->list[$name])) {
+            return $this->list[$name];
         }
 
         return null;

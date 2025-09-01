@@ -1,5 +1,5 @@
 @php
-    $postType = App\PostType::find($postType);
+    $postType = app(App\PostType::class)->find($postType);
     if (!$postType) {
         abort(404);
     }
@@ -11,7 +11,7 @@
                 'title' => request()->input('title'),
                 'content' => request()->input('content'),
                 'status' => 'publish',
-                'type' => $postType,
+                'type' => $postType['name'],
                 'user_id' => request()->user()->id,
             ]
         );
