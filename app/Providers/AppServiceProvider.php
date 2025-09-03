@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Option;
 use App\PostType;
 use Illuminate\Support\ServiceProvider;
 
@@ -20,6 +21,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->app->singleton('options', function () {
+            return Option::where('autoload', true)->select('name', 'value')->get()->pluck('value', 'name')->toArray();
+        });
+
         // TODO: Move out to dedicated post type classes with register via config
         app(PostType::class)->register('page', [
             'title' => __('Page'),
