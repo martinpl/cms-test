@@ -19,6 +19,7 @@
                             {{ $postType['plural'] }}
                         </flux:navlist.item>
                     @endforeach
+                    <flux:navlist.item icon="adjustments-vertical" :href="route('settings')" :current="request()->routeIs('settings')" wire:navigate>{{ __('Settings') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 

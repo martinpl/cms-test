@@ -18,6 +18,7 @@ Route::prefix('dashboard')
                 'id' => $id,
             ]);
         })->name('editor');
+        Route::view('settings', 'settings')->name('settings'); // TODO: Move to page API
     });
 
 Route::middleware(['auth'])->group(function () {
