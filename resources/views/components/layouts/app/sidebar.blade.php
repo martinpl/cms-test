@@ -18,6 +18,16 @@
                         <flux:navlist.item :icon="$postType['icon']" :href="route('list', $postType['name'])" :current="request()->routeIs('list') && request()->route('postType') == $postType['name']" wire:navigate>
                             {{ $postType['plural'] }}
                         </flux:navlist.item>
+                        @if (app(App\TaxonomyType::class)->findForPostType($postType['name']))
+                            <div class="relative space-y-[2px] ps-7">
+                                <div class="absolute inset-y-[3px] w-px bg-zinc-200 dark:bg-white/30 start-0 ms-4"></div>
+                                @foreach (app(App\TaxonomyType::class)->findForPostType($postType['name']) as $taxonomy)
+                                    <flux:navlist.item :href="route('taxonomies', [$taxonomy['name'], $postType['name']])" :current="request()->routeIs('taxonomies') && request()->route('taxonomyType') == $taxonomy['name'] && request()->route('postType') == $postType['name']" wire:navigate>
+                                        {{ $taxonomy['title'] }}
+                                    </flux:navlist.item>
+                                @endforeach
+                            </div>
+                        @endif
                     @endforeach
                     <flux:navlist.item icon="adjustments-vertical" :href="route('settings')" :current="request()->routeIs('settings')" wire:navigate>{{ __('Settings') }}</flux:navlist.item>
                 </flux:navlist.group>

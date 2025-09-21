@@ -3,30 +3,31 @@
 namespace App\Models;
 
 use App\Models\Traits\HasMeta;
-use App\PostType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Post extends Model
+class Taxonomy extends Model
 {
     use HasFactory;
     use HasMeta;
 
+    protected $table = 'terms';
+
     protected $fillable = [
         'type',
-        'status',
         'title',
-        'content',
-        'user_id',
+        'description',
+        'parent_id',
+        'order',
     ];
 
     protected static function boot()
     {
         parent::boot();
 
-        static::creating(function ($post) {
-            $post->name = $post->generateUniqueSlug($post->type, $post->title);
+        static::creating(function ($taxonomy) {
+            $taxonomy->name = $taxonomy->generateUniqueSlug($taxonomy->type, $taxonomy->title);
         });
     }
 
@@ -43,21 +44,8 @@ class Post extends Model
         return $slug;
     }
 
-    public function link()
+    public function posts()
     {
-        $route = app(PostType::class)->find($this->type)['route'];
-
-        return route('single', [
-            $route,
-            $this->name,
-        ]);
-    }
-
-    public function terms($taxonomyType = null)
-    {
-        return $this->belongsToMany(Taxonomy::class, 'term_relationships', 'post_id', 'term_id')
-            ->when($taxonomyType, function ($query) use ($taxonomyType) {
-                $query->where('type', $taxonomyType);
-            });
+        return $this->belongsToMany(Post::class, 'term_relationships', 'term_id');
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Post;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -19,6 +20,13 @@ Route::prefix('dashboard')
             ]);
         })->name('editor');
         Route::view('settings', 'settings')->name('settings'); // TODO: Move to page API
+        Route::match(['get', 'post'], 'taxonomies/{taxonomyType}/{postType}/{id?}', function ($taxonomyType, $postType, ?int $id = null) {
+            return view('taxonomies', [
+                'taxonomyType' => $taxonomyType,
+                'postType' => $postType,
+                'id' => $id,
+            ]);
+        })->name('taxonomies');
     });
 
 Route::middleware(['auth'])->group(function () {
@@ -32,8 +40,11 @@ Route::middleware(['auth'])->group(function () {
 require __DIR__.'/auth.php';
 
 Route::get('/{postTypeOrName}/{name?}', function ($postTypeOrName, $name = null) {
+    $post = Post::where('type', $postTypeOrName)->where('name', $name)->first();
     dump([
         $postTypeOrName,
         $name,
+        $post->terms->pluck('type', 'title')->toArray(),
+        $post->terms('tag')->pluck('title')->toArray(),
     ]);
 })->name('single');

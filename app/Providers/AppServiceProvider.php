@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Option;
 use App\PostType;
+use App\TaxonomyType;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -14,6 +15,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(PostType::class);
+        $this->app->singleton(TaxonomyType::class);
     }
 
     /**
@@ -37,6 +39,20 @@ class AppServiceProvider extends ServiceProvider
             'title' => __('Post'),
             'plural' => __('Posts'),
             'icon' => 'newspaper',
+        ]);
+
+        app(TaxonomyType::class)->register('category', [
+            'title' => __('Category'),
+            'plural' => __('Categories'),
+            'hierarchical' => true,
+            'post_types' => ['post'],
+        ]);
+
+        app(TaxonomyType::class)->register('tag', [
+            'title' => __('Tag'),
+            'plural' => __('Tags'),
+            'hierarchical' => false,
+            'post_types' => ['post'],
         ]);
     }
 }
