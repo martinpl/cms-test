@@ -11,7 +11,6 @@ Route::get('/', function () {
 Route::prefix('dashboard')
     ->middleware(['auth', 'verified'])
     ->group(function () {
-        Route::view('/', 'dashboard')->name('dashboard');
         Route::view('list/{postType}', 'list')->name('list');
         Route::match(['get', 'post'], 'editor/{postType}/{id?}', function ($postType, ?int $id = null) {
             return view('editor', [
@@ -19,7 +18,6 @@ Route::prefix('dashboard')
                 'id' => $id,
             ]);
         })->name('editor');
-        Route::view('settings', 'settings')->name('settings'); // TODO: Move to page API
         Route::match(['get', 'post'], 'taxonomies/{taxonomyType}/{postType}/{id?}', function ($taxonomyType, $postType, ?int $id = null) {
             return view('taxonomies', [
                 'taxonomyType' => $taxonomyType,

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\AdminMenu\AdminMenu;
+use App\AdminMenu\AdminMenuList;
 use App\Models\Option;
 use App\PostType;
 use App\TaxonomyType;
@@ -16,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(PostType::class);
         $this->app->singleton(TaxonomyType::class);
+        $this->app->singleton('menu.admin', fn () => new AdminMenuList);
     }
 
     /**
@@ -23,6 +26,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        app('menu.admin')->add(AdminMenu::make(__('Dashboard'))
+            ->route('/')
+            ->icon('home'));
+
+        app('menu.admin')->add(AdminMenu::make(__('Settings'))
+            ->order(2)
+            ->route()
+            ->icon('adjustments-vertical'));
+
         $this->app->singleton('options', function () {
             return Option::where('autoload', true)->select('name', 'value')->get()->pluck('value', 'name')->toArray();
         });

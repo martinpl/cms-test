@@ -1,3 +1,22 @@
+{{-- TODO: Move out to php, add helper for admin menu --}}
+@php
+    foreach (app(App\PostType::class)->list as $postType) {
+        app('menu.admin')->add(\App\AdminMenu\AdminMenu::make($postType['plural'])
+            ->link(fn() => route('list', $postType['name']))
+            ->current(fn() => request()->routeIs('list') && request()->route('postType') == $postType['name'])
+            ->icon($postType['icon']));
+
+        foreach (app(App\TaxonomyType::class)->findForPostType($postType['name']) as $taxonomy) {
+            app('menu.admin')->add(\App\AdminMenu\AdminMenu::make($taxonomy['title'])
+                ->link(fn() => route('taxonomies', [$taxonomy['name'], $postType['name']]))
+                ->current(fn() => request()->routeIs('taxonomies') && request()->route('taxonomyType') == $taxonomy['name'] && request()->route('postType') == $postType['name'])
+                ->parent($postType['plural']));
+        }
+    }
+
+    $list = collect(app('menu.admin')->list)->sortBy('order');
+@endphp
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
@@ -13,23 +32,20 @@
 
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platform')" class="grid">
-                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
-                    @foreach (app(App\PostType::class)->list as $postType)
-                        <flux:navlist.item :icon="$postType['icon']" :href="route('list', $postType['name'])" :current="request()->routeIs('list') && request()->route('postType') == $postType['name']" wire:navigate>
-                            {{ $postType['plural'] }}
-                        </flux:navlist.item>
-                        @if (app(App\TaxonomyType::class)->findForPostType($postType['name']))
+                    @foreach ($list->filter(fn($item) => !$item->parent) as $item)
+                        <flux:navlist.item :icon="$item->icon" :href="$item->link" :current="$item->current" wire:navigate>{{ $item->title }}</flux:navlist.item>
+                        @php ($children = $list->filter(fn($children) => $children->parent == $item->title))
+                        @if ($children)
                             <div class="relative space-y-[2px] ps-7">
                                 <div class="absolute inset-y-[3px] w-px bg-zinc-200 dark:bg-white/30 start-0 ms-4"></div>
-                                @foreach (app(App\TaxonomyType::class)->findForPostType($postType['name']) as $taxonomy)
-                                    <flux:navlist.item :href="route('taxonomies', [$taxonomy['name'], $postType['name']])" :current="request()->routeIs('taxonomies') && request()->route('taxonomyType') == $taxonomy['name'] && request()->route('postType') == $postType['name']" wire:navigate>
-                                        {{ $taxonomy['title'] }}
+                                @foreach ($children as $child)
+                                    <flux:navlist.item :href="$child->link" :current="$child->current" wire:navigate>
+                                        {{ $child->title }}
                                     </flux:navlist.item>
                                 @endforeach
                             </div>
                         @endif
                     @endforeach
-                    <flux:navlist.item icon="adjustments-vertical" :href="route('settings')" :current="request()->routeIs('settings')" wire:navigate>{{ __('Settings') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
