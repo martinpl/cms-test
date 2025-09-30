@@ -29,3 +29,21 @@ function delete_option($name): bool
 {
     return Option::where('name', $name)->delete() > 0;
 }
+
+function extract_metadata(string $file, array $defaultHeaders): array
+{
+    $fp = fopen($file, 'r');
+    $fileData = fread($fp, 8192);
+    fclose($fp);
+    $headers = [];
+
+    foreach ($defaultHeaders as $field => $regex) {
+        if (preg_match('/'.$regex.':(.*)$/mi', $fileData, $match)) {
+            $headers[$field] = trim($match[1]);
+        } else {
+            $headers[$field] = null;
+        }
+    }
+
+    return $headers;
+}
