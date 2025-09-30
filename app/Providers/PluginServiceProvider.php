@@ -22,7 +22,7 @@ class PluginServiceProvider extends ServiceProvider
     protected function load()
     {
         foreach (Plugin::list() as $path => $meta) {
-            require $path;
+            require_once $path;
             $pluginName = Str::studly(basename($path, '.php'));
             new $pluginName;
         }
