@@ -16,15 +16,17 @@ class PostTypeServiceProvider extends ServiceProvider
 
     protected function addRoutes()
     {
-        foreach (app(PostType::class)->list as $postType) {
-            if ($postType['route'] === false) {
-                continue;
-            }
+        $this->app->booted(function () {
+            foreach (app(PostType::class)->list as $postType) {
+                if ($postType['route'] === false) {
+                    continue;
+                }
 
-            // TODO: support custom controller
-            Route::get("{$postType['route']}/{name}", PostTypeController::class)
-                ->name("single.{$postType['name']}")
-                ->defaults('postTypeName', $postType['name']);
-        }
+                // TODO: support custom controller
+                Route::get("{$postType['route']}/{name}", PostTypeController::class)
+                    ->name("single.{$postType['name']}")
+                    ->defaults('postTypeName', $postType['name']);
+            }
+        });
     }
 }

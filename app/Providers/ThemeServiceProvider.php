@@ -12,6 +12,10 @@ class ThemeServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
+        if (app()->runningInConsole()) {
+            return;
+        }
+
         app('menu.admin')->add(AdminMenu::make('Themes')
             ->route()
             ->order(1)
