@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Post;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -36,13 +35,3 @@ Route::middleware(['auth'])->group(function () {
 });
 
 require __DIR__.'/auth.php';
-
-Route::get('/{postTypeOrName}/{name?}', function ($postTypeOrName, $name = null) {
-    $post = Post::where('type', $postTypeOrName)->where('name', $name)->first();
-    dump([
-        $postTypeOrName,
-        $name,
-        $post->terms->pluck('type', 'title')->toArray(),
-        $post->terms('tag')->pluck('title')->toArray(),
-    ]);
-})->name('single');

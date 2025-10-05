@@ -46,11 +46,11 @@ class Post extends Model
     public function link()
     {
         $route = app(PostType::class)->find($this->type)['route'];
+        if ($route === false) {
+            return null;
+        }
 
-        return route('single', [
-            $route,
-            $this->name,
-        ]);
+        return route("single.{$this->type}", $this->name);
     }
 
     public function terms($taxonomyType = null)

@@ -20,7 +20,9 @@
             <a href="{{ route('editor', [$postType['name'], $post->id]) }}">
                 {{ $post->title }}
             </a>
-            <a href="{{ $post->link() }}">Preview</a>
+            @if ($post->link())
+                <a href="{{ $post->link() }}">Preview</a>
+            @endif
         </div>
         <hr>
     @endforeach

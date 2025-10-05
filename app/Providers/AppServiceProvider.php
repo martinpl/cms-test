@@ -40,11 +40,18 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // TODO: Move out to dedicated post type classes with register via config
+        app(PostType::class)->register('attachment', [
+            'title' => __('Media'),
+            'plural' => __('Media'),
+            'icon' => 'rectangle-stack',
+            'route' => false,
+        ]);
+
         app(PostType::class)->register('page', [
             'title' => __('Page'),
             'plural' => __('Pages'),
             'icon' => 'document-text',
-            'route' => false, // TODO: false probably should disable single post page
+            'route' => '',
         ]);
 
         app(PostType::class)->register('post', [
