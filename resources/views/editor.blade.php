@@ -4,6 +4,10 @@
         abort(404);
     }
 
+    if (request()->input('set-as-homepage')) {
+        set_option('home_page', request()->input('set-as-homepage'), true);
+    }
+
     if (request()->isMethod('post')) {
         $post = App\Models\Post::updateOrCreate(
             ['id' => $id],
@@ -28,6 +32,10 @@
             <textarea name="content" placeholder="Content">{{ $post?->content }}</textarea>
         </main>
         <aside>
+            @if ($post->link())
+                <a href="?set-as-homepage={{ $post->id }}">Set as homepage</a>
+                <br>
+            @endif
             <button>
                 Send
             </button>
