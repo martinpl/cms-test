@@ -8,11 +8,15 @@
         <title>Post Title - {{ get_option('site_title') }}</title>
         {{-- TODO: favicon setting --}}
         @stack('head')
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @fluxAppearance {{-- TODO: to remove only for adminbar, repalce with livewire --}}
     </head>
     {{-- TODO: custom classes hook --}}
     <body {{ $attributes }}>
+        <x-admin-bar /> {{-- TODO: move to hook --}}
         {{-- TODO: body open hook --}}
         {{ $slot }}
         {{-- TODO: footer hook --}}
+        @fluxScripts {{-- TODO: to remove only for adminbar, repalce with livewire --}}
     </body>
 </html>

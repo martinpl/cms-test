@@ -19,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(PostType::class);
         $this->app->singleton(TaxonomyType::class);
         $this->app->singleton('menu.admin', fn () => new AdminMenuList);
+        $this->app->singleton('menu.admin-bar', fn () => new AdminMenuList);
     }
 
     /**
