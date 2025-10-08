@@ -32,7 +32,7 @@
             <textarea name="content" placeholder="Content">{{ $post?->content }}</textarea>
         </main>
         <aside>
-            @if ($post->link())
+            @if ($post?->link())
                 <a href="?set-as-homepage={{ $post->id }}">Set as homepage</a>
                 <br>
             @endif
@@ -44,7 +44,7 @@
                     $taxonomies = App\Models\Taxonomy::where('type', $taxonomy['name'])
                         ->orderBy('title')
                         ->get();
-                    $selectedTaxonomies = $post->terms->where('type', $taxonomy['name'])->pluck('id')->toArray();
+                    $selectedTaxonomies = $post?->terms->where('type', $taxonomy['name'])->pluck('id')->toArray() ?? [];
                 @endphp
                 <div>
                     {{ $taxonomy['plural'] }}
