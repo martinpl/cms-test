@@ -1,1 +1,1 @@
-<flux:input wire:model="data.{{ $name }}" :label="$title" />
+<flux:input :wire:model="$model" :label="$title" />

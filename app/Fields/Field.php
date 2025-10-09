@@ -6,6 +6,8 @@ use Illuminate\Support\Str;
 
 abstract class Field
 {
+    public $model = 'data';
+
     public $name;
 
     public $value {
@@ -26,6 +28,13 @@ abstract class Field
     public static function make($name)
     {
         return new static($name);
+    }
+
+    public function model(string $model)
+    {
+        $this->model = $model;
+
+        return $this;
     }
 
     public function value(callable $value)
@@ -61,7 +70,7 @@ abstract class Field
     {
         $componentName = strtolower(class_basename($this));
         echo view("components.fields.{$componentName}", [
-            'name' => $this->name,
+            'model' => "{$this->model}.{$this->name}",
             'title' => $this->title,
         ]);
     }
