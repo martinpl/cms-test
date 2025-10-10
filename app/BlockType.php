@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Illuminate\Support\Str;
+
 // TODO: Move to facade?
 class BlockType
 {
@@ -29,5 +31,17 @@ class BlockType
         }
 
         return null;
+    }
+
+    // TODO: move out
+    public static function render($json)
+    {
+        $html = '';
+        $blocks = json_decode($json, true);
+        foreach ($blocks as $block) {
+            $html .= view('components.'.Str::slug($block['name']), $block['data'])->render();
+        }
+
+        return $html;
     }
 }

@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\BlockType;
 use App\Models\Traits\HasMeta;
 use App\PostType;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -41,6 +43,14 @@ class Post extends Model
         }
 
         return $slug;
+    }
+
+    protected function content(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => BlockType::render($value), // TODO: move to hook
+            set: fn ($value) => json_encode($value), // TODO: move to hook
+        );
     }
 
     public function link()
