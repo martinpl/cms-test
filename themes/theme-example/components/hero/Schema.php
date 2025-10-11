@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Schema;
+namespace Components\Hero;
 
 use App\Fields\Text;
 
-// TODO: Move to theme component namespace
-class Hero
+class Schema
 {
     public static function fields()
     {

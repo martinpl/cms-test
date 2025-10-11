@@ -94,7 +94,7 @@ new class extends Component {
         <input name="title" type="text" placeholder="Title" wire:model.fill="title" value="{{ $this->post?->title }}"><br>
         @foreach ($content as $block)
             @php
-                $class = 'App\Schema\\' . Str::studly($block['name'])
+                $class = 'Components\\' . Str::studly($block['name']).'\Schema';
             @endphp
             {{-- TODO: update only one block or cache another? --}}
             <div class="block" tabindex="0" @focusout="if (!$event.currentTarget.contains($event.relatedTarget)) { $wire.$refresh(); }">
@@ -110,9 +110,7 @@ new class extends Component {
                     </div>
                 @endif
                 <div class="preview">
-                    @php 
-                        echo view('components.'.Str::slug($block['name']), $content[$loop->index]['data']);
-                    @endphp
+                    {!! \App\BlockType::resolveComponent($block['name'], $content[$loop->index]['data']) !!}
                 </div>
             </div>
         @endforeach

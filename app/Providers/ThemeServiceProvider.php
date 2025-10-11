@@ -27,6 +27,7 @@ class ThemeServiceProvider extends ServiceProvider
         Blade::anonymousComponentPath('themes/'.get_option('theme'));
         $this->load();
         $this->registerBlocks();
+        $this->classAutoloader('themes/'.get_option('theme').'/components', 'Components');
     }
 
     protected function load()
@@ -51,9 +52,10 @@ class ThemeServiceProvider extends ServiceProvider
     protected function registerBlocks()
     {
         $path = base_path('themes/'.get_option('theme').'/components');
-        $files = File::files($path);
-        foreach ($files as $file) {
-            $meta = extract_metadata($file->getPathname(), [
+        $dirs = File::directories($path);
+        foreach ($dirs as $dir) {
+            $basename = basename($dir);
+            $meta = extract_metadata("$dir/{$basename}.blade.php", [
                 'name' => 'Name',
             ]);
 
@@ -64,5 +66,21 @@ class ThemeServiceProvider extends ServiceProvider
             $slug = Str::slug($meta['name']);
             app(\App\BlockType::class)->register($slug, $meta);
         }
+    }
+
+    protected function classAutoloader($directory, $namespace)
+    {
+        spl_autoload_register(function ($class) use ($directory, $namespace) {
+            if (str_starts_with($class, $namespace)) {
+                $path = str_replace("$namespace\\", '', $class);
+                $parts = explode('\\', $path);
+                $parts[0] = Str::kebab($parts[0]);
+                $path = implode('/', $parts);
+                $file = base_path("{$directory}/{$path}.php");
+                if (file_exists($file)) {
+                    include $file;
+                }
+            }
+        });
     }
 }

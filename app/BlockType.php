@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Str;
 
 // TODO: Move to facade?
@@ -34,14 +35,25 @@ class BlockType
     }
 
     // TODO: move out
-    public static function render($json)
+    public static function render(string $json)
     {
         $html = '';
         $blocks = json_decode($json, true);
         foreach ($blocks as $block) {
-            $html .= view('components.'.Str::slug($block['name']), $block['data'])->render();
+            $html .= self::resolveComponent($block['name'], $block['data']);
         }
 
         return $html;
+    }
+
+    // TODO: move out
+    public static function resolveComponent(string $name, array $data)
+    {
+        $class = 'Components\\'.Str::studly($name).'\\'.Str::studly($name);
+        if (class_exists($class)) {
+            return Blade::renderComponent(new $class(...$data));
+        } else {
+            return view('components.'.Str::slug($name).'.'.Str::slug($name), $data)->render();
+        }
     }
 }
