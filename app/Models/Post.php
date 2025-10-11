@@ -49,7 +49,13 @@ class Post extends Model
     {
         return Attribute::make(
             get: fn ($value) => BlockType::render($value), // TODO: move to hook
-            set: fn ($value) => json_encode($value), // TODO: move to hook
+            set: function ($value) {
+                if ($value) {
+                    return json_encode($value);
+                }
+
+                return $value;
+            }, // TODO: move to hook
         );
     }
 
