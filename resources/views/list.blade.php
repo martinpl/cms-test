@@ -5,6 +5,7 @@
     }
     
     $posts = App\Models\Post::where('type', $postType)
+        ->latest()
         ->paginate(10);
 @endphp
 

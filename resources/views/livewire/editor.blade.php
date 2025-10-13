@@ -26,7 +26,7 @@ new class extends Component {
         abort_if(!$postType, 404);
 
         if ($this->post) {
-            $this->content = json_decode($this->post->getRawOriginal('content'), true);
+            $this->content = json_decode($this->post->getRawOriginal('content'), true) ?: [];
         }
     }
 
@@ -62,6 +62,13 @@ new class extends Component {
             ]
         );
         $this->post->terms()->sync($this->terms);
+
+        if ($this->post->wasRecentlyCreated) {
+            $this->redirectRoute('editor', [
+                'postType' => $this->postType,
+                'id' => $this->post->id
+            ]);
+        } 
     }
 
     public function setAsHomePage($id) 
@@ -74,18 +81,18 @@ new class extends Component {
     <aside class="flex-2/12">
         Add block:<br>
         @foreach (app(\App\BlockType::class)->list as $slug => $block)
-            <button wire:click="add(`{{ $slug }}`)">
+            <flux:button wire:click="add(`{{ $slug }}`)">
                 {{ $block['name'] }}
-            </button>
+            </flux:button>
         @endforeach
         <div>
             Structure:
             @foreach ($content as $block)
                 <div>
                     {{ $block['name'] }}
-                    <button wire:click="remove({{ $loop->index }})">
+                    <flux:button wire:click="remove({{ $loop->index }})">
                         Remove
-                    </button>
+                    </flux:button>
                 </div>
             @endforeach
         </div>
@@ -97,7 +104,7 @@ new class extends Component {
                 $class = 'Components\\' . Str::studly($block['name']).'\Schema';
             @endphp
             {{-- TODO: update only one block or cache another? --}}
-            <div class="block" tabindex="0" @focusout="if (!$event.currentTarget.contains($event.relatedTarget)) { $wire.$refresh(); }">
+            <div class="editor-block" tabindex="0" @focusout="if (!$event.currentTarget.contains($event.relatedTarget)) { $wire.$refresh(); }">
                 @if (method_exists($class, 'fields'))
                     <div class="fields">
                         @foreach($class::fields() as $field)
@@ -116,16 +123,16 @@ new class extends Component {
         @endforeach
     </main>
     <aside class="flex-2/12">
-        <button wire:click="save">
+        <flux:button wire:click="save">
             Save
-        </button>
+        </flux:button>
         <br>
         @if ($this->post?->link())
-            <a href="{{ $this->post->link() }}">
+            <flux:button href="{{ $this->post->link() }}">
                 Preview
-            </a>
+            </flux:button>
             <br>
-            <button wire:click="setAsHomePage({{ $this->post->id }})">Set as homepage</button>
+            <flux:button wire:click="setAsHomePage({{ $this->post->id }})">Set as homepage</flux:button>
             <br>
         @endif
         @foreach(app(App\TaxonomyType::class)->findForPostType($this->postType) as $taxonomy)
@@ -150,7 +157,13 @@ new class extends Component {
         @endforeach
     </aside>
     <style>
-        .block:not(:focus-within) .fields { display: none; }
-        .block:focus-within .preview { display: none; }
+        .editor-block {
+            padding: 1rem;
+            border: 1px dashed black;
+            margin-bottom: 1rem;
+        }
+
+        .editor-block:not(:focus-within) .fields { display: none; }
+        .editor-block:focus-within .preview { display: none; }
     </style>
 </div>
