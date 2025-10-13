@@ -32,22 +32,24 @@
             </a>
 
             <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Platform')" class="grid">
-                    @foreach ($list->filter(fn($item) => !$item->parent) as $item)
-                        <flux:navlist.item :icon="$item->icon" :href="$item->link" :current="$item->current" wire:navigate>{{ $item->title }}</flux:navlist.item>
-                        @php ($children = $list->filter(fn($children) => $children->parent == $item->title))
-                        @if ($children)
-                            <div class="relative space-y-[2px] ps-7">
-                                <div class="absolute inset-y-[3px] w-px bg-zinc-200 dark:bg-white/30 start-0 ms-4"></div>
-                                @foreach ($children as $child)
-                                    <flux:navlist.item :href="$child->link" :current="$child->current" wire:navigate>
-                                        {{ $child->title }}
-                                    </flux:navlist.item>
-                                @endforeach
-                            </div>
-                        @endif
-                    @endforeach
-                </flux:navlist.group>
+                @foreach ($list->groupBy('group') as $key => $group)
+                    <flux:navlist.group :heading="$key ?: __('Platform')" class="grid">
+                        @foreach ($group->filter(fn($item) => !$item->parent) as $item)
+                            <flux:navlist.item :icon="$item->icon" :href="$item->link" :current="$item->current" wire:navigate>{{ $item->title }}</flux:navlist.item>
+                            @php ($children = $list->filter(fn($children) => $children->parent == $item->title))
+                            @if ($children)
+                                <div class="relative space-y-[2px] ps-7">
+                                    <div class="absolute inset-y-[3px] w-px bg-zinc-200 dark:bg-white/30 start-0 ms-4"></div>
+                                    @foreach ($children as $child)
+                                        <flux:navlist.item :href="$child->link" :current="$child->current" wire:navigate>
+                                            {{ $child->title }}
+                                        </flux:navlist.item>
+                                    @endforeach
+                                </div>
+                            @endif
+                        @endforeach
+                    </flux:navlist.group>
+                @endforeach
             </flux:navlist>
 
             <flux:spacer />

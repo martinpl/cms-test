@@ -5,7 +5,6 @@ namespace App\AdminMenu;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
-// TODO: add groups
 class AdminMenu
 {
     public string $name {
@@ -19,6 +18,8 @@ class AdminMenu
     public protected(set) int $order = 0;
 
     public protected(set) ?string $parent = null;
+
+    public protected(set) ?string $group = null;
 
     // TODO: helper may bump readability
     public protected(set) string|\Closure|null $link = null {
@@ -77,6 +78,13 @@ class AdminMenu
     public function order(int $order): static
     {
         $this->order = $order;
+
+        return $this;
+    }
+
+    public function group(string $group): static
+    {
+        $this->group = $group;
 
         return $this;
     }
