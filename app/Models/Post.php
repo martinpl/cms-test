@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Hook;
 use App\Models\Traits\HasMeta;
 use App\PostType;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -49,8 +50,8 @@ class Post extends Model
         $editor = app(PostType::class)->find($this->type)['editor'];
 
         return Attribute::make(
-            get: fn ($value) => $editor::get($value), // TODO: add hook
-            set: fn ($value) => $editor::set($value), // TODO: add hook?
+            get: fn ($value) => app(Hook::class)->applyFilters('post.content', $editor::get($value)),
+            set: fn ($value) => $editor::set($value),
         );
     }
 

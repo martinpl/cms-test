@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\AdminMenu\AdminMenu;
 use App\AdminMenu\AdminMenuList;
 use App\BlockType;
+use App\Hook;
 use App\Models\Option;
 use App\PostType;
 use App\TaxonomyType;
@@ -17,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->singleton(Hook::class);
         $this->app->singleton(PostType::class);
         $this->app->singleton(TaxonomyType::class);
         $this->app->singleton(BlockType::class);
