@@ -1,5 +1,5 @@
-{{-- TODO: Move to route --}}
+@php($postType = app(App\PostType::class)->find(request()->route('postType')))
 <x-layouts.app :title="__('Editor')">
-    <livewire:editor :id="request()->route('id')" :postType="request()->route('postType')" />
+    {!! $postType['editor']::render() !!}
 </x-layouts.app>
 

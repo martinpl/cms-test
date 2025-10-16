@@ -22,6 +22,7 @@ class PostType
             'icon' => 'square-2-stack',
             'order' => 0, // TODO
             'route' => $postType,
+            'editor' => BlockEditor::class,
         ];
 
         $this->list[$postType] = array_merge($defaults, $args);

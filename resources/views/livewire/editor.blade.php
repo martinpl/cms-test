@@ -117,7 +117,7 @@ new class extends Component {
                     </div>
                 @endif
                 <div class="preview">
-                    {!! \App\BlockType::resolveComponent($block['name'], $content[$loop->index]['data']) !!}
+                    {!! \App\BlockEditor::resolveComponent($block['name'], $content[$loop->index]['data']) !!}
                 </div>
             </div>
         @endforeach
