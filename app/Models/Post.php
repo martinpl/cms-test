@@ -47,11 +47,9 @@ class Post extends Model
 
     protected function content(): Attribute
     {
-        $editor = app(PostType::class)->find($this->type)['editor'];
-
         return Attribute::make(
-            get: fn ($value) => app(Hook::class)->applyFilters('post.content', $editor::get($value)),
-            set: fn ($value) => $editor::set($value),
+            get: fn ($value) => app(Hook::class)->applyFilters('post.content', $value, $this),
+            set: fn ($value) => app(Hook::class)->applyFilters('post.save.content', $value, $this),
         );
     }
 

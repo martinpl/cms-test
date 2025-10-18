@@ -4,37 +4,44 @@ namespace App;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Str;
-use Livewire\Livewire;
 
-// TODO: contract?
 class BlockEditor
 {
-    public static function render()
+    public static function register()
     {
-        return Livewire::mount('editor', [
-            'id' => request()->route('id'),
-            'postType' => request()->route('postType'),
-        ]);
+        self::contentRead();
+        self::contentSave();
     }
 
-    public static function set($content)
+    protected static function contentRead()
     {
-        if ($content) {
-            return json_encode($content);
-        }
+        // TODO: Add hook attributes
+        app(Hook::class)->addFilter('post.content', function ($content, $post) {
+            $editor = app(PostType::class)->find($post->type)['editor']; // TODO: awkward
+            if ($editor != 'editor') {
+                return $content;
+            }
 
-        return $content;
+            $html = '';
+            $blocks = json_decode($content, true);
+            foreach ($blocks as $block) {
+                $html .= self::resolveComponent($block['name'], $block['data']);
+            }
+
+            return $html;
+        });
     }
 
-    public static function get($content)
+    protected static function contentSave()
     {
-        $html = '';
-        $blocks = json_decode($content, true);
-        foreach ($blocks as $block) {
-            $html .= self::resolveComponent($block['name'], $block['data']);
-        }
+        app(Hook::class)->addFilter('post.save.content', function ($content, $post) {
+            $editor = app(PostType::class)->find($post->type)['editor'];
+            if ($editor != 'editor') {
+                return $content;
+            }
 
-        return $html;
+            return $content ? json_encode($content) : null;
+        });
     }
 
     public static function resolveComponent(string $name, array $data)

@@ -20,6 +20,8 @@ class BlockType
         ];
 
         $this->list[$blockType] = array_merge($defaults, $args);
+
+        BlockEditor::register(); // TODO: not best place
     }
 
     public function find($name)
