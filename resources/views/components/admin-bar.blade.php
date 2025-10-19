@@ -1,7 +1,7 @@
 {{-- TODO: Move to php + shouldRender --}}
 @php
     use App\AdminMenu\AdminMenu;
-    use App\PostType;
+    use App\PostTypeRegistry;
 
     if (auth()->check()) {
         app('menu.admin-bar')->add(AdminMenu::make(get_option('site_title'))
@@ -31,7 +31,7 @@
             ->order(-1)
             ->link(fn () => route('home')));
 
-        foreach (app(PostType::class)->list as $postType) {
+        foreach (app(PostTypeRegistry::class)->list as $postType) {
             app('menu.admin-bar')->add(AdminMenu::make($postType['title'])
                 ->parent(__('New'))
                 ->link(fn () => route('editor', $postType['name'])));

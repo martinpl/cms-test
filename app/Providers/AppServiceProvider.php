@@ -7,7 +7,7 @@ use App\AdminMenu\AdminMenuList;
 use App\BlockType;
 use App\Hook;
 use App\Models\Option;
-use App\PostType;
+use App\PostTypeRegistry;
 use App\TaxonomyType;
 use Illuminate\Support\ServiceProvider;
 
@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(Hook::class);
-        $this->app->singleton(PostType::class);
+        $this->app->singleton(PostTypeRegistry::class);
         $this->app->singleton(TaxonomyType::class);
         $this->app->singleton(BlockType::class);
         $this->app->singleton('menu.admin', fn () => new AdminMenuList);
@@ -44,27 +44,7 @@ class AppServiceProvider extends ServiceProvider
             return Option::where('autoload', true)->select('name', 'value')->get()->pluck('value', 'name')->toArray();
         });
 
-        // TODO: Move out to dedicated post type classes with register via config
-        app(PostType::class)->register('attachment', [
-            'title' => __('Media'),
-            'plural' => __('Media'),
-            'icon' => 'rectangle-stack',
-            'route' => false,
-        ]);
-
-        app(PostType::class)->register('page', [
-            'title' => __('Page'),
-            'plural' => __('Pages'),
-            'icon' => 'document-text',
-            'route' => '',
-        ]);
-
-        app(PostType::class)->register('post', [
-            'title' => __('Post'),
-            'plural' => __('Posts'),
-            'icon' => 'newspaper',
-        ]);
-
+        // TODO: Move out to dedicated taxonomies classes with register via config
         app(TaxonomyType::class)->register('category', [
             'title' => __('Category'),
             'plural' => __('Categories'),

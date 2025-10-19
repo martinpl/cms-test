@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\AdminMenu\AdminMenu;
-use App\Models\Post;
+use App\PostTypes\AnyPost;
 use Illuminate\Support\Str;
 
 class PostTypeController
 {
     public function __invoke($name, $postType)
     {
-        $post = Post::where('type', $postType)->where('name', $name)->first();
+        $post = AnyPost::where('type', $postType)->where('name', $name)->first();
         if (! $post) {
             abort(404);
         }

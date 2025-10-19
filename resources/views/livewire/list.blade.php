@@ -1,8 +1,8 @@
 <?php
  
-use App\Models\Post;
-use Livewire\Attributes\Computed;
+use App\PostTypes\AnyPost;
 use Livewire\WithPagination;
+use Livewire\Attributes\Computed;
  
 new class extends \Livewire\Volt\Component {
     use WithPagination;
@@ -11,7 +11,7 @@ new class extends \Livewire\Volt\Component {
 
     #[Computed]
     public function posts() {
-        return App\Models\Post::where('type', $this->postType['name'])
+        return AnyPost::where('type', $this->postType['name'])
             ->latest()
             ->paginate(10);
     }

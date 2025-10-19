@@ -1,6 +1,6 @@
 <?php
  
-use App\Models\Post;
+use App\PostTypes\AnyPost;
 use Livewire\Volt\Component;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Computed;
@@ -22,7 +22,7 @@ new class extends Component {
 
     public function mount() 
     {
-        $postType = app(App\PostType::class)->find($this->postType);
+        $postType = app(App\PostTypeRegistry::class)->find($this->postType);
         abort_if(!$postType, 404);
 
         if ($this->post) {
@@ -33,7 +33,7 @@ new class extends Component {
     #[Computed]
     public function post() 
     {
-        return $this->id ? App\Models\Post::with('terms')->find($this->id) : null;
+        return $this->id ? AnyPost::with('terms')->find($this->id) : null;
     }
 
     public function add($name) 
@@ -51,14 +51,14 @@ new class extends Component {
 
     public function save() 
     {
-        $this->post = App\Models\Post::updateOrCreate(
+        $this->post = AnyPost::updateOrCreate(
             ['id' => $this->id],
             [
-                'title' => $this->title,
-                'content' => $this->content,
-                'status' => 'publish',
                 'type' => $this->postType,
+                'title' => $this->title,
+                'status' => 'publish',
                 'user_id' => request()->user()->id,
+                'content' => $this->content,
             ]
         );
         $this->post->terms()->sync($this->terms);

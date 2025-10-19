@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\AdminMenu\AdminMenu;
-use App\Models\Post;
+use App\PostTypes\AnyPost;
 use Illuminate\Support\Str;
 
 class HomeController
 {
     public function __invoke()
     {
-        $post = Post::find(get_option('home_page'));
+        $post = AnyPost::find(get_option('home_page'));
         if (! $post) {
             abort(404);
         }

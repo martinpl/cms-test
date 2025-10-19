@@ -16,10 +16,14 @@ class BlockEditor
     protected static function contentRead()
     {
         // TODO: Add hook attributes
-        app(Hook::class)->addFilter('post.content', function ($content, $post) {
-            $editor = app(PostType::class)->find($post->type)['editor']; // TODO: awkward
+        app(Hook::class)->addFilter('post.content', function ($content, $attributes): string {
+            $editor = app(PostTypeRegistry::class)->find($attributes['type'])['editor']; // TODO: awkward
             if ($editor != 'editor') {
                 return $content;
+            }
+
+            if (! $content) {
+                return '';
             }
 
             $html = '';
@@ -34,8 +38,9 @@ class BlockEditor
 
     protected static function contentSave()
     {
-        app(Hook::class)->addFilter('post.save.content', function ($content, $post) {
-            $editor = app(PostType::class)->find($post->type)['editor'];
+        // TODO: Type will not be available if we provide it in wrong order (after content) on save. I'm not sure if I like passing $attributes anyway
+        app(Hook::class)->addFilter('post.save.content', function ($content, $attributes) {
+            $editor = app(PostTypeRegistry::class)->find($attributes['type'])['editor'];
             if ($editor != 'editor') {
                 return $content;
             }

@@ -3,7 +3,7 @@
 namespace App;
 
 // TODO: Move to facade?
-class PostType
+class PostTypeRegistry
 {
     public private(set) array $list;
 
@@ -27,6 +27,13 @@ class PostType
         ];
 
         $this->list[$postType] = array_merge($defaults, $args);
+    }
+
+    public function registerClasses($postTypes)
+    {
+        foreach ($postTypes as $postType) {
+            $postType::register();
+        }
     }
 
     public function find($name)

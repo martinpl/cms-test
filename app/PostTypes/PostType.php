@@ -1,19 +1,22 @@
 <?php
 
-namespace App\Models;
+namespace App\PostTypes;
 
 use App\Hook;
+use App\Models\Taxonomy;
 use App\Models\Traits\HasMeta;
-use App\PostType;
+use App\PostTypeRegistry;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Post extends Model
+abstract class PostType extends \Illuminate\Database\Eloquent\Model
 {
     use HasFactory;
     use HasMeta;
+
+    protected $table = 'posts';
 
     protected $fillable = [
         'type',
@@ -22,6 +25,26 @@ class Post extends Model
         'content',
         'user_id',
     ];
+
+    public static $type = null;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        if (static::$type) {
+            $this->attributes['type'] = static::$type;
+        }
+    }
+
+    protected static function booted()
+    {
+        if (static::$type) {
+            static::addGlobalScope('type', function (Builder $builder) {
+                $builder->where('type', static::$type);
+            });
+        }
+    }
 
     protected static function boot()
     {
@@ -48,14 +71,14 @@ class Post extends Model
     protected function content(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => app(Hook::class)->applyFilters('post.content', $value, $this),
-            set: fn ($value) => app(Hook::class)->applyFilters('post.save.content', $value, $this),
+            get: fn ($value, $attributes) => app(Hook::class)->applyFilters('post.content', $value, $attributes),
+            set: fn ($value, $attributes) => app(Hook::class)->applyFilters('post.save.content', $value, $attributes),
         );
     }
 
     public function link()
     {
-        $route = app(PostType::class)->find($this->type)['route'];
+        $route = app(PostTypeRegistry::class)->find($this->type)['route'];
         if ($route === false) {
             return null;
         }
@@ -69,5 +92,10 @@ class Post extends Model
             ->when($taxonomyType, function ($query) use ($taxonomyType) {
                 $query->where('type', $taxonomyType);
             });
+    }
+
+    protected static function register()
+    {
+        app(PostTypeRegistry::class)->register(static::class::$type, static::config());
     }
 }

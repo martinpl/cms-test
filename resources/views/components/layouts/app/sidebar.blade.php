@@ -1,6 +1,6 @@
 {{-- TODO: Move out to php, add helper for admin menu --}}
 @php
-    foreach (app(App\PostType::class)->list as $postType) {
+    foreach (app(App\PostTypeRegistry::class)->list as $postType) {
         app('menu.admin')->add(\App\AdminMenu\AdminMenu::make($postType['plural'])
             ->link(fn() => route('list', $postType['name']))
             ->current(fn() => request()->routeIs('list') && request()->route('postType') == $postType['name'])

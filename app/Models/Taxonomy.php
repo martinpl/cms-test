@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Traits\HasMeta;
+use App\PostTypes\AnyPost;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -46,6 +47,6 @@ class Taxonomy extends Model
 
     public function posts()
     {
-        return $this->belongsToMany(Post::class, 'term_relationships', 'term_id');
+        return $this->belongsToMany(AnyPost::class, 'term_relationships', 'term_id', 'post_id');
     }
 }
