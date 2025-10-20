@@ -13,6 +13,8 @@ class Attachment extends PostType
             'plural' => __('Media'),
             'icon' => 'rectangle-stack',
             'route' => false,
+            'list' => 'list-media',
+            'editor' => 'media-editor',
         ];
     }
 }
