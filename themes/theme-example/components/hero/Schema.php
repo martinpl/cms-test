@@ -2,6 +2,7 @@
 
 namespace Components\Hero;
 
+use App\Fields\Media;
 use App\Fields\Text;
 
 class Schema
@@ -10,6 +11,7 @@ class Schema
     {
         return [
             Text::make('Title'),
+            Media::make('Image'),
         ];
     }
 }
