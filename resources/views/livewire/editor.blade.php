@@ -97,26 +97,27 @@ new class extends Component {
             @endforeach
         </div>
     </aside>
-    <main class="flex-8/12">
+    <main class="flex-8/12" x-data="{ selected: null }">
         <input name="title" type="text" placeholder="Title" wire:model.fill="title" value="{{ $this->post?->title }}"><br>
         @foreach ($content as $block)
             @php
                 $class = 'Components\\' . Str::studly($block['name']).'\Schema';
             @endphp
             {{-- TODO: update only one block or cache another? --}}
-            <div class="editor-block" tabindex="0" @focusout="if (!$event.currentTarget.contains($event.relatedTarget)) { $wire.$refresh(); }">
+            <div class="editor-block" @click="selected = {{ $loop->index }}" wire:key="block-{{ $loop->index }}">
                 @if (method_exists($class, 'fields'))
-                    <div class="fields">
+                    <div class="fields" x-show="selected == {{ $loop->index }}" x-cloak @click.away="selected = null; $wire.$refresh();">
                         @foreach($class::fields() as $field)
                             @php
                                 // TODO: validation
                                 $field->model("content.{$loop->parent->index}.data");
+                                $field->value(fn () => $content[$loop->parent->index]['data'][$field->name] ?? null); // TODO: This should not be callback
                                 $field->render();
                             @endphp
                         @endforeach
                     </div>
                 @endif
-                <div class="preview">
+                <div class="preview" x-show="selected != {{ $loop->index }}">
                     {!! \App\BlockEditor::resolveComponent($block['name'], $content[$loop->index]['data']) !!}
                 </div>
             </div>
@@ -162,8 +163,5 @@ new class extends Component {
             border: 1px dashed black;
             margin-bottom: 1rem;
         }
-
-        .editor-block:not(:focus-within) .fields { display: none; }
-        .editor-block:focus-within .preview { display: none; }
     </style>
 </div>
