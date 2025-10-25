@@ -11,14 +11,9 @@ new class extends \Livewire\Volt\Component {
 
     public $model;
 
-    public $value;
+    public $selected;
 
     public $show = false;
-
-    public function close($id) {
-        // TODO: security (leaking post content)
-        $this->value = $id;
-    }
 
     #[Computed]
     public function posts() {
@@ -28,19 +23,16 @@ new class extends \Livewire\Volt\Component {
 } ?>
 
 <div>
+    {{-- TODO: Should be render once not once per field --}}
     {{-- TODO: move to fields dir? --}}
-    @if ($value)
-        <img src="{{ Storage::url(Attachment::find($value)->content) }}" style="height: 100px">
-    @endif
-    <br>
     <button wire:click="$set('show', true)" type="button">
         Choose Image
     </button>
     @if ($show)
-        <flux:modal wire:model.self="show" @close="close($wire.$parent.$get('{{ $model }}'))" >
+        <flux:modal wire:model.self="show" @close="$parent.$set('{{ $model }}', $wire.selected)" >
             @foreach ($this->posts as $post)
-                <div :class="{ 'border border-gray-800': $wire.$parent.$get('{{ $model }}') == {{ $post->id }}} ">
-                    <button type="button" @click="$wire.$parent.$set('{{ $model }}', {{ $post->id }})">
+                <div :class="{ 'border border-gray-800': $wire.selected == {{ $post->id }} }">
+                    <button type="button" wire:click="selected = {{ $post->id }}">
                         <img src="{{ Storage::url($post->content) }}" style="height: 100px">
                     </button>
                 </div>
