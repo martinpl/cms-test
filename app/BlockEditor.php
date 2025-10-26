@@ -53,7 +53,7 @@ class BlockEditor
     {
         $class = 'Components\\'.Str::studly($name).'\\'.Str::studly($name);
         if (class_exists($class)) {
-            return Blade::renderComponent(new $class(...$data));
+            return Blade::renderComponent(new $class($data));
         } else {
             return view('components.'.Str::slug($name).'.'.Str::slug($name), $data)->render();
         }

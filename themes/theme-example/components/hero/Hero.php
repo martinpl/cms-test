@@ -4,10 +4,10 @@ namespace Components\Hero; // TODO: lets maybe break PSR-4 even more to only Com
 
 class Hero extends \Illuminate\View\Component
 {
-    public function __construct(public $title = '', public $image = null) {}
+    public function __construct(private $context) {}
 
     public function render()
     {
-        return view('components.hero.hero');
+        return view('components.hero.hero', $this->context);
     }
 }
