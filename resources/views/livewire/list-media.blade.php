@@ -6,7 +6,7 @@ use App\PostTypes\Attachment;
 use Livewire\Attributes\Computed;
 use Illuminate\Support\Facades\Storage;
  
-new class extends \Livewire\Volt\Component {
+new class extends Livewire\Component {
     use WithPagination;
 
     public $postType; 

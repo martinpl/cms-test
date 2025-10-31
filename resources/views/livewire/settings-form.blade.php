@@ -3,7 +3,7 @@
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Validate;
  
-new class extends Livewire\Volt\Component {
+new class extends Livewire\Component {
     public array $data;
 
     #[Locked]

@@ -4,7 +4,7 @@ use App\PostTypes\AnyPost;
 use Livewire\WithPagination;
 use Livewire\Attributes\Computed;
  
-new class extends \Livewire\Volt\Component {
+new class extends Livewire\Component {
     use WithPagination;
 
     public $postType; 

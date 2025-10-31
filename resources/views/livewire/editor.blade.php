@@ -1,11 +1,10 @@
 <?php
  
 use App\PostTypes\AnyPost;
-use Livewire\Volt\Component;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Computed;
  
-new class extends Component {
+new class extends Livewire\Component {
     #[Locked]
     public $id;
 

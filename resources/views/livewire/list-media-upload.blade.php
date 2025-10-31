@@ -3,7 +3,7 @@
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Validate;
  
-new class extends \Livewire\Volt\Component {
+new class extends Livewire\Component {
     use WithFileUploads;
  
     #[Validate('required|image|max:1024')]
