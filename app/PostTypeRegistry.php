@@ -24,6 +24,7 @@ class PostTypeRegistry
             'route' => $postType,
             'editor' => 'editor',
             'list' => 'list',
+            'class' => null,
         ];
 
         $this->list[$postType] = array_merge($defaults, $args);
@@ -32,7 +33,10 @@ class PostTypeRegistry
     public function registerClasses($postTypes)
     {
         foreach ($postTypes as $postType) {
-            $postType::register();
+            $this->register($postType::$type, [
+                ...$postType::config(),
+                'class' => $postType,
+            ]);
         }
     }
 

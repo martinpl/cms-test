@@ -93,9 +93,4 @@ abstract class PostType extends \Illuminate\Database\Eloquent\Model
                 $query->where('type', $taxonomyType);
             });
     }
-
-    protected static function register()
-    {
-        app(PostTypeRegistry::class)->register(static::class::$type, static::config());
-    }
 }
