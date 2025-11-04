@@ -21,6 +21,7 @@ abstract class PostType extends \Illuminate\Database\Eloquent\Model
     protected $fillable = [
         'type',
         'status',
+        'name',
         'title',
         'content',
         'user_id',
@@ -50,17 +51,23 @@ abstract class PostType extends \Illuminate\Database\Eloquent\Model
     {
         parent::boot();
 
-        static::creating(function ($post) {
-            $post->name = $post->generateUniqueSlug($post->type, $post->title);
+        static::saving(function ($post) {
+            if (empty($post->name)) {
+                $post->name = $post->generateUniqueSlug($post->title);
+            }
+
+            if ($post->isDirty('name')) {
+                $post->name = $post->generateUniqueSlug($post->name);
+            }
         });
     }
 
-    protected function generateUniqueSlug($type, $title)
+    protected function generateUniqueSlug($title)
     {
         $baseSlug = Str::slug($title);
         $slug = $baseSlug;
         $i = 1;
-        while (self::where('type', $type)->where('name', $slug)->exists()) {
+        while (self::where('type', $this->type)->where('name', $slug)->exists()) {
             $slug = $baseSlug.'-'.$i;
             $i++;
         }

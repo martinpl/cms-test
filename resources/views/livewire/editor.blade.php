@@ -11,6 +11,8 @@ new class extends Livewire\Component {
     #[Locked]
     public $postType;
 
+    public $name = '';
+
     public $title = '';
 
     public $content = []; 
@@ -54,6 +56,7 @@ new class extends Livewire\Component {
             ['id' => $this->id],
             [
                 'type' => $this->postType,
+                'name' => $this->name,
                 'title' => $this->title,
                 'status' => 'publish',
                 'user_id' => request()->user()->id,
@@ -67,7 +70,9 @@ new class extends Livewire\Component {
                 'postType' => $this->postType,
                 'id' => $this->post->id
             ]);
-        } 
+        }
+        
+        $this->name = $this->post->name;
     }
 
     public function setAsHomePage($id) 
@@ -135,6 +140,10 @@ new class extends Livewire\Component {
             <flux:button wire:click="setAsHomePage({{ $this->post->id }})">Set as homepage</flux:button>
             <br>
         @endif
+        <div>
+            Slug:
+            <input type="text" wire:model.fill="name" value="{{ $this->post?->name }}"><br>
+        </div>
         @foreach(app(App\TaxonomyType::class)->findForPostType($this->postType) as $taxonomy)
             @php
                 $taxonomies = App\Models\Taxonomy::where('type', $taxonomy['name'])
