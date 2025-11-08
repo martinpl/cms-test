@@ -25,6 +25,7 @@ abstract class PostType extends \Illuminate\Database\Eloquent\Model
         'title',
         'content',
         'user_id',
+        'parent_id',
     ];
 
     public static $type = null;
@@ -90,7 +91,35 @@ abstract class PostType extends \Illuminate\Database\Eloquent\Model
             return null;
         }
 
-        return route("single.{$this->type}", $this->name);
+        return route("single.{$this->type}", $this->slugStructure());
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(static::class, 'parent_id');
+    }
+
+    public function slugStructure()
+    {
+        return $this->parent ? $this->parent->slugStructure().'/'.$this->name : $this->name;
+    }
+
+    public static function findBySlugStructure($path, $postType)
+    {
+        $segments = explode('/', $path);
+        $page = null;
+        foreach ($segments as $name) {
+            $page = static::where('type', $postType)
+                ->where('name', $name)
+                ->when($page, fn ($q) => $q->where('parent_id', $page->id))
+                ->first();
+
+            if (! $page) {
+                return null;
+            }
+        }
+
+        return $page;
     }
 
     public function terms($taxonomyType = null)

@@ -17,6 +17,8 @@ new class extends Livewire\Component {
 
     public $content = []; 
 
+    public $parent = null;
+
     public $meta = [];
 
     public $terms = [];
@@ -61,6 +63,7 @@ new class extends Livewire\Component {
                 'status' => 'publish',
                 'user_id' => request()->user()->id,
                 'content' => $this->content,
+                'parent_id' => $this->parent,
             ]
         );
         $this->post->terms()->sync($this->terms);
@@ -143,6 +146,9 @@ new class extends Livewire\Component {
         <div>
             Slug:
             <input type="text" wire:model.fill="name" value="{{ $this->post?->name }}"><br>
+            Parent: 
+            {{-- TODO: add select with search --}}
+            <input type="number" wire:model.number.fill="parent" value="{{ $this->post?->parent_id }}"><br>
         </div>
         @foreach(app(App\TaxonomyType::class)->findForPostType($this->postType) as $taxonomy)
             @php

@@ -31,7 +31,8 @@ class PostTypeServiceProvider extends ServiceProvider
                 Route::get("{$postType['route']}/{name}", PostTypeController::class)
                     ->middleware('web')
                     ->defaults('postTypeName', $postType['name'])
-                    ->name("single.{$postType['name']}");
+                    ->name("single.{$postType['name']}")
+                    ->where('name', '.*');
             }
         });
     }
