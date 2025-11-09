@@ -76,6 +76,11 @@ abstract class PostType extends \Illuminate\Database\Eloquent\Model
         return $slug;
     }
 
+    public function getMorphClass()
+    {
+        return $this->type;
+    }
+
     protected function content(): Attribute
     {
         return Attribute::make(

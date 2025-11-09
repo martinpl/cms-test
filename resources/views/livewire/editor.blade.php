@@ -30,6 +30,7 @@ new class extends Livewire\Component {
 
         if ($this->post) {
             $this->content = json_decode($this->post->getRawOriginal('content'), true) ?: [];
+            $this->meta = $this->post->meta();
         }
     }
 
@@ -67,6 +68,9 @@ new class extends Livewire\Component {
             ]
         );
         $this->post->terms()->sync($this->terms);
+        foreach($this->meta as $key => $value) {
+            $this->post->setMeta($key, $value);
+        }
 
         if ($this->post->wasRecentlyCreated) {
             $this->redirectRoute('editor', [
@@ -144,6 +148,8 @@ new class extends Livewire\Component {
             <br>
         @endif
         <div>
+            Excerpt:
+            <input type="text" wire:model.fill="meta.excerpt"><br>
             Slug:
             <input type="text" wire:model.fill="name" value="{{ $this->post?->name }}"><br>
             Parent: 
