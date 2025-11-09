@@ -78,7 +78,7 @@ abstract class PostType extends \Illuminate\Database\Eloquent\Model
 
     public function getMorphClass()
     {
-        return $this->type;
+        return "post_type.{$this->type}";
     }
 
     protected function content(): Attribute
