@@ -22,6 +22,10 @@ function set_option($name, $value, $autoload = null): bool
     }
     $option = Option::updateOrCreate(['name' => $name], $values);
 
+    if (isset(app('options')[$name])) {
+        app()->instance('options', array_merge(app('options'), [$name => $value]));
+    }
+
     return $option->wasChanged() || $option->wasRecentlyCreated;
 }
 
