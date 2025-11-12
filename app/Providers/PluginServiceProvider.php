@@ -21,7 +21,12 @@ class PluginServiceProvider extends ServiceProvider
 
     protected function load()
     {
-        foreach (Plugin::list() as $path => $meta) {
+        foreach (Plugin::list() as $meta) {
+            if (! $meta['mustUse'] && ! Plugin::isActive($meta['path'])) {
+                return;
+            }
+
+            $path = base_path($meta['path']);
             require_once $path;
             $pluginName = Str::studly(basename($path, '.php'));
             new $pluginName;
