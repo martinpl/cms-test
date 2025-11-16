@@ -25,7 +25,7 @@ new class extends Livewire\Component {
     <h2>
         {{ $postType['plural'] }}
     </h2>
-    <livewire:list-media-upload >
+    <livewire:list-media-upload />
     @foreach ($this->posts as $post)
         <div>
             <a href="{{ route('editor', [$postType['name'], $post->id]) }}">
