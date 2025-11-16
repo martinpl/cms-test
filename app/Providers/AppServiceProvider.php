@@ -31,6 +31,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (app()->runningInConsole()) { // TODO: That should be check for migration command
+            return;
+        }
+
         app('menu.admin')->add(AdminMenu::make(__('Dashboard'))
             ->route('/')
             ->icon('home'));

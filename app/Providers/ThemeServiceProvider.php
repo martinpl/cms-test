@@ -51,7 +51,12 @@ class ThemeServiceProvider extends ServiceProvider
     // TODO: move out
     protected function registerBlocks()
     {
-        $path = base_path('themes/'.get_option('theme').'/components');
+        $theme = get_option('theme');
+        if (! $theme) {
+            return;
+        }
+
+        $path = base_path("themes/{$theme}/components");
         $dirs = File::directories($path);
         foreach ($dirs as $dir) {
             $basename = basename($dir);

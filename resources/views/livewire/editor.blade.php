@@ -91,7 +91,7 @@ new class extends Livewire\Component {
 <div class="flex gap-6">
     <aside class="flex-2/12">
         Add block:<br>
-        @foreach (app(\App\BlockType::class)->list as $slug => $block)
+        @foreach (app(\App\BlockType::class)->list ?? [] as $slug => $block)
             <flux:button wire:click="add(`{{ $slug }}`)">
                 {{ $block['name'] }}
             </flux:button>

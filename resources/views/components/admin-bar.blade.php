@@ -4,27 +4,28 @@
     use App\PostTypeRegistry;
 
     if (auth()->check()) {
-        app('menu.admin-bar')->add(AdminMenu::make(get_option('site_title'))
+        $siteTitle = get_option('site_title', 'Site title');
+        app('menu.admin-bar')->add(AdminMenu::make($siteTitle)
             ->link(fn () => route('home'))
             ->order(-1)
             ->icon('adjustments-vertical'));
 
         if (request()->route()->getPrefix() != 'dashboard') {
             app('menu.admin-bar')->add(AdminMenu::make(__('Dashboard'))
-                ->parent(get_option('site_title'))
+                ->parent($siteTitle)
                 ->link(fn () => route('dashboard')));
         } else {
             app('menu.admin-bar')->add(AdminMenu::make(__('Home'))
-                ->parent(get_option('site_title'))
+                ->parent($siteTitle)
                 ->link(fn () => route('home')));
         }
 
         app('menu.admin-bar')->add(AdminMenu::make(__('Plugins'))
-            ->parent(get_option('site_title'))
+            ->parent($siteTitle)
             ->link(fn () => route('plugins')));
 
         app('menu.admin-bar')->add(AdminMenu::make(__('Themes'))
-            ->parent(get_option('site_title'))
+            ->parent($siteTitle)
             ->link(fn () => route('themes')));
 
         app('menu.admin-bar')->add(AdminMenu::make(__('New'))
