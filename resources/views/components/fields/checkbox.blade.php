@@ -1,1 +1,1 @@
-<flux:checkbox :wire:model="$model" :label="$title" />
+<flux:checkbox :wire:model="$getWireModel()" :label="$title" />

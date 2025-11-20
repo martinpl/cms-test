@@ -123,8 +123,8 @@ new class extends Livewire\Component {
                                 // TODO: validation
                                 $field->model("content.{$loop->parent->index}.data");
                                 $field->value(fn () => $content[$loop->parent->index]['data'][$field->name] ?? null); // TODO: This should not be callback
-                                $field->render();
                             @endphp
+                            {{ $field }}
                         @endforeach
                     </div>
                 @endif

@@ -12,7 +12,7 @@ new class extends Livewire\Component {
     public function mount()
     {
         foreach ($this->fields() as $field) {
-            $this->data[$field->name] = $field->value;
+            $this->data[$field->name] = $field->getValue();
         }
     }
 
@@ -42,7 +42,7 @@ new class extends Livewire\Component {
  
 <form wire:submit="submit">
     @foreach($this->fields() as $field)
-        {{ $field->render() }}
+        {{ $field }}
     @endforeach
     <flux:button type="submit">Submit</flux:button>
 </form>

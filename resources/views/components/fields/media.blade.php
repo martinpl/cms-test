@@ -3,6 +3,7 @@
 use App\PostTypes\Attachment;
 use Illuminate\Support\Facades\Storage;
 
+$model = $getWireModel();
 $modelHead = Str::before($model, '.');
 $modelBody = Str::after($model, '.');
 $selected = Arr::get($this->$modelHead, $modelBody);

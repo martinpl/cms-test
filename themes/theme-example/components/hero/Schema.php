@@ -2,9 +2,9 @@
 
 namespace Components\Hero;
 
-use App\Fields\Media;
-use App\Fields\Repeater;
-use App\Fields\Text;
+use App\View\Components\Fields\Media;
+use App\View\Components\Fields\Repeater;
+use App\View\Components\Fields\Text;
 
 class Schema
 {

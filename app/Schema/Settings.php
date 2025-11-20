@@ -2,10 +2,10 @@
 
 namespace App\Schema;
 
-use App\Fields\Checkbox;
-use App\Fields\Media;
-use App\Fields\Repeater;
-use App\Fields\Text;
+use App\View\Components\Fields\Checkbox;
+use App\View\Components\Fields\Media;
+use App\View\Components\Fields\Repeater;
+use App\View\Components\Fields\Text;
 
 class Settings
 {

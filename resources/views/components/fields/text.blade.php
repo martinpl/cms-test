@@ -1,1 +1,1 @@
-<flux:input :wire:model="$model" :label="$title" />
+<flux:input :wire:model="$getWireModel()" :label="$title" />

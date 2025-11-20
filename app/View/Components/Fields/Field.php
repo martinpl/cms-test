@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Fields;
+namespace App\View\Components\Fields;
 
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Str;
+use Illuminate\View\Component;
 
-abstract class Field
+abstract class Field extends Component implements Htmlable
 {
     public $model = 'data';
 
     public $name;
 
-    public $value {
-        get {
-            return ($this->value)();
-        }
-    }
+    public $value;
 
     public $set;
 
@@ -37,11 +36,25 @@ abstract class Field
         return $this;
     }
 
+    public function getWireModel()
+    {
+        return $this->attributes->get('wire:model', "{$this->model}.{$this->name}");
+    }
+
     public function value(callable $value)
     {
         $this->value = $value;
 
         return $this;
+    }
+
+    public function getValue()
+    {
+        if ($this->value) {
+            return ($this->value)();
+        }
+
+        return null;
     }
 
     public function set(callable $set)
@@ -69,9 +82,12 @@ abstract class Field
     public function render()
     {
         $componentName = strtolower(class_basename($this));
-        echo view("components.fields.{$componentName}", [
-            'model' => "{$this->model}.{$this->name}",
-            'title' => $this->title,
-        ]);
+
+        return view("components.fields.{$componentName}");
+    }
+
+    public function toHtml()
+    {
+        return Blade::renderComponent($this);
     }
 }
