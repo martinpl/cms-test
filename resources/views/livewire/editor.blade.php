@@ -148,6 +148,7 @@ new class extends Livewire\Component {
             <br>
         @endif
         <div>
+            <x-fields.media title="Thumbnail" wire:model="meta.thumbnail" />
             Excerpt:
             <input type="text" wire:model.fill="meta.excerpt"><br>
             Slug:
