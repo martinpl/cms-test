@@ -11,7 +11,9 @@ class PostTypeController
     public function __invoke($name, $postType)
     {
         $post = AnyPost::findBySlugStructure($name, $postType);
-        if (! $post) {
+        $canSeeDraft = $post?->status == 'draft' && auth()->check();
+        $hidden = $post?->status != 'publish' && ! $canSeeDraft;
+        if (! $post || $hidden) {
             abort(404);
         }
 

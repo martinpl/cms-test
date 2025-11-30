@@ -53,15 +53,25 @@ new class extends Livewire\Component {
         array_splice($this->content, $index, 1);
     }
 
-    public function save() 
+    public function saveDraft() 
+    {
+        $this->save('draft');
+    }
+
+    public function savePublish() 
+    {
+        $this->save('publish');
+    }
+
+    private function save($status) 
     {
         $this->post = AnyPost::updateOrCreate(
             ['id' => $this->id],
             [
                 'type' => $this->postType,
+                'status' => $status,
                 'name' => $this->name,
                 'title' => $this->title,
-                'status' => 'publish',
                 'user_id' => request()->user()->id,
                 'content' => $this->content,
                 'parent_id' => $this->parent,
@@ -135,8 +145,17 @@ new class extends Livewire\Component {
         @endforeach
     </main>
     <aside class="flex-2/12">
-        <flux:button wire:click="save">
-            Save
+        @if ($this->post?->status != 'publish')
+            <flux:button wire:click="saveDraft">
+                Save draft
+            </flux:button>
+        @endif
+        <flux:button wire:click="savePublish">
+            @if ($this->post?->status != 'publish')
+                Publish
+            @else
+                Save
+            @endif
         </flux:button>
         <br>
         @if ($this->post?->link())

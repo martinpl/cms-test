@@ -11,7 +11,9 @@ class HomeController
     public function __invoke()
     {
         $post = AnyPost::find(get_option('home_page'));
-        if (! $post) {
+        $canSeeDraft = $post?->status == 'draft' && auth()->check();
+        $hidden = $post?->status != 'publish' && ! $canSeeDraft;
+        if (! $post || $hidden) {
             abort(404);
         }
 

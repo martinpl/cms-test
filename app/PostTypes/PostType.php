@@ -9,6 +9,7 @@ use App\PostTypeRegistry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 abstract class PostType extends \Illuminate\Database\Eloquent\Model
@@ -46,6 +47,16 @@ abstract class PostType extends \Illuminate\Database\Eloquent\Model
                 $builder->where('type', static::$type);
             });
         }
+
+        static::addGlobalScope('publish', function (Builder $builder) {
+            // TODO: Too hacky
+            $hasStatus = Arr::first($builder->getQuery()->wheres, fn ($i) => isset($i['column']) && $i['column'] == 'status');
+            $directQuery = Arr::first($builder->getQuery()->wheres, fn ($i) => isset($i['column']) && ($i['column'] == 'name' || $i['column'] == 'id' || $i['column'] == 'posts.id')); // AnyPost::findBySlugStructure() | AnyPost::destroy() | AnyPost::find()
+            $directQueryNested = Arr::first($builder->getQuery()->wheres, fn ($i) => $i['type'] == 'Nested' && in_array('id', array_column($i['query']->wheres, 'column'))); // editor->save()
+            if (! $hasStatus && ! $directQuery && ! $directQueryNested) {
+                $builder->where('status', 'publish');
+            }
+        });
     }
 
     protected static function boot()
@@ -127,11 +138,39 @@ abstract class PostType extends \Illuminate\Database\Eloquent\Model
         return $page;
     }
 
+    public function scopeWhereStatus($query, $status)
+    {
+        return is_array($status)
+            ? $query->whereIn('status', $status)
+            : $query->where('status', $status);
+    }
+
+    public function scopeSearch($query, $search)
+    {
+        $search = "%{$search}%";
+
+        return $query->where(function ($q) use ($search) {
+            $q->where('title', 'like', $search)->orWhere('content', 'like', $search);
+        });
+    }
+
     public function terms($taxonomyType = null)
     {
         return $this->belongsToMany(Taxonomy::class, 'term_relationships', 'post_id', 'term_id')
             ->when($taxonomyType, function ($query) use ($taxonomyType) {
                 $query->where('type', $taxonomyType);
             });
+    }
+
+    public function trash()
+    {
+        $this->status = 'trash';
+        $this->save();
+    }
+
+    public function untrash()
+    {
+        $this->status = 'draft';
+        $this->save();
     }
 }
