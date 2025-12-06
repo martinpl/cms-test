@@ -10,6 +10,7 @@ use App\Models\Option;
 use App\PostTypeRegistry;
 use App\TaxonomyType;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\View\ComponentAttributeBag;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,6 +35,13 @@ class AppServiceProvider extends ServiceProvider
         if (app()->runningInConsole()) { // TODO: That should be check for migration command
             return;
         }
+
+        // TODO: Move out
+        ComponentAttributeBag::macro('buttonTag', function () {
+            $hasHref = $this->has('href') && $this->get('href') !== null;
+
+            return $hasHref ? 'a' : 'button';
+        });
 
         app('menu.admin')->add(AdminMenu::make(__('Dashboard'))
             ->route('/')
