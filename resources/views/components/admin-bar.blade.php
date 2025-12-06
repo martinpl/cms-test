@@ -6,7 +6,7 @@
     if (auth()->check()) {
         $siteTitle = get_option('site_title', 'Site title');
         app('menu.admin-bar')->add(AdminMenu::make($siteTitle)
-            ->link(fn () => route('home'))
+            ->link(fn () => request()->route()->getPrefix() == 'dashboard' ? route('home') : route('dashboard'))
             ->order(-1)
             ->icon('adjustments-vertical'));
 
@@ -29,8 +29,7 @@
             ->link(fn () => route('themes')));
 
         app('menu.admin-bar')->add(AdminMenu::make(__('New'))
-            ->order(-1)
-            ->link(fn () => route('home')));
+            ->order(-1));
 
         foreach (app(PostTypeRegistry::class)->list as $postType) {
             app('menu.admin-bar')->add(AdminMenu::make($postType['title'])
@@ -50,27 +49,25 @@
 @endphp
 
 @if (auth()->check())
-    <flux:navbar class="w-full justify-between">
+    <x-menubar class="w-full justify-between">
         @foreach ($list->groupBy('group') as $group)
             <div class="flex">
                 @foreach ($group->filter(fn($item) => !$item->parent) as $item)
-                    @php ($children = $list->filter(fn($children) => $children->parent == $item->title))
-                    @if ($children->isEmpty())
-                        <flux:navbar.item :href="$item->link">{{ $item->title }}</flux:navbar.item>
-                    @else
-                        <flux:dropdown>
-                            <flux:navbar.item icon:trailing="chevron-down">{{ $item->title }}</flux:navbar.item>
-                            <flux:navmenu>
+                    <x-menubar.menu>
+                        @php ($children = $list->filter(fn($children) => $children->parent == $item->title))
+                        <x-menubar.trigger :href="$item->link">{{ $item->title }}</x-menubar.trigger>
+                        @if ($children->isNotEmpty())
+                            <x-menubar.content>
                                 @if ($children)
                                     @foreach ($children as $child)
-                                        <flux:navmenu.item href="{{ $child->link }}">{{ $child->title }}</flux:navmenu.item>
+                                        <x-menubar.item :href="$child->link">{{ $child->title }}</x-menubar.item>
                                     @endforeach
                                 @endif
-                            </flux:navmenu>
-                        </flux:dropdown>
-                    @endif
+                            </x-menubar.content>
+                        @endif
+                    </x-menubar.menu>
                 @endforeach
             </div>
         @endforeach
-    </flux:navbar>
+    </x-menubar>
 @endif

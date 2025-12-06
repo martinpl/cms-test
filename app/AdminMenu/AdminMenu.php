@@ -23,7 +23,7 @@ class AdminMenu
 
     // TODO: helper may bump readability
     public protected(set) string|\Closure|null $link = null {
-        get => $this->link ? ($this->link)() : route($this->name);
+        get => $this->link ? ($this->link)() : null;
     }
 
     public protected(set) bool|\Closure|null $current = null {
@@ -64,6 +64,8 @@ class AdminMenu
                     ->name($this->name);
 
             });
+
+        $this->link(fn () => route($this->name));
 
         return $this;
     }
