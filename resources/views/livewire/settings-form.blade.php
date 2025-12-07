@@ -44,5 +44,5 @@ new class extends Livewire\Component {
     @foreach($this->fields() as $field)
         {{ $field }}
     @endforeach
-    <flux:button type="submit">Submit</flux:button>
+    <x-button type="submit">Submit</x-button>
 </form>

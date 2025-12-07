@@ -102,18 +102,18 @@ new class extends Livewire\Component {
     <aside class="flex-2/12">
         Add block:<br>
         @foreach (app(\App\BlockType::class)->list ?? [] as $slug => $block)
-            <flux:button wire:click="add(`{{ $slug }}`)">
+            <x-button variant="outline" wire:click="add(`{{ $slug }}`)">
                 {{ $block['name'] }}
-            </flux:button>
+            </x-button>
         @endforeach
         <div>
             Structure:
             @foreach ($content as $block)
                 <div>
                     {{ $block['name'] }}
-                    <flux:button wire:click="remove({{ $loop->index }})">
+                    <x-button variant="outline" wire:click="remove({{ $loop->index }})">
                         Remove
-                    </flux:button>
+                    </x-button>
                 </div>
             @endforeach
         </div>
@@ -146,24 +146,24 @@ new class extends Livewire\Component {
     </main>
     <aside class="flex-2/12">
         @if ($this->post?->status != 'publish')
-            <flux:button wire:click="saveDraft">
+            <x-button variant="outline" wire:click="saveDraft">
                 Save draft
-            </flux:button>
+            </x-button>
         @endif
-        <flux:button wire:click="savePublish">
+        <x-button wire:click="savePublish">
             @if ($this->post?->status != 'publish')
                 Publish
             @else
                 Save
             @endif
-        </flux:button>
+        </x-button>
         <br>
         @if ($this->post?->link())
-            <flux:button href="{{ $this->post->link() }}">
+            <x-button variant="outline" href="{{ $this->post->link() }}">
                 Preview
-            </flux:button>
+            </x-button>
             <br>
-            <flux:button wire:click="setAsHomePage({{ $this->post->id }})">Set as homepage</flux:button>
+            <x-button variant="outline" wire:click="setAsHomePage({{ $this->post->id }})">Set as homepage</x-button>
             <br>
         @endif
         <div>

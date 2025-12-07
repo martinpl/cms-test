@@ -28,5 +28,5 @@ new class extends Livewire\Component {
 <form wire:submit="save">
     <input type="file" wire:model="photo">
     @error('photo') <span class="error">{{ $message }}</span> @enderror
-    <flux:button type="submit">Upload</flux:button>
+    <x-button type="submit">Upload</x-button>
 </form>

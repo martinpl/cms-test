@@ -15,10 +15,10 @@ $alpineModel = preg_replace('/\.(\d+)\./', '[$1].', $model); // TODO?
             @foreach ($getSchema() as $field)
                 {{ $field->model("{$model}.{$loop->parent->index}") }}
             @endforeach
-            <flux:button @click="$wire.{{ $alpineModel }}.splice({{ $loop->index }}, 1); $wire.$refresh()" type="button">-</flux:button>
+            <x-button variant="outline" @click="$wire.{{ $alpineModel }}.splice({{ $loop->index }}, 1); $wire.$refresh()" type="button">-</x-button>
         </div>
     @endforeach
-    <flux:button wire:click="$set('{{ $model }}.{{ count($items) }}', [])">
+    <x-button variant="outline"  wire:click="$set('{{ $model }}.{{ count($items) }}', [])">
         Add row
-    </flux:button>
+    </x-button>
 </div>

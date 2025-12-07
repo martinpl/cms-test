@@ -52,6 +52,6 @@ new #[Layout('components.layouts.auth')] class extends Livewire\Component {
             viewable
         />
 
-        <flux:button variant="primary" type="submit" class="w-full">{{ __('Confirm') }}</flux:button>
+        <x-button type="submit" class="w-full">{{ __('Confirm') }}</x-button>
     </form>
 </div>

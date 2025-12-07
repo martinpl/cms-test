@@ -98,7 +98,7 @@ new class extends Livewire\Component {
 
             <div class="flex items-center gap-4">
                 <div class="flex items-center justify-end">
-                    <flux:button variant="primary" type="submit" class="w-full">{{ __('Save') }}</flux:button>
+                    <x-button type="submit" class="w-full">{{ __('Save') }}</x-button>
                 </div>
 
                 <x-action-message class="me-3" on="profile-updated">

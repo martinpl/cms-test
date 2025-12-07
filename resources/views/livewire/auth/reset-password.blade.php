@@ -106,9 +106,9 @@ new #[Layout('components.layouts.auth')] class extends Livewire\Component { {
         />
 
         <div class="flex items-center justify-end">
-            <flux:button type="submit" variant="primary" class="w-full">
+            <x-button type="submit" class="w-full">
                 {{ __('Reset password') }}
-            </flux:button>
+            </x-button>
         </div>
     </form>
 </div>

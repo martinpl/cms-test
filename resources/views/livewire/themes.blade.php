@@ -15,9 +15,9 @@ new class extends Livewire\Component {
             {{ $theme['author'] }}<br>
             {{ $theme['description'] }}<br>
             @if ($currentTheme != $theme['slug'])
-                <flux:button wire:click="setTheme(`{{ $theme['slug'] }}`)">
+                <x-button wire:click="setTheme(`{{ $theme['slug'] }}`)">
                     {{ __('Active') }}
-                </flux:button>
+                </x-button>
             @endif
         </div>
     @endforeach
