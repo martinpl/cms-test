@@ -110,7 +110,10 @@ new #[Layout('components.layouts.auth')] class extends Livewire\Component {
         </div>
 
         <!-- Remember Me -->
-        <flux:checkbox wire:model="remember" :label="__('Remember me')" />
+        <x-field tag="label" orientation="horizontal">
+            <x-checkbox wire:model="remember" />
+            <x-field.label tag="div" class="font-normal">{{ __('Remember me') }}</x-field.label>
+        </x-field>
 
         <div class="flex items-center justify-end">
             <x-button type="submit" class="w-full">{{ __('Log in') }}</x-button>
