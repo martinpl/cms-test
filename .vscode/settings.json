@@ -1,0 +1,12 @@
+{
+    "editor.renderWhitespace": "all",
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "laravel-pint.enable": true,
+    "[php]": {
+        "editor.defaultFormatter": "open-southeners.laravel-pint"
+    },
+    "[blade]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
+}

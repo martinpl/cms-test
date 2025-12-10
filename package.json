@@ -19,5 +19,27 @@
         "@rollup/rollup-linux-x64-gnu": "4.9.5",
         "@tailwindcss/oxide-linux-x64-gnu": "^4.0.1",
         "lightningcss-linux-x64-gnu": "^1.29.1"
+    },
+    "devDependencies": {
+        "@shufo/prettier-plugin-blade": "^1.16.1",
+        "prettier": "^3.7.4"
+    },
+    "prettier": {
+        "printWidth": 140,
+        "tabWidth": 4,
+        "semi": false,
+        "plugins": [
+            "@shufo/prettier-plugin-blade"
+        ],
+        "overrides": [
+            {
+                "files": [
+                    "*.blade.php"
+                ],
+                "options": {
+                    "parser": "blade"
+                }
+            }
+        ]
     }
 }
