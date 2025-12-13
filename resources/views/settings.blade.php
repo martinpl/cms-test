@@ -1,4 +1,5 @@
-<x-layouts.app :title="__('Settings')">
-    <flux:heading size="xl">Site Settings</flux:heading>
-    <livewire:settings-form fields="App\Schema\Settings::fields" />
-</x-layouts.app>
+<x-dashboard :title="__('Site settings')">
+    <x-field.set>
+        <livewire:settings-form fields="App\Schema\Settings::fields" />
+    </x-field.set>
+</x-dashboard>

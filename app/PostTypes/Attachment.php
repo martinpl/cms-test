@@ -11,7 +11,7 @@ class Attachment extends PostType
         return [
             'title' => __('Media'),
             'plural' => __('Media'),
-            'icon' => 'rectangle-stack',
+            'icon' => 'gallery-vertical-end',
             'route' => false,
             'list' => 'list-media',
             'editor' => 'media-editor',

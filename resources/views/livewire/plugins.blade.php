@@ -1,25 +1,26 @@
 <?php
- 
+
 use App\Plugin;
- 
+
 new class extends Livewire\Component {
-    public function activate($path) {
+    public function activate($path)
+    {
         Plugin::activate($path);
         $this->js('location.reload()');
     }
 
-    public function deactivate($path) {
+    public function deactivate($path)
+    {
         Plugin::deactivate($path);
         $this->js('location.reload()');
     }
-} ?>
+}; ?>
 
 {{-- TODO: Table api --}}
 <div>
-    <flux:heading size="xl">Plugins</flux:heading>
     @foreach (App\Plugin::list() as $plugin)
         <div>
-            {{ $plugin['name'] }} 
+            {{ $plugin['name'] }}
             @if ($plugin['version'])
                 ({{ $plugin['version'] }})
             @endif

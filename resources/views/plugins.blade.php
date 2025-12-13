@@ -1,4 +1,4 @@
 {{-- TODO: convert to livewire route --}}
-<x-layouts.app :title="__('Plugins')">
+<x-dashboard :title="__('Plugins')">
     <livewire:plugins />
-</x-layouts.app>
+</x-dashboard>

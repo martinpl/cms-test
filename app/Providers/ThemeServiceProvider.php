@@ -21,7 +21,7 @@ class ThemeServiceProvider extends ServiceProvider
         app('menu.admin')->add(AdminMenu::make('Themes')
             ->route()
             ->order(1)
-            ->icon('paint-brush'));
+            ->icon('paintbrush'));
 
         View::addLocation(base_path('themes/'.get_option('theme')));
         Blade::anonymousComponentPath('themes/'.get_option('theme'));

@@ -1,4 +1,4 @@
-{{-- TODO: Created after migration to Livewire 4, to remove? since it is proxy of layouts.app --}}
-<x-layouts.app :title="$title ?? null">
+{{-- TODO: Should not be default layout? --}}
+<x-dashboard :title="$title ?? null">
     {{ $slot }}
-</x-layouts.app>
+</x-dashboard>

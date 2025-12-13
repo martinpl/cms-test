@@ -45,12 +45,12 @@ class AppServiceProvider extends ServiceProvider
 
         app('menu.admin')->add(AdminMenu::make(__('Dashboard'))
             ->route('/')
-            ->icon('home'));
+            ->icon('house'));
 
         app('menu.admin')->add(AdminMenu::make(__('Settings'))
             ->order(2)
             ->route()
-            ->icon('adjustments-vertical'));
+            ->icon('sliders-vertical'));
 
         $this->app->singleton('options', function () {
             return Option::where('autoload', true)->select('name', 'value')->get()->pluck('value', 'name')->toArray();

@@ -11,7 +11,7 @@ class Page extends PostType
         return [
             'title' => __('Page'),
             'plural' => __('Pages'),
-            'icon' => 'document-text',
+            'icon' => 'notebook-text',
             'route' => '',
         ];
     }

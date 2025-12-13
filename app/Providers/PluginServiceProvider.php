@@ -18,7 +18,7 @@ class PluginServiceProvider extends ServiceProvider
         app('menu.admin')->add(AdminMenu::make('Plugins')
             ->route()
             ->order(1)
-            ->icon('puzzle-piece'));
+            ->icon('puzzle'));
 
         $this->load();
     }

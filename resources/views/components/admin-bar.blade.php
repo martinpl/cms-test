@@ -40,6 +40,10 @@
         app('menu.admin-bar')->add(AdminMenu::make(auth()->user()->name)
             ->group('User'));
 
+        app('menu.admin-bar')->add(AdminMenu::make(__('Settings'))
+            ->parent(auth()->user()->name)
+            ->link(fn () => route('settings.profile')));
+
         app('menu.admin-bar')->add(AdminMenu::make(__('Log Out'))
             ->parent(auth()->user()->name)
             ->link(fn () => route('logout')));
