@@ -1,26 +1,27 @@
 <?php
- 
+
 use App\PostTypes\AnyPost;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use Livewire\Attributes\Computed;
- 
+
 new class extends Livewire\Component {
     use WithPagination;
 
-    public $postType; 
+    public $postType;
 
     #[Url(except: ['publish', 'draft'])]
-    public $status = ['publish', 'draft']; 
+    public $status = ['publish', 'draft'];
 
     #[Url]
-    public $author; 
+    public $author;
 
     #[Url]
     public $search;
 
     #[Computed]
-    public function posts() {
+    public function posts()
+    {
         return AnyPost::where('type', $this->postType['name'])
             ->whereStatus($this->status)
             ->when($this->author, function ($query) {
@@ -33,53 +34,59 @@ new class extends Livewire\Component {
             ->paginate(10);
     }
 
-    public function setStatus($status) {
+    public function setStatus($status)
+    {
         $this->author = null;
         $this->status = $status;
     }
 
-    public function trash($postId) {
+    public function trash($postId)
+    {
         AnyPost::find($postId)->trash();
     }
 
-    public function restore($postId) {
+    public function restore($postId)
+    {
         AnyPost::find($postId)->untrash();
     }
 
-    public function destroy($postId) 
+    public function destroy($postId)
     {
         AnyPost::destroy($postId);
     }
-} ?>
+}; ?>
 
 <div>
-    <div class="flex gap-2">
-        <h2>
-            {{ $postType['plural'] }}
-        </h2>
-        <a href="{{ route('editor', $postType['name']) }}">
-            Add
-        </a>
-    </div>
+    <x-slot:action>
+        <x-button :href="route('editor', $postType['name'])" size="xs">
+            <x-icon name="circle-plus" class="text-black fill-white" />
+            Create
+        </x-button>
+    </x-slot>
     @php
-        $allCount = AnyPost::whereType($this->postType['name'])->whereStatus(['publish', 'draft'])->count();
-        $mineCount = AnyPost::whereType($this->postType['name'])->whereStatus(['publish', 'draft'])->whereUserId(auth()->id())->count();;
+        $allCount = AnyPost::whereType($this->postType['name'])
+            ->whereStatus(['publish', 'draft'])
+            ->count();
+        $mineCount = AnyPost::whereType($this->postType['name'])
+            ->whereStatus(['publish', 'draft'])
+            ->whereUserId(auth()->id())
+            ->count();
     @endphp
     <div>
         <a href="todo" wire:click.prevent="setStatus(['publish', 'draft']);">
             All ({{ $allCount }})
-        </a> 
+        </a>
         @if ($allCount != $mineCount)
             <a href="todo" wire:click.prevent="$set('author', {{ auth()->id() }})">
                 Mine ({{ $mineCount }})
             </a>
         @endif
         <a href="todo" wire:click.prevent="setStatus('publish')">
-            Published  ({{ AnyPost::whereType($this->postType['name'])->whereStatus('publish')->count() }})
+            Published ({{ AnyPost::whereType($this->postType['name'])->whereStatus('publish')->count() }})
         </a>
         <a href="todo" wire:click.prevent="setStatus('draft')">
             Draft ({{ AnyPost::whereType($this->postType['name'])->whereStatus('draft')->count() }})
-        </a> | 
+        </a> |
         <a href="todo" wire:click.prevent="setStatus('trash')">
             Trash ({{ AnyPost::whereType($this->postType['name'])->whereStatus('trash')->count() }})
         </a>
@@ -109,11 +116,11 @@ new class extends Livewire\Component {
                         Duplicate
                     </button> --}}
                     @if ($post->link())
-                    {{-- TODO --}}
+                        {{-- TODO --}}
                         <a href="{{ $post->link() }}">
                             @if ($post->status == 'draft')
                                 Preview
-                            @else 
+                            @else
                                 View
                             @endif
                         </a>
@@ -131,5 +138,5 @@ new class extends Livewire\Component {
         </div>
         <hr>
     @endforeach
-    {{ $this->posts->links() }} 
+    {{ $this->posts->links() }}
 </div>

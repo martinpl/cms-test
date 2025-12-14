@@ -1,3 +1,5 @@
+@props(['title', 'action' => ''])
+
 {{-- TODO: Move out to php, add helper for admin menu --}}
 @php
     foreach (app(App\PostTypeRegistry::class)->list as $postType) {
@@ -124,18 +126,7 @@
                 class="bg-background/90 sticky top-0 z-10 flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
                 <div class="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
                     <h1 class="text-base font-medium">{{ $title }}</h1>
-                    {{-- <div class="ml-auto flex items-center gap-2">
-                        <button data-slot="button"
-                            class="items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground hover:bg-primary/90 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5 hidden h-7 sm:flex"><svg
-                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
-                                stroke="none" class="tabler-icon tabler-icon-circle-plus-filled ">
-                                <path
-                                    d="M4.929 4.929a10 10 0 1 1 14.141 14.141a10 10 0 0 1 -14.14 -14.14zm8.071 4.071a1 1 0 1 0 -2 0v2h-2a1 1 0 1 0 0 2h2v2a1 1 0 1 0 2 0v-2h2a1 1 0 1 0 0 -2h-2v-2z">
-                                </path>
-                            </svg>
-                            <span>Quick Create</span>
-                        </button>
-                    </div> --}}
+                    {{ $action }}
                 </div>
             </header>
             <div class="flex flex-1 flex-col">
