@@ -13,7 +13,7 @@ class AdminMenu
 
     public protected(set) string $title;
 
-    public protected(set) string $icon;
+    public protected(set) ?string $icon = null;
 
     public protected(set) int $order = 0;
 
