@@ -88,7 +88,7 @@
                                                 'bg-sidebar-accent' => $item->current,
                                             ]) data-state="closed"
                                             wire:navigate>
-                                            <x-icon :name="$item->icon" class="h-4 w-4" stroke-width="1" />
+                                            <x-icon :name="$item->icon" class="h-4 w-4" stroke-width="1.5" />
                                             <span>{{ $item->title }}</span>
                                         </a>
                                     </li>
