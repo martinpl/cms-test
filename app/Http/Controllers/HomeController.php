@@ -20,7 +20,7 @@ class HomeController
         // TODO: merge with PostTypeController
 
         app('menu.admin-bar')->add(AdminMenu::make(__('Edit Page'))
-            ->link(fn () => route('editor', [$post->type, $post->id])));
+            ->link(fn () => route('editor', [$post->type, $post->id]))->icon('pencil'));
 
         $templates = ['home', "page-{$post->id}", "page-{$post->name}", "single-{$post->type}", 'single', 'index'];
         $templates = array_map(fn ($template) => "templates.{$template}", $templates);
