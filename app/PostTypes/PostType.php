@@ -5,6 +5,7 @@ namespace App\PostTypes;
 use App\Hook;
 use App\Models\Taxonomy;
 use App\Models\Traits\HasMeta;
+use App\Models\User;
 use App\PostTypeRegistry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -113,6 +114,11 @@ abstract class PostType extends \Illuminate\Database\Eloquent\Model
     public function parent()
     {
         return $this->belongsTo(static::class, 'parent_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function slugStructure()
