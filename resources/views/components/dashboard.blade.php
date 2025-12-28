@@ -42,7 +42,29 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @fluxAppearance
+    <style>
+        :root.dark {
+            color-scheme: dark;
+        }
+    </style>
+    <script>
+        function applyAppearance(appearance) {
+            const applyDark = () => document.documentElement.classList.add('dark')
+            const applyLight = () => document.documentElement.classList.remove('dark')
+
+            if (appearance === 'system') {
+                const media = window.matchMedia('(prefers-color-scheme: dark)')
+                window.localStorage.removeItem('appearance')
+                media.matches ? applyDark() : applyLight()
+            } else if (appearance === 'dark') {
+                applyDark()
+            } else if (appearance === 'light') {
+                applyLight()
+            }
+        }
+
+        applyAppearance(window.localStorage.getItem('appearance')?.slice(1, -1) || 'system')
+    </script>
 </head>
 
 <body>
@@ -130,7 +152,7 @@
                 </div>
             </header>
             <div class="flex flex-1 flex-col">
-                <div class="@container/main p-4 md:p-6">
+                <div {{ $attributes->twMerge('@container/main p-4 md:p-6') }}>
                     {{ $slot }}
                 </div>
             </div>
