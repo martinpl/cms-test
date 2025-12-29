@@ -62,12 +62,13 @@
                 applyLight()
             }
         }
-
-        applyAppearance(window.localStorage.getItem('appearance')?.slice(1, -1) || 'system')
     </script>
 </head>
 
 <body>
+    <script>
+        applyAppearance(window.localStorage.getItem('appearance')?.slice(1, -1) || 'system')
+    </script>
     <x-admin-bar />
     <div data-slot="sidebar-wrapper"
         style="--sidebar-width:calc(var(--spacing) * 64);--sidebar-width-icon:3rem;--header-height:calc(var(--spacing) * 12 + 1px)"
