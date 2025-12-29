@@ -1,6 +1,7 @@
 @props([
     'variant' => 'default',
     'size' => 'default',
+    'isActive' => false,
 ])
 
 @php
@@ -18,7 +19,7 @@
     ];
 @endphp
 
-<div data-slot="sidebar-menu-button" data-sidebar="menu-button" {{-- data-size={size} data-active={isActive} --}}
-    {{ $attributes->class([$base, $variants[$variant], $sizes[$size]]) }}>
+<x-tag :tag="$attributes->buttonTag()" data-slot="sidebar-menu-button" data-sidebar="menu-button" data-size="{{ $size }}"
+    data-active="{{ $isActive ? 'true' : 'false' }}" {{ $attributes->class([$base, $variants[$variant], $sizes[$size]]) }}>
     {{ $slot }}
-</div>
+</x-tag>
