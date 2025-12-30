@@ -27,38 +27,39 @@ new class extends Livewire\Component {
         <x-card.description>{{ __('Delete your account and all of its resources') }}</x-card.description>
     </div>
 
-    <flux:modal.trigger name="confirm-user-deletion">
-        <x-button variant="destructive" x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')">
-            {{ __('Delete account') }}
-        </x-button>
-    </flux:modal.trigger>
+    <x-dialog name="confirm-user-deletion">
+        <x-dialog.trigger>
+            <x-button variant="destructive">
+                {{ __('Delete account') }}
+            </x-button>
+        </x-dialog.trigger>
+        <x-dialog.content class="max-w-lg">
+            <form method="POST" wire:submit="deleteUser" class="space-y-6">
+                <div class="grid gap-2">
+                    <x-card.title>{{ __('Are you sure you want to delete your account?') }}</x-card.title>
+                    <x-card.description>
+                        {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
+                    </x-card.description>
+                </div>
 
-    <flux:modal name="confirm-user-deletion" :show="$errors->isNotEmpty()" focusable class="max-w-lg">
-        <form method="POST" wire:submit="deleteUser" class="space-y-6">
-            <div class="grid gap-2">
-                <x-card.title>{{ __('Are you sure you want to delete your account?') }}</x-card.title>
-                <x-card.description>
-                    {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
-                </x-card.description>
-            </div>
+                <x-field tag="label">
+                    <x-field.label tag="div">
+                        {{ __('Password') }}
+                    </x-field.label>
+                    <x-input wire:model="password" type="password" />
+                    @error('password')
+                        <x-field.error>{{ $message }}</x-field.error>
+                    @enderror
+                </x-field>
 
-            <x-field tag="label">
-                <x-field.label tag="div">
-                    {{ __('Password') }}
-                </x-field.label>
-                <x-input wire:model="password" type="password" />
-                @error('password')
-                    <x-field.error>{{ $message }}</x-field.error>
-                @enderror
-            </x-field>
+                <div class="flex justify-end space-x-2 rtl:space-x-reverse">
+                    <x-dialog.close>
+                        <x-button variant="secondary">{{ __('Cancel') }}</x-button>
+                    </x-dialog.close>
 
-            <div class="flex justify-end space-x-2 rtl:space-x-reverse">
-                <flux:modal.close>
-                    <x-button variant="secondary">{{ __('Cancel') }}</x-button>
-                </flux:modal.close>
-
-                <x-button variant="destructive" type="submit">{{ __('Delete account') }}</x-button>
-            </div>
-        </form>
-    </flux:modal>
+                    <x-button variant="destructive" type="submit">{{ __('Delete account') }}</x-button>
+                </div>
+            </form>
+        </x-dialog.content>
+    </x-dialog>
 </section>
