@@ -1,3 +1,3 @@
-<div data-slot="card-title" class="leading-none font-semibold">
+<div data-slot="card-title" {{ $attributes->twMerge('leading-none font-semibold') }}>
     {{ $slot }}
 </div>

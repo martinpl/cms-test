@@ -41,27 +41,32 @@ new class extends Livewire\Component {
 
     <x-settings.layout :heading="__('Update password')" :subheading="__('Ensure your account is using a long, random password to stay secure')">
         <form method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
-            <flux:input
-                wire:model="current_password"
-                :label="__('Current password')"
-                type="password"
-                required
-                autocomplete="current-password"
-            />
-            <flux:input
-                wire:model="password"
-                :label="__('New password')"
-                type="password"
-                required
-                autocomplete="new-password"
-            />
-            <flux:input
-                wire:model="password_confirmation"
-                :label="__('Confirm Password')"
-                type="password"
-                required
-                autocomplete="new-password"
-            />
+            <x-field tag="label">
+                <x-field.label tag="div">
+                    {{ __('Current password') }}
+                </x-field.label>
+                <x-input wire:model="current_password" type="password" required autocomplete="current-password" />
+                @error('current_password')
+                    <x-field.error>{{ $message }}</x-field.error>
+                @enderror
+            </x-field>
+
+            <x-field tag="label">
+                <x-field.label tag="div">
+                    {{ __('New password') }}
+                </x-field.label>
+                <x-input wire:model="password" type="password" required autocomplete="new-password" />
+                @error('password')
+                    <x-field.error>{{ $message }}</x-field.error>
+                @enderror
+            </x-field>
+
+            <x-field tag="label">
+                <x-field.label tag="div">
+                    {{ __('Confirm Password') }}
+                </x-field.label>
+                <x-input wire:model="password_confirmation" type="password" required autocomplete="new-password" />
+            </x-field>
 
             <div class="flex items-center gap-4">
                 <div class="flex items-center justify-end">

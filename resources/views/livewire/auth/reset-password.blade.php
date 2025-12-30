@@ -75,35 +75,34 @@ new #[Layout('components.layouts.auth')] class extends Livewire\Component { {
 
     <form method="POST" wire:submit="resetPassword" class="flex flex-col gap-6">
         <!-- Email Address -->
-        <flux:input
-            wire:model="email"
-            :label="__('Email')"
-            type="email"
-            required
-            autocomplete="email"
-        />
+        <x-field tag="label">
+            <x-field.label tag="div">
+                {{ __('Email') }}
+            </x-field.label>
+            <x-input wire:model="email" type="email" required autocomplete="email" />
+            @error('email')
+                <x-field.error>{{ $message }}</x-field.error>
+            @enderror
+        </x-field>
 
         <!-- Password -->
-        <flux:input
-            wire:model="password"
-            :label="__('Password')"
-            type="password"
-            required
-            autocomplete="new-password"
-            :placeholder="__('Password')"
-            viewable
-        />
+        <x-field tag="label">
+            <x-field.label tag="div">
+                {{ __('Password') }}
+            </x-field.label>
+            <x-input wire:model="password" :label="" type="password" required autocomplete="new-password" :placeholder="__('Password')" />
+            @error('password')
+                <x-field.error>{{ $message }}</x-field.error>
+            @enderror
+        </x-field>
 
         <!-- Confirm Password -->
-        <flux:input
-            wire:model="password_confirmation"
-            :label="__('Confirm password')"
-            type="password"
-            required
-            autocomplete="new-password"
-            :placeholder="__('Confirm password')"
-            viewable
-        />
+        <x-field tag="label">
+            <x-field.label tag="div">
+                {{ __('Confirm password') }}
+            </x-field.label>
+            <x-input wire:model="password_confirmation" type="password" required autocomplete="new-password" :placeholder="__('Confirm password')" />
+        </x-field>
 
         <div class="flex items-center justify-end">
             <x-button type="submit" class="w-full">

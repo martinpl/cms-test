@@ -42,47 +42,45 @@ new #[Layout('components.layouts.auth')] class extends Livewire\Component {
 
     <form method="POST" wire:submit="register" class="flex flex-col gap-6">
         <!-- Name -->
-        <flux:input
-            wire:model="name"
-            :label="__('Name')"
-            type="text"
-            required
-            autofocus
-            autocomplete="name"
-            :placeholder="__('Full name')"
-        />
+        <x-field tag="label">
+            <x-field.label tag="div">
+                {{ __('Name') }}
+            </x-field.label>
+            <x-input wire:model="name" type="text" required autofocus autocomplete="name" :placeholder="__('Full name')" />
+            @error('name')
+                <x-field.error>{{ $message }}</x-field.error>
+            @enderror
+        </x-field>
 
         <!-- Email Address -->
-        <flux:input
-            wire:model="email"
-            :label="__('Email address')"
-            type="email"
-            required
-            autocomplete="email"
-            placeholder="email@example.com"
-        />
+        <x-field tag="label">
+            <x-field.label tag="div">
+                {{ __('Email address') }}
+            </x-field.label>
+            <x-input wire:model="email" type="email" required autocomplete="email" placeholder="email@example.com" />
+            @error('email')
+                <x-field.error>{{ $message }}</x-field.error>
+            @enderror
+        </x-field>
 
         <!-- Password -->
-        <flux:input
-            wire:model="password"
-            :label="__('Password')"
-            type="password"
-            required
-            autocomplete="new-password"
-            :placeholder="__('Password')"
-            viewable
-        />
+        <x-field tag="label">
+            <x-field.label tag="div">
+                {{ __('Password') }}
+            </x-field.label>
+            <x-input wire:model="password" type="password" required autocomplete="new-password" :placeholder="__('Password')" />
+            @error('password')
+                <x-field.error>{{ $message }}</x-field.error>
+            @enderror
+        </x-field>
 
         <!-- Confirm Password -->
-        <flux:input
-            wire:model="password_confirmation"
-            :label="__('Confirm password')"
-            type="password"
-            required
-            autocomplete="new-password"
-            :placeholder="__('Confirm password')"
-            viewable
-        />
+        <x-field tag="label">
+            <x-field.label tag="div">
+                {{ __('Confirm password') }}
+            </x-field.label>
+            <x-input wire:model="password_confirmation" type="password" required autocomplete="new-password" :placeholder="__('Confirm password')" />
+        </x-field>
 
         <div class="flex items-center justify-end">
             <x-button type="submit" class="w-full">
@@ -93,6 +91,6 @@ new #[Layout('components.layouts.auth')] class extends Livewire\Component {
 
     <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
         <span>{{ __('Already have an account?') }}</span>
-        <flux:link :href="route('login')" wire:navigate>{{ __('Log in') }}</flux:link>
+        <x-button :href="route('login')" variant="link" class="p-0" wire:navigate>{{ __('Log in') }}</x-button>
     </div>
 </div>

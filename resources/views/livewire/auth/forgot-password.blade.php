@@ -29,20 +29,21 @@ new #[Layout('components.layouts.auth')] class extends Livewire\Component {
 
     <form method="POST" wire:submit="sendPasswordResetLink" class="flex flex-col gap-6">
         <!-- Email Address -->
-        <flux:input
-            wire:model="email"
-            :label="__('Email Address')"
-            type="email"
-            required
-            autofocus
-            placeholder="email@example.com"
-        />
+        <x-field tag="label">
+            <x-field.label tag="div">
+                {{ __('Email Address') }}
+            </x-field.label>
+            <x-input wire:model="email" type="email" required autofocus placeholder="email@example.com" />
+            @error('email')
+                <x-field.error>{{ $message }}</x-field.error>
+            @enderror
+        </x-field>
 
         <x-button type="submit" class="w-full">{{ __('Email password reset link') }}</x-button>
     </form>
 
     <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-400">
         <span>{{ __('Or, return to') }}</span>
-        <flux:link :href="route('login')" wire:navigate>{{ __('log in') }}</flux:link>
+        <x-button :href="route('login')" variant="link" class="p-0" wire:navigate>{{ __('log in') }}</x-button>
     </div>
 </div>
