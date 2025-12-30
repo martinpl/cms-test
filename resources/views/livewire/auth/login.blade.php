@@ -28,7 +28,7 @@ new #[Layout('components.layouts.auth')] class extends Livewire\Component {
 
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+        if (!Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -47,7 +47,7 @@ new #[Layout('components.layouts.auth')] class extends Livewire\Component {
      */
     protected function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (!RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }
 
@@ -68,7 +68,7 @@ new #[Layout('components.layouts.auth')] class extends Livewire\Component {
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
+        return Str::transliterate(Str::lower($this->email) . '|' . request()->ip());
     }
 }; ?>
 
@@ -80,32 +80,33 @@ new #[Layout('components.layouts.auth')] class extends Livewire\Component {
 
     <form method="POST" wire:submit="login" class="flex flex-col gap-6">
         <!-- Email Address -->
-        <flux:input
-            wire:model="email"
-            :label="__('Email address')"
-            type="email"
-            required
-            autofocus
-            autocomplete="email"
-            placeholder="email@example.com"
-        />
+        <x-field tag="label">
+            <x-field.label tag="div">
+                {{ __('Email address') }}
+            </x-field.label>
+            <x-input wire:model="email" type="email" required autofocus autocomplete="email" placeholder="email@example.com" />
+            @error('email')
+                <x-field.error>{{ $message }}</x-field.error>
+            @enderror
+        </x-field>
 
         <!-- Password -->
         <div class="relative">
-            <flux:input
-                wire:model="password"
-                :label="__('Password')"
-                type="password"
-                required
-                autocomplete="current-password"
-                :placeholder="__('Password')"
-                viewable
-            />
+            <x-field tag="label">
+                <x-field.label tag="div">
+                    {{ __('Password') }}
+                </x-field.label>
+                <x-input wire:model="password" type="password" required autocomplete="current-password" :placeholder="__('Password')" />
+                @error('password')
+                    <x-field.error>{{ $message }}</x-field.error>
+                @enderror
+            </x-field>
 
             @if (Route::has('password.request'))
-                <flux:link class="absolute end-0 top-0 text-sm" :href="route('password.request')" wire:navigate>
+                {{-- TODO: twMerge bug end-0 is stripped --}}
+                <x-button :href="route('password.request')" variant="link" class="inline absolute end-0 top-0 text-sm p-0" wire:navigate>
                     {{ __('Forgot your password?') }}
-                </flux:link>
+                </x-button>
             @endif
         </div>
 
@@ -123,7 +124,9 @@ new #[Layout('components.layouts.auth')] class extends Livewire\Component {
     @if (Route::has('register'))
         <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
             <span>{{ __('Don\'t have an account?') }}</span>
-            <flux:link :href="route('register')" wire:navigate>{{ __('Sign up') }}</flux:link>
+            <x-button :href="route('register')" variant="link" class="p-0" wire:navigate>
+                {{ __('Sign up') }}
+            </x-button>
         </div>
     @endif
 </div>

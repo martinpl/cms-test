@@ -1,3 +1,3 @@
-<div data-slot="card-description" class="text-muted-foreground text-sm">
+<div data-slot="card-description" {{ $attributes->twMerge('text-muted-foreground text-sm') }}>
     {{ $slot }}
 </div>

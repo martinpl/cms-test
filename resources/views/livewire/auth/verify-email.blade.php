@@ -34,23 +34,22 @@ new #[Layout('components.layouts.auth')] class extends Livewire\Component {
 }; ?>
 
 <div class="mt-4 flex flex-col gap-6">
-    <flux:text class="text-center">
+    <x-card.description class="text-center">
         {{ __('Please verify your email address by clicking on the link we just emailed to you.') }}
-    </flux:text>
+    </x-card.description>
 
     @if (session('status') == 'verification-link-sent')
-        <flux:text class="text-center font-medium !dark:text-green-400 !text-green-600">
+        <div class="text-sm text-center font-medium !dark:text-green-400 !text-green-600">
             {{ __('A new verification link has been sent to the email address you provided during registration.') }}
-        </flux:text>
+        </div>
     @endif
 
     <div class="flex flex-col items-center justify-between space-y-3">
         <x-button wire:click="sendVerification" class="w-full">
             {{ __('Resend verification email') }}
         </x-button>
-
-        <flux:link class="text-sm cursor-pointer" wire:click="logout">
+        <x-button wire:click="logout" variant="link" class="cursor-pointer p-0 h-auto">
             {{ __('Log out') }}
-        </flux:link>
+        </x-button>
     </div>
 </div>

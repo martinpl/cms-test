@@ -90,7 +90,7 @@ new #[Layout('components.layouts.auth')] class extends Livewire\Component { {
             <x-field.label tag="div">
                 {{ __('Password') }}
             </x-field.label>
-            <x-input wire:model="password" :label="" type="password" required autocomplete="new-password" :placeholder="__('Password')" />
+            <x-input wire:model="password" type="password" required autocomplete="new-password" :placeholder="__('Password')" />
             @error('password')
                 <x-field.error>{{ $message }}</x-field.error>
             @enderror

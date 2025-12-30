@@ -27,14 +27,7 @@ new class extends Livewire\Component {
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
 
-            'email' => [
-                'required',
-                'string',
-                'lowercase',
-                'email',
-                'max:255',
-                Rule::unique(User::class)->ignore($user->id)
-            ],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
         ]);
 
         $user->fill($validated);
@@ -72,25 +65,40 @@ new class extends Livewire\Component {
 
     <x-settings.layout :heading="__('Profile')" :subheading="__('Update your name and email address')">
         <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
-            <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name" />
+            <x-field tag="label">
+                <x-field.label tag="div">
+                    {{ __('Name') }}
+                </x-field.label>
+                <x-input wire:model="name" type="text" required autofocus autocomplete="name" />
+                @error('name')
+                    <x-field.error>{{ $message }}</x-field.error>
+                @enderror
+            </x-field>
 
             <div>
-                <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
+                <x-field tag="label">
+                    <x-field.label tag="div">
+                        {{ __('Email') }}
+                    </x-field.label>
+                    <x-input wire:model="email" type="email" required autocomplete="email" />
+                    @error('email')
+                        <x-field.error>{{ $message }}</x-field.error>
+                    @enderror
+                </x-field>
 
-                @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail &&! auth()->user()->hasVerifiedEmail())
+                @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !auth()->user()->hasVerifiedEmail())
                     <div>
-                        <flux:text class="mt-4">
+                        <x-card.description class="mt-4">
                             {{ __('Your email address is unverified.') }}
-
-                            <flux:link class="text-sm cursor-pointer" wire:click.prevent="resendVerificationNotification">
+                            <x-button wire:click.prevent="resendVerificationNotification" variant="link" class="p-0 h-auto cursor-pointer">
                                 {{ __('Click here to re-send the verification email.') }}
-                            </flux:link>
-                        </flux:text>
+                            </x-button>
+                        </x-card.description>
 
                         @if (session('status') === 'verification-link-sent')
-                            <flux:text class="mt-2 font-medium !dark:text-green-400 !text-green-600">
+                            <div class="text-sm mt-2 font-medium !dark:text-green-400 !text-green-600">
                                 {{ __('A new verification link has been sent to your email address.') }}
-                            </flux:text>
+                            </div>
                         @endif
                     </div>
                 @endif

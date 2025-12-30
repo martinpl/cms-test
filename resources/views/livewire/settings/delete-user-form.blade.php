@@ -22,9 +22,9 @@ new class extends Livewire\Component {
 }; ?>
 
 <section class="mt-10 space-y-6">
-    <div class="relative mb-5">
-        <flux:heading>{{ __('Delete account') }}</flux:heading>
-        <flux:subheading>{{ __('Delete your account and all of its resources') }}</flux:subheading>
+    <div class="grid gap-1.5 mb-5">
+        <x-card.title>{{ __('Delete account') }}</x-card.title>
+        <x-card.description>{{ __('Delete your account and all of its resources') }}</x-card.description>
     </div>
 
     <flux:modal.trigger name="confirm-user-deletion">
@@ -35,15 +35,22 @@ new class extends Livewire\Component {
 
     <flux:modal name="confirm-user-deletion" :show="$errors->isNotEmpty()" focusable class="max-w-lg">
         <form method="POST" wire:submit="deleteUser" class="space-y-6">
-            <div>
-                <flux:heading size="lg">{{ __('Are you sure you want to delete your account?') }}</flux:heading>
-
-                <flux:subheading>
+            <div class="grid gap-2">
+                <x-card.title>{{ __('Are you sure you want to delete your account?') }}</x-card.title>
+                <x-card.description>
                     {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
-                </flux:subheading>
+                </x-card.description>
             </div>
 
-            <flux:input wire:model="password" :label="__('Password')" type="password" />
+            <x-field tag="label">
+                <x-field.label tag="div">
+                    {{ __('Password') }}
+                </x-field.label>
+                <x-input wire:model="password" type="password" />
+                @error('password')
+                    <x-field.error>{{ $message }}</x-field.error>
+                @enderror
+            </x-field>
 
             <div class="flex justify-end space-x-2 rtl:space-x-reverse">
                 <flux:modal.close>
