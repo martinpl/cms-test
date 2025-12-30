@@ -9,6 +9,7 @@ use App\Hook;
 use App\Models\Option;
 use App\PostTypeRegistry;
 use App\TaxonomyType;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\ComponentAttributeBag;
 
@@ -41,6 +42,16 @@ class AppServiceProvider extends ServiceProvider
             $hasHref = $this->has('href') && $this->get('href') !== null;
 
             return $hasHref ? 'a' : 'button';
+        });
+
+        ComponentAttributeBag::macro('asChild', function ($slot) {
+            return new HtmlString(preg_replace(
+                '/^<([a-z0-9-]+)/i',
+                '<$1 '.
+                    $this,
+                ltrim($slot),
+                1,
+            ));
         });
 
         app('menu.admin')->add(AdminMenu::make(__('Dashboard'))
