@@ -19,7 +19,6 @@
     {{-- TODO: body open hook --}}
     {{ $slot }}
     {{-- TODO: footer hook --}}
-    @fluxScripts {{-- TODO: to remove only for adminbar, repalce with livewire --}}
 </body>
 
 </html>

@@ -42,6 +42,7 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles
     <style>
         :root.dark {
             color-scheme: dark;
@@ -159,8 +160,7 @@
             </div>
         </main>
     </div>
-
-    @fluxScripts
+    @livewireScripts
 </body>
 
 </html>

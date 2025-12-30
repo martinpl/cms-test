@@ -22,7 +22,7 @@
     <x:separator class="md:hidden" />
 
     <div class="flex-1 self-stretch max-md:pt-6">
-        <div class="grid gap-1">
+        <div class="grid gap-1.5">
             <x-card.title>{{ $heading ?? '' }}</x-card.title>
             <x-card.description>{{ $subheading ?? '' }}</x-card.description>
         </div>
