@@ -5,7 +5,8 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 
-new class extends Livewire\Component {
+new class extends Livewire\Component
+{
     use WithPagination;
 
     public $postType;
@@ -33,6 +34,23 @@ new class extends Livewire\Component {
             })
             ->latest()
             ->paginate(10);
+    }
+
+    #[Computed]
+    private function counts()
+    {
+        return [
+            'all' => AnyPost::whereType($this->postType['name'])
+                ->whereStatus(['publish', 'draft'])
+                ->count(),
+            'mine' => AnyPost::whereType($this->postType['name'])
+                ->whereStatus(['publish', 'draft'])
+                ->whereUserId(auth()->id())
+                ->count(),
+            'publish' => AnyPost::whereType($this->postType['name'])->whereStatus('publish')->count(),
+            'draft' => AnyPost::whereType($this->postType['name'])->whereStatus('draft')->count(),
+            'trash' => AnyPost::whereType($this->postType['name'])->whereStatus('trash')->count(),
+        ];
     }
 
     public function setStatus($status)
@@ -64,15 +82,6 @@ new class extends Livewire\Component {
             Create
         </x-button>
     </x-slot>
-    @php
-        $allCount = AnyPost::whereType($this->postType['name'])
-            ->whereStatus(['publish', 'draft'])
-            ->count();
-        $mineCount = AnyPost::whereType($this->postType['name'])
-            ->whereStatus(['publish', 'draft'])
-            ->whereUserId(auth()->id())
-            ->count();
-    @endphp
     {{-- TODO: Table api? --}}
     <div class="relative flex flex-col gap-4">
         <div class="flex justify-between">
@@ -80,27 +89,30 @@ new class extends Livewire\Component {
                 class="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
                 <x-tabs.trigger href="todo" wire:click.prevent="setStatus(['publish', 'draft'])" :active="$status == ['publish', 'draft']">
                     All
-                    <x-badge variant="secondary">{{ $allCount }}</x-badge>
+                    <x-badge variant="secondary">{{ $this->counts['all'] }}</x-badge>
                 </x-tabs.trigger>
-                @if ($allCount != $mineCount)
+                @if ($this->counts['all'] != $this->counts['mine'])
                     <x-tabs.trigger href="todo" wire:click.prevent="$set('author', {{ auth()->id() }})">
                         Mine
-                        <x-badge variant="secondary">{{ $mineCount }}</x-badge>
+                        <x-badge variant="secondary">{{ $this->counts['mine'] }}</x-badge>
                     </x-tabs.trigger>
                 @endif
                 <x-tabs.trigger href="todo" wire:click.prevent="setStatus('publish')" :active="$status == 'publish'">
                     Published
-                    <x-badge
-                        variant="secondary">{{ AnyPost::whereType($this->postType['name'])->whereStatus('publish')->count() }}</x-badge>
+                    <x-badge variant="secondary">{{ $this->counts['publish'] }}</x-badge>
                 </x-tabs.trigger>
-                <x-tabs.trigger href="todo" wire:click.prevent="setStatus('draft')" :active="$status == 'draft'">
-                    Draft
-                    <x-badge variant="secondary">{{ AnyPost::whereType($this->postType['name'])->whereStatus('draft')->count() }}</x-badge>
-                </x-tabs.trigger>
-                <x-tabs.trigger href="todo" wire:click.prevent="setStatus('trash')" :active="$status == 'trash'">
-                    Trash
-                    <x-badge variant="secondary">{{ AnyPost::whereType($this->postType['name'])->whereStatus('trash')->count() }}</x-badge>
-                </x-tabs.trigger>
+                @if ($this->counts['draft'])
+                    <x-tabs.trigger href="todo" wire:click.prevent="setStatus('draft')" :active="$status == 'draft'">
+                        Draft
+                        <x-badge variant="secondary">{{ $this->counts['draft'] }}</x-badge>
+                    </x-tabs.trigger>
+                @endif
+                @if ($this->counts['trash'])
+                    <x-tabs.trigger href="todo" wire:click.prevent="setStatus('trash')" :active="$status == 'trash'">
+                        Trash
+                        <x-badge variant="secondary">{{ $this->counts['trash'] }}</x-badge>
+                    </x-tabs.trigger>
+                @endif
             </x-tabs.list>
             <x-input type="search" wire:model.change="search" placeholder="Search..." class="max-w-64" />
         </div>
@@ -204,49 +216,6 @@ new class extends Livewire\Component {
                 </x-table.body>
             </x-table>
         </div>
-        {{-- <div class="flex items-center justify-between px-4">
-            <div class="text-muted-foreground hidden flex-1 text-sm lg:flex">
-                0 of 68 row(s) selected.
-            </div>
-            <div class="flex w-full items-center gap-8 lg:w-fit">
-                <div class="hidden items-center gap-2 lg:flex">
-                    <x-label htmlFor="rows-per-page" class="text-sm font-medium">
-                        Rows per page
-                    </x-label>
-                    <x-select>
-                        <x-select.trigger size="sm" class="w-20" id="rows-per-page">
-                            <x-select.value placeholder={table.getState().pagination.pageSize} />
-                        </x-select.trigger>
-                        <x-select.content side="top">
-                            <x-select.item key={pageSize} value={`${pageSize}`}>
-                                {pageSize}
-                            </x-select.item>
-                        </x-select.content>
-                    </x-select>
-                </div>
-                <div class="flex w-fit items-center justify-center text-sm font-medium">
-                    Page {{ $this->posts->currentPage() }} of {{ $this->posts->lastPage() }}
-                </div>
-                <div class="ml-auto flex items-center gap-2 lg:ml-0">
-                    <x-button variant="outline" class="hidden h-8 w-8 p-0 lg:flex">
-                        <span class="sr-only">Go to first page</span>
-                        <x-icon name="chevrons-left" />
-                    </x-button>
-                    <x-button variant="outline" class="size-8" size="icon">
-                        <span class="sr-only">Go to previous page</span>
-                        <x-icon name="chevron-left" />
-                    </x-button>
-                    <x-button variant="outline" class="size-8" size="icon">
-                        <span class="sr-only">Go to next page</span>
-                        <x-icon name="chevron-right" />
-                    </x-button>
-                    <x-button variant="outline" class="hidden size-8 lg:flex" size="icon">
-                        <span class="sr-only">Go to last page</span>
-                        <x-icon name="chevrons-right" />
-                    </x-button>
-                </div>
-            </div>
-        </div> --}}
+        {{ $this->posts->links() }}
     </div>
-    {{ $this->posts->links() }}
 </div>
