@@ -14,6 +14,6 @@
     ];
 @endphp
 
-<div data-slot="badge" {{ $attributes->class([$base, $variants[$variant]]) }}>
+<div data-slot="badge" {{ $attributes->twMerge([$base, $variants[$variant]]) }}>
     {{ $slot }}
 </div>

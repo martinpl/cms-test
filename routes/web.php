@@ -21,6 +21,8 @@ Route::prefix('dashboard')
         })->name('taxonomies');
     });
 
+Route::view('zoo', 'zoo');
+
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
