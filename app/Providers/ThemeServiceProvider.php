@@ -19,7 +19,7 @@ class ThemeServiceProvider extends ServiceProvider
         }
 
         app('menu.admin')->add(AdminMenu::make('Themes')
-            ->route()
+            ->livewire()
             ->order(1)
             ->icon('paintbrush'));
 

@@ -1,10 +1,11 @@
 <?php
- 
+
 use App\PostTypes\AnyPost;
-use Livewire\Attributes\Locked;
 use Livewire\Attributes\Computed;
- 
-new class extends Livewire\Component {
+use Livewire\Attributes\Locked;
+
+new class extends Livewire\Component
+{
     #[Locked]
     public $id;
 
@@ -15,7 +16,7 @@ new class extends Livewire\Component {
 
     public $title = '';
 
-    public $content = []; 
+    public $content = [];
 
     public $parent = null;
 
@@ -23,10 +24,10 @@ new class extends Livewire\Component {
 
     public $terms = [];
 
-    public function mount() 
+    public function mount()
     {
         $postType = app(App\PostTypeRegistry::class)->find($this->postType);
-        abort_if(!$postType, 404);
+        abort_if(! $postType, 404);
 
         if ($this->post) {
             $this->content = json_decode($this->post->getRawOriginal('content'), true) ?: [];
@@ -35,35 +36,35 @@ new class extends Livewire\Component {
     }
 
     #[Computed]
-    public function post() 
+    public function post()
     {
         return $this->id ? AnyPost::with('terms')->find($this->id) : null;
     }
 
-    public function add($name) 
+    public function add($name)
     {
         $this->content[] = [
             'name' => $name,
-            'data' => []
+            'data' => [],
         ];
     }
 
-    public function remove($index) 
+    public function remove($index)
     {
         array_splice($this->content, $index, 1);
     }
 
-    public function saveDraft() 
+    public function saveDraft()
     {
         $this->save('draft');
     }
 
-    public function savePublish() 
+    public function savePublish()
     {
         $this->save('publish');
     }
 
-    private function save($status) 
+    private function save($status)
     {
         $this->post = AnyPost::updateOrCreate(
             ['id' => $this->id],
@@ -75,28 +76,32 @@ new class extends Livewire\Component {
                 'user_id' => request()->user()->id,
                 'content' => $this->content,
                 'parent_id' => $this->parent,
-            ]
+            ],
         );
         $this->post->terms()->sync($this->terms);
-        foreach($this->meta as $key => $value) {
+        foreach ($this->meta as $key => $value) {
             $this->post->setMeta($key, $value);
         }
 
         if ($this->post->wasRecentlyCreated) {
             $this->redirectRoute('editor', [
                 'postType' => $this->postType,
-                'id' => $this->post->id
+                'id' => $this->post->id,
             ]);
         }
-        
+
         $this->name = $this->post->name;
     }
 
-    public function setAsHomePage($id) 
+    public function setAsHomePage($id)
     {
         set_option('home_page', $id, true);
     }
-} ?>
+}; ?>
+
+<x-slot:title>
+    {{ __('Editor') }}
+</x-slot:title>
 
 <div class="flex gap-6">
     <aside class="flex-2/12">
@@ -122,17 +127,17 @@ new class extends Livewire\Component {
         <input name="title" type="text" placeholder="Title" wire:model.fill="title" value="{{ $this->post?->title }}"><br>
         @foreach ($content as $block)
             @php
-                $class = 'Components\\' . Str::studly($block['name']).'\Schema';
+                $class = 'Components\\' . Str::studly($block['name']) . '\Schema';
             @endphp
             {{-- TODO: update only one block or cache another? --}}
             <div class="editor-block" @click="selected = {{ $loop->index }}" wire:key="block-{{ $loop->index }}">
                 @if (method_exists($class, 'fields'))
                     <div class="fields" x-show="selected == {{ $loop->index }}" x-cloak @click.away="selected = null; $wire.$refresh();">
-                        @foreach($class::fields() as $field)
+                        @foreach ($class::fields() as $field)
                             @php
                                 // TODO: validation
                                 $field->model("content.{$loop->parent->index}.data");
-                                $field->value(fn () => $content[$loop->parent->index]['data'][$field->name] ?? null); // TODO: This should not be callback
+                                $field->value(fn() => $content[$loop->parent->index]['data'][$field->name] ?? null); // TODO: This should not be callback
                             @endphp
                             {{ $field }}
                         @endforeach
@@ -172,26 +177,21 @@ new class extends Livewire\Component {
             <input type="text" wire:model.fill="meta.excerpt"><br>
             Slug:
             <input type="text" wire:model.fill="name" value="{{ $this->post?->name }}"><br>
-            Parent: 
+            Parent:
             {{-- TODO: add select with search --}}
             <input type="number" wire:model.number.fill="parent" value="{{ $this->post?->parent_id }}"><br>
         </div>
-        @foreach(app(App\TaxonomyType::class)->findForPostType($this->postType) as $taxonomy)
+        @foreach (app(App\TaxonomyType::class)->findForPostType($this->postType) as $taxonomy)
             @php
-                $taxonomies = App\Models\Taxonomy::where('type', $taxonomy['name'])
-                    ->orderBy('title')
-                    ->get();
+                $taxonomies = App\Models\Taxonomy::where('type', $taxonomy['name'])->orderBy('title')->get();
                 $selectedTaxonomies = $this->post?->terms->where('type', $taxonomy['name'])->pluck('id')->toArray() ?? [];
             @endphp
             <div>
                 {{ $taxonomy['plural'] }}
             </div>
-            @foreach($taxonomies as $taxonomy)
+            @foreach ($taxonomies as $taxonomy)
                 <label>
-                    <input type="checkbox" 
-                        value="{{ $taxonomy->id }}"
-                        wire:model.fill="terms"
-                        @checked(in_array($taxonomy->id, $selectedTaxonomies))>
+                    <input type="checkbox" value="{{ $taxonomy->id }}" wire:model.fill="terms" @checked(in_array($taxonomy->id, $selectedTaxonomies))>
                     {{ $taxonomy->title }}
                 </label>
             @endforeach

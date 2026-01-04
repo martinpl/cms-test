@@ -45,8 +45,8 @@ class AdminMenu
         return $this;
     }
 
-    // TODO: refactor | don't do only view? | rename? | support external plugins, themes views
-    public function route(?string $uri = null, ?string $view = null): static
+    // TODO: support external plugins, themes views
+    public function page(?string $uri = null, ?string $view = null): static
     {
         if (! $uri) {
             $uri = $this->name;
@@ -61,6 +61,30 @@ class AdminMenu
             ->middleware(['web', 'auth', 'verified'])
             ->group(function () use ($uri, $view) {
                 Route::view($uri, $view)
+                    ->name($this->name);
+
+            });
+
+        $this->link(fn () => route($this->name));
+
+        return $this;
+    }
+
+    public function livewire(?string $uri = null, ?string $view = null): static
+    {
+        if (! $uri) {
+            $uri = $this->name;
+        }
+
+        if (! $view) {
+            $view = $this->name;
+        }
+
+        // TODO: remove group
+        Route::prefix('dashboard')
+            ->middleware(['web', 'auth', 'verified'])
+            ->group(function () use ($uri, $view) {
+                Route::livewire($uri, $view)
                     ->name($this->name);
 
             });

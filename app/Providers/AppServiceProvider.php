@@ -55,12 +55,12 @@ class AppServiceProvider extends ServiceProvider
         });
 
         app('menu.admin')->add(AdminMenu::make(__('Dashboard'))
-            ->route('/')
+            ->page('/')
             ->icon('house'));
 
         app('menu.admin')->add(AdminMenu::make(__('Settings'))
             ->order(2)
-            ->route()
+            ->livewire()
             ->icon('sliders-vertical'));
 
         $this->app->singleton('options', function () {

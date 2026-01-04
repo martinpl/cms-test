@@ -16,6 +16,10 @@ new class extends Livewire\Component {
     }
 }; ?>
 
+<x-slot:title>
+    {{ __('Plugins') }}
+</x-slot:title>
+
 {{-- TODO: Table api --}}
 <div>
     @foreach (App\Plugin::list() as $plugin)

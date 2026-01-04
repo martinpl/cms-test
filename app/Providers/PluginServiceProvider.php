@@ -16,7 +16,7 @@ class PluginServiceProvider extends ServiceProvider
         }
 
         app('menu.admin')->add(AdminMenu::make('Plugins')
-            ->route()
+            ->livewire()
             ->order(1)
             ->icon('puzzle'));
 
