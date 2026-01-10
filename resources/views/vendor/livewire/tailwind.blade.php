@@ -25,13 +25,13 @@ $scrollIntoViewJsSnippet = ($scrollTo !== false)
                 <x-icon name="chevron-left" />
             </x-button>
             <div class="text-sm">
-                {{ $this->posts->currentPage() }} of {{ $this->posts->lastPage() }}
+                {{ $paginator->currentPage() }} of {{ $paginator->lastPage() }}
             </div>
             <x-button variant="outline" class="size-8" size="icon" wire:click="nextPage('{{ $paginator->getPageName() }}')" x-on:click="{{ $scrollIntoViewJsSnippet }}" :disabled="!$paginator->hasMorePages()">
                 <span class="sr-only">Go to next page</span>
                 <x-icon name="chevron-right" />
             </x-button>
-            <x-button variant="outline" class="hidden size-8 lg:flex" size="icon" wire:click="gotoPage('{{ $this->posts->lastPage() }}')" x-on:click="{{ $scrollIntoViewJsSnippet }}" :disabled="!$paginator->hasMorePages()">
+            <x-button variant="outline" class="hidden size-8 lg:flex" size="icon" wire:click="gotoPage('{{ $paginator->lastPage() }}')" x-on:click="{{ $scrollIntoViewJsSnippet }}" :disabled="!$paginator->hasMorePages()">
                 <span class="sr-only">Go to last page</span>
                 <x-icon name="chevrons-right" />
             </x-button>
