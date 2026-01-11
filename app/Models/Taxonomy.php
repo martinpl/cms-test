@@ -49,4 +49,13 @@ class Taxonomy extends Model
     {
         return $this->belongsToMany(AnyPost::class, 'term_relationships', 'term_id', 'post_id');
     }
+
+    public function scopeSearch($query, $search)
+    {
+        $search = "%{$search}%";
+
+        return $query->where(function ($q) use ($search) {
+            $q->where('title', 'like', $search)->orWhere('description', 'like', $search);
+        });
+    }
 }

@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 
-new class extends \Livewire\Component {
+new class extends \Livewire\Component
+{
     use App\Livewire\Table;
 
     public $taxonomyType;
@@ -21,10 +22,10 @@ new class extends \Livewire\Component {
     public function mount($taxonomyType, $postType)
     {
         $this->taxonomyType = app(App\TaxonomyType::class)->find($taxonomyType);
-        abort_if(!$this->taxonomyType, 404);
+        abort_if(! $this->taxonomyType, 404);
 
         $postType = app(App\PostTypeRegistry::class)->find($postType);
-        abort_if(!$postType, 404);
+        abort_if(! $postType, 404);
     }
 
     public function save()
@@ -52,7 +53,11 @@ new class extends \Livewire\Component {
 
     protected function items()
     {
-        return App\Models\Taxonomy::where('type', $this->taxonomyType)->paginate(10);
+        return App\Models\Taxonomy::where('type', $this->taxonomyType)
+            ->when($this->search, function ($query) {
+                $query->search($this->search);
+            })
+            ->paginate(10);
     }
 
     protected function columnName($term)
@@ -86,8 +91,8 @@ new class extends \Livewire\Component {
     private function actions($term)
     {
         $actions = [
-            'edit' => '<a href="' . route('taxonomies', [$this->taxonomyType['name'], $this->postType, $term->id]) . '">Edit</a>',
-            'delete' => '<button wire:click="destroy(' . $term->id . ')" class="text-destructive/80" wire:confirm="Are you sure you want to delete this term?">Delete</button>',
+            'edit' => '<a href="'.route('taxonomies', [$this->taxonomyType['name'], $this->postType, $term->id]).'">Edit</a>',
+            'delete' => '<button wire:click="destroy('.$term->id.')" class="text-destructive/80" wire:confirm="Are you sure you want to delete this term?">Delete</button>',
         ];
 
         return $this->rowActions($actions);
@@ -111,7 +116,7 @@ new class extends \Livewire\Component {
     public function render()
     {
         $term = $this->id ? App\Models\Taxonomy::find($this->id) : null;
-        if ($this->id && !$term) {
+        if ($this->id && ! $term) {
             abort(404);
         }
 
