@@ -1,9 +1,10 @@
 @php
+    $attributes = new Illuminate\View\ComponentAttributeBag();
     $items = is_array($items = $this->items()) ? collect($items) : $items;
     $columns = $this->columns();
 @endphp
 
-<div class="relative flex flex-col gap-4">
+<div {{ $attributes->twMerge(['relative flex flex-col gap-4', $class]) }}>
     <div class="flex justify-between">
         @if ($this->views)
             <x-tabs.list
@@ -26,7 +27,7 @@
             </x-tabs.list>
         @endif
         @if ($search)
-            <x-input type="search" wire:model.change="search" placeholder="Search..." class="max-w-64" />
+            <x-input type="search" wire:model.change="search" placeholder="Search..." class="max-w-64 ml-auto" />
         @endif
     </div>
     <div class="overflow-hidden rounded-lg border">
