@@ -7,13 +7,7 @@ Route::prefix('dashboard')
     ->group(function () {
         Route::livewire('list/{postType}', 'list')->name('list');
         Route::livewire('editor/{postType}/{id?}', 'editor')->name('editor');
-        Route::match(['get', 'post'], 'taxonomies/{taxonomyType}/{postType}/{id?}', function ($taxonomyType, $postType, ?int $id = null) {
-            return view('taxonomies', [
-                'taxonomyType' => $taxonomyType,
-                'postType' => $postType,
-                'id' => $id,
-            ]);
-        })->name('taxonomies');
+        Route::livewire('taxonomies/{taxonomyType}/{postType}/{id?}', 'taxonomies')->name('taxonomies');
     });
 
 Route::view('zoo', 'zoo');
