@@ -26,9 +26,6 @@ new class extends Livewire\Component
 
     public function mount()
     {
-        $postType = app(App\PostTypeRegistry::class)->find($this->postType);
-        abort_if(! $postType, 404);
-
         if ($this->post) {
             $this->content = json_decode($this->post->getRawOriginal('content'), true) ?: [];
             $this->meta = $this->post->meta();
@@ -98,10 +95,6 @@ new class extends Livewire\Component
         set_option('home_page', $id, true);
     }
 }; ?>
-
-<x-slot:title>
-    {{ __('Editor') }}
-</x-slot:title>
 
 <div class="flex gap-6">
     <aside class="flex-2/12">

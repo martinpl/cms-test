@@ -5,8 +5,8 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('dashboard')
     ->middleware(['auth', 'verified'])
     ->group(function () {
-        Route::livewire('list/{postType}', 'list')->name('list');
-        Route::livewire('editor/{postType}/{id?}', 'editor')->name('editor');
+        Route::view('list/{postType}', 'list')->name('list');
+        Route::view('editor/{postType}/{id?}', 'editor')->name('editor');
         Route::livewire('taxonomies/{taxonomyType}/{postType}/{id?}', 'taxonomies')->name('taxonomies');
     });
 

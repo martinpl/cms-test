@@ -11,12 +11,6 @@ new class extends \Livewire\Component
 
     public $postType;
 
-    public function mount($postType)
-    {
-        $this->postType = app(App\PostTypeRegistry::class)->find($postType);
-        abort_if(! $this->postType, 404);
-    }
-
     public function views()
     {
         $views = [
@@ -83,23 +77,27 @@ new class extends \Livewire\Component
 
     public function columnTitle($post)
     {
-        $title = Blade::render(<<<'BLADE'
-            <x-button
-                :href="route('editor', [$postType['name'], $post->id])"
-                variant="link"
-                class="text-foreground w-fit p-0 h-auto"
-            >
-                {{ $post->title }}
-            </x-button>
-            @if ($post->status === 'draft')
-                <span class="text-muted-foreground">— Draft</span>
-            @endif
-            {{ $actions }}
-        BLADE, [
-            'post' => $post,
-            'postType' => $this->postType,
-            'actions' => $this->actions($post),
-        ]);
+        $title = Blade::render(
+            <<<'BLADE'
+                <x-button
+                    :href="route('editor', [$postType['name'], $post->id])"
+                    variant="link"
+                    class="text-foreground w-fit p-0 h-auto"
+                >
+                    {{ $post->title }}
+                </x-button>
+                @if ($post->status === 'draft')
+                    <span class="text-muted-foreground">— Draft</span>
+                @endif
+                {{ $actions }}
+            BLADE
+            ,
+            [
+                'post' => $post,
+                'postType' => $this->postType,
+                'actions' => $this->actions($post),
+            ],
+        );
 
         // TODO: Direct return give error from ass: "Cannot use "::class" on int" / file parsing issue?
         $title = new HtmlString($title);
@@ -155,9 +153,6 @@ new class extends \Livewire\Component
     }
 }; ?>
 
-<x-slot:title>
-    {{ $postType['plural'] }}
-</x-slot>
 <x-slot:action>
     <x-button :href="route('editor', $postType['name'])" size="xs">
         <x-icon name="circle-plus" class="text-black fill-white" />
