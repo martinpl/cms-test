@@ -373,13 +373,77 @@
                     </x-dialog>
                 </x-card.content>
             </x-card>
+            <x-card id="tabs" class="border-0 border-b rounded-none shadow-none">
+                <x-card.header>
+                    <x-card.title>Tabs</x-card.title>
+                    {{-- <x-card.description>TODO</x-card.description> --}}
+                </x-card.header>
+                <x-card.content>
+                    <div class="flex w-full max-w-sm flex-col gap-6">
+                        <x-tabs defaultValue="account">
+                            <x-tabs.list>
+                                <x-tabs.trigger value="account">Account</x-tabs.trigger>
+                                <x-tabs.trigger value="password">Password</x-tabs.trigger>
+                            </x-tabs.list>
+                            <x-tabs.content value="account">
+                                <x-card>
+                                    <x-card.header>
+                                        <x-card.title>Account</x-card.title>
+                                        <x-card.description>
+                                            Make changes to your account here. Click save when you&apos;re
+                                            done.
+                                        </x-card.description>
+                                    </x-card.header>
+                                    <x-card.content class="grid gap-6">
+                                        <div class="grid gap-3">
+                                            <x-label for="tabs-demo-name">Name</x-label>
+                                            <x-input id="tabs-demo-name" value="Pedro Duarte" />
+                                        </div>
+                                        <div class="grid gap-3">
+                                            <x-label for="tabs-demo-username">Username</x-label>
+                                            <x-input id="tabs-demo-username" value="@peduarte" />
+                                        </div>
+                                    </x-card.content>
+                                    <x-card.footer>
+                                        <x-button>Save changes</x-button>
+                                    </x-card.footer>
+                                </x-card>
+                            </x-tabs.content>
+                            <x-tabs.content value="password">
+                                <x-card>
+                                    <x-card.header>
+                                        <x-card.title>Password</x-card.title>
+                                        <x-card.description>
+                                            Change your password here. After saving, you&apos;ll be logged
+                                            out.
+                                        </x-card.description>
+                                    </x-card.header>
+                                    <x-card.content class="grid gap-6">
+                                        <div class="grid gap-3">
+                                            <x-label for="tabs-demo-current">Current password</x-label>
+                                            <x-input id="tabs-demo-current" type="password" />
+                                        </div>
+                                        <div class="grid gap-3">
+                                            <x-label for="tabs-demo-new">New password</x-label>
+                                            <x-input id="tabs-demo-new" type="password" />
+                                        </div>
+                                    </x-card.content>
+                                    <x-card.footer>
+                                        <x-button>Save password</x-button>
+                                    </x-card.footer>
+                                </x-card>
+                            </x-tabs.content>
+                        </x-tabs>
+                    </div>
+                </x-card.content>
+            </x-card>
         </x-sidebar.inset>
         <x-sidebar side="right">
             <x-sidebar.content>
                 <x-sidebar.group>
                     <x-sidebar.group-content>
                         <x-sidebar.menu>
-                            @foreach (['Button', 'Badge', 'Menubar', 'Field', 'Dialog'] as $item)
+                            @foreach (['Button', 'Badge', 'Menubar', 'Field', 'Dialog', 'Tabs'] as $item)
                                 <x-sidebar.menu-item>
                                     <x-sidebar.menu-button href="#{{ Str::slug($item) }}"
                                         class="font-medium">{{ $item }}</x-sidebar.menu-button>
