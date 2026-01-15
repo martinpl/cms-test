@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\AdminMenu\AdminMenu;
 use App\AdminMenu\AdminMenuList;
+use App\BlockEditor;
 use App\BlockType;
 use App\Hook;
 use App\Models\Option;
@@ -24,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(PostTypeRegistry::class);
         $this->app->singleton(TaxonomyType::class);
         $this->app->singleton(BlockType::class);
+        BlockEditor::register();
         $this->app->singleton('menu.admin', fn () => new AdminMenuList);
         $this->app->singleton('menu.admin-bar', fn () => new AdminMenuList);
     }
