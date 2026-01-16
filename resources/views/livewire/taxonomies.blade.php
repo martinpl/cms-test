@@ -30,15 +30,12 @@ new class extends \Livewire\Component
 
     public function save()
     {
-        App\Models\Taxonomy::updateOrCreate(
-            ['id' => $this->id],
-            [
-                'title' => $this->editor['title'],
-                'description' => $this->editor['description'],
-                'type' => $this->taxonomyType['name'],
-                'parent_id' => $this->editor['parent_id'],
-            ],
-        );
+        App\Models\Taxonomy::updateOrCreate(['id' => $this->id], [
+            'title' => $this->editor['title'],
+            'description' => $this->editor['description'],
+            'type' => $this->taxonomyType['name'],
+            'parent_id' => $this->editor['parent_id'] ?: null,
+        ]);
     }
 
     protected function columns()
