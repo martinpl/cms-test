@@ -71,8 +71,9 @@
         applyAppearance(window.localStorage.getItem('appearance')?.slice(1, -1) || 'system')
     </script>
     <x-admin-bar />
+    {{-- TODO: use components --}}
     <div data-slot="sidebar-wrapper"
-        style="--sidebar-width:calc(var(--spacing) * 64);--sidebar-width-icon:3rem;--header-height:calc(var(--spacing) * 12 + 1px)"
+        style="--sidebar-width: calc(var(--spacing) * 64); --sidebar-width-icon: 3rem; --header-height: calc(var(--spacing) * 12 + 1px); min-height: calc(100svh - 36px);"
         class="group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar min-h-svh w-full flex">
         <div data-slot="sidebar" class="bg-sidebar text-sidebar-foreground flex w-(--sidebar-width) flex-col h-auto border-r">
             <div data-slot="sidebar-header" data-sidebar="header" class="flex flex-col gap-2 p-2 border-b">
