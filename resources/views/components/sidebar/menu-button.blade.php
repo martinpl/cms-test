@@ -20,6 +20,6 @@
 @endphp
 
 <x-tag :tag="$attributes->buttonTag()" data-slot="sidebar-menu-button" data-sidebar="menu-button" data-size="{{ $size }}"
-    data-active="{{ $isActive ? 'true' : 'false' }}" {{ $attributes->class([$base, $variants[$variant], $sizes[$size]]) }}>
+    data-active="{{ $isActive ? 'true' : 'false' }}" {{ $attributes->twMerge($base, $variants[$variant], $sizes[$size]) }}>
     {{ $slot }}
 </x-tag>
