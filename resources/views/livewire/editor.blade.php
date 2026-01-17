@@ -172,57 +172,85 @@ new class extends Livewire\Component {
         @endforeach
     </x-sidebar.inset>
     <x-sidebar collapsible="none" class="bg-transparent sticky top-0 hidden h-svh border-l lg:flex" style="height: calc(100svh - 85px)">
-        <x-sidebar.content class="p-4 gap-4">
-            <div class="flex flex-wrap justify-end gap-2">
-                @if ($this->post?->link())
-                    <x-button target="_blank" variant="outline" href="{{ $this->post->link() }}">
-                        <x-icon name="square-arrow-out-up-right" />
-                    </x-button>
-                @endif
-                @if ($this->post?->status != 'publish')
-                    <x-button variant="ghost" wire:click="saveDraft">
-                        Save draft
-                    </x-button>
-                @endif
-                <x-button wire:click="savePublish">
-                    @if ($this->post?->status != 'publish')
-                        Publish
-                    @else
-                        Save
+        <x-sidebar.content>
+            <div class="p-4 grid gap-4">
+                <div class="flex flex-wrap justify-end gap-2">
+                    @if ($this->post?->link())
+                        <x-button target="_blank" variant="outline" href="{{ $this->post->link() }}">
+                            <x-icon name="square-arrow-out-up-right" />
+                        </x-button>
                     @endif
-                </x-button>
-            </div>
-            @if ($this->post?->link())
-                <x-button variant="outline" wire:click="setAsHomePage({{ $this->post->id }})">Set as homepage</x-button>
-            @endif
-            <x-fields.media title="Thumbnail" wire:model="meta.thumbnail" />
-            <div>
-                Excerpt:
-                <x-textarea wire:model.fill="meta.excerpt"></x-textarea>
-            </div>
-            <div>
-                Slug:
-                <x-input type="text" wire:model.fill="name" value="{{ $this->post?->name }}" />
-            </div>
-            <div>
-                Parent:
-                {{-- TODO: add combobox with search --}}
-                <x-input type="number" wire:model.number.fill="parent" value="{{ $this->post?->parent_id }}" /><br>
+                    @if ($this->post?->status != 'publish')
+                        <x-button variant="ghost" wire:click="saveDraft">
+                            Save draft
+                        </x-button>
+                    @endif
+                    <x-button wire:click="savePublish">
+                        @if ($this->post?->status != 'publish')
+                            Publish
+                        @else
+                            Save
+                        @endif
+                    </x-button>
+                </div>
+                @if ($this->post?->link())
+                    <x-button variant="outline" wire:click="setAsHomePage({{ $this->post->id }})">Set as homepage</x-button>
+                @endif
+                <x-fields.media title="Thumbnail" wire:model="meta.thumbnail" />
+                <div>
+                    Excerpt:
+                    <x-textarea wire:model.fill="meta.excerpt"></x-textarea>
+                </div>
+                <div>
+                    Slug:
+                    <x-input type="text" wire:model.fill="name" value="{{ $this->post?->name }}" />
+                </div>
+                <div>
+                    Parent:
+                    {{-- TODO: add combobox with search --}}
+                    <x-input type="number" wire:model.number.fill="parent" value="{{ $this->post?->parent_id }}" /><br>
+                </div>
             </div>
             @foreach (app(App\TaxonomyType::class)->findForPostType($this->postType) as $taxonomy)
                 @php
                     $taxonomies = App\Models\Taxonomy::where('type', $taxonomy['name'])->orderBy('title')->get();
                     $selectedTaxonomies = $this->post?->terms->where('type', $taxonomy['name'])->pluck('id')->toArray() ?? [];
                 @endphp
-                <div>
-                    {{ $taxonomy['plural'] }}
-                </div>
-                @foreach ($taxonomies as $taxonomy)
-                    <label>
-                        <input type="checkbox" value="{{ $taxonomy->id }}" wire:model.fill="terms" @checked(in_array($taxonomy->id, $selectedTaxonomies))>
-                        {{ $taxonomy->title }}
-                    </label>
-                @endforeach
+                <x-sidebar.separator class="mx-0" />
+                <x-sidebar.group class="py-0">
+                    <x-collapsible class="group/collapsible">
+                        <x-collapsible.trigger>
+                            <x-sidebar.group-label
+                                class="group/label text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground w-full text-sm">
+                                {{ $taxonomy['plural'] }}
+                                <x-icon name="chevron-right"
+                                    class="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                            </x-sidebar.group-label>
+                        </x-collapsible.trigger>
+                        <x-collapsible.content>
+                            <x-sidebar.group-content>
+                                <x-sidebar.menu>
+                                    @foreach ($taxonomies as $taxonomy)
+                                        <x-sidebar.menu-item>
+                                            <x-sidebar.menu-button tag="label">
+                                                <div class="relative">
+                                                    <input type="checkbox"
+                                                        class="appearance-none peer border-sidebar-border checked:border-sidebar-primary checked:bg-sidebar-primary block aspect-square size-4 rounded-xs border"
+                                                        value="{{ $taxonomy->id }}" wire:model.fill="terms" @checked(in_array($taxonomy->id, $selectedTaxonomies))>
+                                                    <span
+                                                        class="pointer-events-none hidden peer-checked:grid place-content-center absolute inset-0">
+                                                        <x-icon name="check" class="size-3 text-sidebar-primary-foreground" />
+                                                    </span>
+                                                </div>
+                                                {{ $taxonomy->title }}
+                                            </x-sidebar.menu-button>
+                                        </x-sidebar.menu-item>
+                                    @endforeach
+                                </x-sidebar.menu>
+                            </x-sidebar.group-content>
+                        </x-collapsible.content>
+                    </x-collapsible>
+                </x-sidebar.group>
             @endforeach
         </x-sidebar.content>
     </x-sidebar>

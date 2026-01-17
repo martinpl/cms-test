@@ -2,6 +2,7 @@
     'variant' => 'default',
     'size' => 'default',
     'isActive' => false,
+    'tag' => $attributes->buttonTag(),
 ])
 
 @php
@@ -19,7 +20,7 @@
     ];
 @endphp
 
-<x-tag :tag="$attributes->buttonTag()" data-slot="sidebar-menu-button" data-sidebar="menu-button" data-size="{{ $size }}"
+<x-tag :$tag data-slot="sidebar-menu-button" data-sidebar="menu-button" data-size="{{ $size }}"
     data-active="{{ $isActive ? 'true' : 'false' }}" {{ $attributes->twMerge($base, $variants[$variant], $sizes[$size]) }}>
     {{ $slot }}
 </x-tag>
