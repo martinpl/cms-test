@@ -437,13 +437,45 @@
                     </div>
                 </x-card.content>
             </x-card>
+            <x-card id="collapsible" class="border-0 border-b rounded-none shadow-none">
+                <x-card.header>
+                    <x-card.title>Collapsible</x-card.title>
+                    {{-- <x-card.description>TODO</x-card.description> --}}
+                </x-card.header>
+                <x-card.content>
+                    <x-collapsible class="flex w-[350px] flex-col gap-2">
+                        <div class="flex items-center justify-between gap-4 px-4">
+                            <h4 class="text-sm font-semibold">
+                                @peduarte starred 3 repositories
+                            </h4>
+                            <x-collapsible.trigger>
+                                <x-button variant="ghost" size="icon" class="size-8">
+                                    <x-icon name="chevrons-up-down" />
+                                    <span class="sr-only">Toggle</span>
+                                </x-button>
+                            </x-collapsible.trigger>
+                        </div>
+                        <div class="rounded-md border px-4 py-2 font-mono text-sm">
+                            @radix-ui/primitives
+                        </div>
+                        <x-collapsible.content class="flex flex-col gap-2">
+                            <div class="rounded-md border px-4 py-2 font-mono text-sm">
+                                @radix-ui/colors
+                            </div>
+                            <div class="rounded-md border px-4 py-2 font-mono text-sm">
+                                @stitches/react
+                            </div>
+                        </x-collapsible.content>
+                    </x-collapsible>
+                </x-card.content>
+            </x-card>
         </x-sidebar.inset>
         <x-sidebar side="right">
             <x-sidebar.content>
                 <x-sidebar.group>
                     <x-sidebar.group-content>
                         <x-sidebar.menu>
-                            @foreach (['Button', 'Badge', 'Menubar', 'Field', 'Dialog', 'Tabs'] as $item)
+                            @foreach (['Button', 'Badge', 'Menubar', 'Field', 'Dialog', 'Tabs', 'Collapsible'] as $item)
                                 <x-sidebar.menu-item>
                                     <x-sidebar.menu-button href="#{{ Str::slug($item) }}"
                                         class="font-medium">{{ $item }}</x-sidebar.menu-button>
