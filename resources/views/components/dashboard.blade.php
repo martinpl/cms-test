@@ -1,4 +1,4 @@
-@props(['title', 'action' => ''])
+@props(['title', 'hideHeader' => false, 'action' => ''])
 
 {{-- TODO: Move out to php, add helper for admin menu --}}
 @php
@@ -147,17 +147,13 @@
         </div>
         <main data-slot="sidebar-inset"
             class="bg-background relative flex w-full flex-1 flex-col md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2">
-            <header
-                class="bg-background/90 sticky top-0 z-10 flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
-                <div class="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
-                    <h1 class="text-base font-medium">{{ $title }}</h1>
+            @if (!$hideHeader)
+                <x-dashboard-header :$title>
                     {{ $action }}
-                </div>
-            </header>
-            <div class="flex flex-1 flex-col">
-                <div {{ $attributes->twMerge('@container/main p-4 md:p-6') }}>
-                    {{ $slot }}
-                </div>
+                </x-dashboard-header>
+            @endif
+            <div {{ $attributes->twMerge('@container/main p-4 md:p-6') }}>
+                {{ $slot }}
             </div>
         </main>
     </div>
