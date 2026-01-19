@@ -45,9 +45,9 @@ trait Table
     }
 
     // TODO: Builder?
-    protected function table($search = false, $class = '')
+    protected function table($search = false, $class = '', $draggable = false)
     {
-        return view('livewire.table', compact('search', 'class'));
+        return view('livewire.table', compact('search', 'class', 'draggable'));
     }
 
     public function getViewsProperty()

@@ -34,6 +34,9 @@
         <x-table>
             <x-table.header class="bg-muted sticky top-0 z-10">
                 <x-table.row>
+                    @if ($draggable)
+                        <x-table.head />
+                    @endif
                     @foreach ($columns as $column)
                         <x-table.head>
                             {{ $column }}
@@ -41,9 +44,17 @@
                     @endforeach
                 </x-table.row>
             </x-table.header>
-            <x-table.body class="**:data-[slot=table-cell]:first:w-8">
+            <x-table.body class="**:data-[slot=table-cell]:first:w-8" :wire:sort="$draggable ? 'order' : null">
                 @foreach ($items as $item)
-                    <x-table.row class="group relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80">
+                    <x-table.row class="group relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
+                        :wire:sort:item="$draggable ? $item->id : null">
+                        @if ($draggable)
+                            <x-table.cell wire:sort:handle>
+                                <x-button variant="ghost" size="icon" class="text-muted-foreground size-7 hover:bg-transparent">
+                                    <x-icon name="grip-vertical" class="text-muted-foreground size-3" />
+                                </x-button>
+                            </x-table.cell>
+                        @endif
                         @foreach ($columns as $key => $fsdfsd)
                             <x-table.cell>
                                 @php($method = 'column' . ucfirst($key))
