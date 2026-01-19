@@ -1,6 +1,5 @@
 @php
     $attributes = new Illuminate\View\ComponentAttributeBag();
-    $items = is_array($items = $this->items()) ? collect($items) : $items;
     $columns = $this->columns();
 @endphp
 
@@ -10,10 +9,8 @@
             <x-tabs.list
                 class="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
                 @foreach ($this->views as $key => $viewName)
-                    {{-- @if (($loop->first && isset($this->counts[$key])) || $this->view == $key || $this->counts[$key] ?? true) --}}
                     @php($isSelected = $this->view == $key)
                     @php($hasItems = $this->counts[$key] ?? true)
-                    {{-- @if (($loop->first && isset($this->counts[$key])) || $isSelected || $this->counts[$key] ?? true) --}}
                     @if ($loop->first || $hasItems || $isSelected)
                         {{-- TODO: Add links --}}
                         <x-tabs.trigger href="todo" wire:click.prevent="$set('view', '{{ $key }}')" :active="$this->view == $key">
@@ -37,6 +34,11 @@
                     @if ($draggable)
                         <x-table.head />
                     @endif
+                    {{-- <x-table.head>
+                        <div class="flex items-center justify-center">
+                            <x-checkbox />
+                        </div>
+                    </x-table.head> --}}
                     @foreach ($columns as $column)
                         <x-table.head>
                             {{ $column }}
@@ -45,8 +47,8 @@
                 </x-table.row>
             </x-table.header>
             <x-table.body class="**:data-[slot=table-cell]:first:w-8" :wire:sort="$draggable ? 'order' : null">
-                @foreach ($items as $item)
-                    <x-table.row class="group relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
+                @foreach ($this->items as $item)
+                    <x-table.row class="group relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80" :wire:key="$item->id"
                         :wire:sort:item="$draggable ? $item->id : null">
                         @if ($draggable)
                             <x-table.cell wire:sort:handle>
@@ -55,6 +57,11 @@
                                 </x-button>
                             </x-table.cell>
                         @endif
+                        {{-- <x-table.cell class="align-baseline w-10">
+                            <div class="mt-0.5 flex items-center justify-center">
+                                <x-checkbox />
+                            </div>
+                        </x-table.cell> --}}
                         @foreach ($columns as $key => $fsdfsd)
                             <x-table.cell>
                                 @php($method = 'column' . ucfirst($key))
@@ -67,7 +74,7 @@
                         @endforeach
                     </x-table.row>
                 @endforeach
-                @if ($items->isEmpty())
+                @if ($this->items->isEmpty())
                     <x-table.row>
                         <x-table.cell colspan="{{ count($columns) }}" class="h-24 text-center">
                             No results.
@@ -78,7 +85,7 @@
         </x-table>
     </div>
     {{-- TODO: Add support for non db pagination --}}
-    @if (method_exists($items, 'links'))
-        {{ $items->links() }}
+    @if (method_exists($this->items, 'links'))
+        {{ $this->items->links() }}
     @endif
 </div>

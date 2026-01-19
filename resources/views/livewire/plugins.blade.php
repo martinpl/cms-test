@@ -37,8 +37,10 @@ new class extends Livewire\Component
     {
         // TODO: list should be collection anyway
         return collect(App\Plugin::list())
+            ->map(fn ($plugin, $index) => array_merge($plugin, ['id' => $index]))
+            ->map(fn ($item) => (object) $item)
             ->filter(function ($plugin) {
-                return str_contains(strtolower($plugin['name']), $this->search);
+                return str_contains(strtolower($plugin->name), $this->search);
             });
 
     }
@@ -46,13 +48,13 @@ new class extends Livewire\Component
     protected function items()
     {
         return $this->rawItems->reject(function ($plugin) {
-            return $this->view == 'must-use' ? ! $plugin['mustUse'] : $plugin['mustUse'];
+            return $this->view == 'must-use' ? ! $plugin->mustUse : $plugin->mustUse;
         });
     }
 
     private function columnName($plugin)
     {
-        $name = $plugin['name'].$this->actions($plugin);
+        $name = $plugin->name.$this->actions($plugin);
         $name = new HtmlString($name);
 
         return $name;
@@ -61,19 +63,19 @@ new class extends Livewire\Component
     private function actions($plugin)
     {
         $actions = [];
-        if ($plugin['mustUse']) {
+        if ($plugin->mustUse) {
             return;
         }
 
-        if (Plugin::isActive($plugin['path'])) {
+        if (Plugin::isActive($plugin->path)) {
             $actions['deactivate'] = <<<HTML
-                <button wire:click="deactivate('{$plugin['path']}')">
+                <button wire:click="deactivate('{$plugin->path}')">
                     Deactivate
                 </button>
             HTML;
         } else {
             $actions['activate'] = <<<HTML
-                <button wire:click="activate('{$plugin['path']}')">
+                <button wire:click="activate('{$plugin->path}')">
                     Active
                 </button>
             HTML;
@@ -86,16 +88,16 @@ new class extends Livewire\Component
     {
         $meta = [];
 
-        if ($plugin['version']) {
-            $meta[] = "Version: {$plugin['version']}";
+        if ($plugin->version) {
+            $meta[] = "Version: {$plugin->version}";
         }
 
-        if ($plugin['author']) {
-            $meta[] = "By {$plugin['author']}";
+        if ($plugin->author) {
+            $meta[] = "By {$plugin->author}";
         }
 
         // TODO: Direct return give error from ass: "Cannot use "::class" on int" / file parsing issue?
-        $description = new HtmlString($plugin['description'].'<br>'.implode(' | ', $meta));
+        $description = new HtmlString($plugin->description.'<br>'.implode(' | ', $meta));
 
         return $description;
     }

@@ -55,6 +55,7 @@ new class extends \Livewire\Component
             ->when($this->search, function ($query) {
                 $query->search($this->search);
             })
+            ->orderBy('order')
             ->latest()
             ->paginate(10);
     }
@@ -137,6 +138,18 @@ new class extends \Livewire\Component
         return $post->created_at->format('Y/m/d \a\t H:i');
     }
 
+    public function order($id, $position)
+    {
+        $offset = $this->items->perPage() * ($this->items->currentPage() - 1);
+        $item = $this->items->firstWhere('id', $id);
+        $items = $this->items->reject(fn ($i) => $i->id == $id);
+        $items->splice($position, 0, [$item]);
+        $items->each(function ($item, $index) use ($offset) {
+            $item->update(['order' => $offset + $index + 1]);
+        });
+        unset($this->items);
+    }
+
     public function trash($postId)
     {
         AnyPost::find($postId)->trash();
@@ -160,4 +173,5 @@ new class extends \Livewire\Component
     </x-button>
 </x-slot>
 
-{{ $this->table(search: true) }}
+{{-- TODO: turn on draggable base on post type config --}}
+{{ $this->table(search: true, draggable: $view == 'all' && !$search) }}

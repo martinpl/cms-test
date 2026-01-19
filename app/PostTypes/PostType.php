@@ -28,6 +28,7 @@ abstract class PostType extends \Illuminate\Database\Eloquent\Model
         'content',
         'user_id',
         'parent_id',
+        'order',
     ];
 
     public static $type = null;

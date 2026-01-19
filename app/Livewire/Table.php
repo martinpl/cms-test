@@ -59,4 +59,9 @@ trait Table
     {
         return $this->counts();
     }
+
+    public function getItemsProperty()
+    {
+        return is_array($items = $this->items()) ? collect($items) : $items;
+    }
 }
