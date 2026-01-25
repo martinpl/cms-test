@@ -469,13 +469,39 @@
                     </x-collapsible>
                 </x-card.content>
             </x-card>
+            <x-card id="alert" class="border-0 border-b rounded-none shadow-none">
+                <x-card.header>
+                    <x-card.title>Alert</x-card.title>
+                    {{-- <x-card.description>TODO</x-card.description> --}}
+                </x-card.header>
+                <x-card.content>
+                    <div class="grid w-full max-w-md items-start gap-4">
+                        <x-alert>
+                            <x-icon name="circle-check" />
+                            <x-alert.title>Payment successful</x-alert.title>
+                            <x-alert.description>
+                                Your payment of $29.99 has been processed. A receipt has been sent to
+                                your email address.
+                            </x-alert.description>
+                        </x-alert>
+                        <x-alert>
+                            <x-icon name="info" />
+                            <x-alert.title>New feature available</x-alert.title>
+                            <x-alert.description>
+                                We&apos;ve added dark mode support. You can enable it in your account
+                                settings.
+                            </x-alert.description>
+                        </x-alert>
+                    </div>
+                </x-card.content>
+            </x-card>
         </x-sidebar.inset>
         <x-sidebar side="right">
             <x-sidebar.content>
                 <x-sidebar.group>
                     <x-sidebar.group-content>
                         <x-sidebar.menu>
-                            @foreach (['Button', 'Badge', 'Menubar', 'Field', 'Dialog', 'Tabs', 'Collapsible'] as $item)
+                            @foreach (['Button', 'Badge', 'Menubar', 'Field', 'Dialog', 'Tabs', 'Collapsible', 'Alert'] as $item)
                                 <x-sidebar.menu-item>
                                     <x-sidebar.menu-button href="#{{ Str::slug($item) }}"
                                         class="font-medium">{{ $item }}</x-sidebar.menu-button>
