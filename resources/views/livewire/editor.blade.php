@@ -87,6 +87,8 @@ new class extends Livewire\Component {
         }
 
         $this->name = $this->post->name;
+
+        session()->flash('notice', 'Page update.');
     }
 
     public function setAsHomePage($id)
@@ -282,4 +284,9 @@ new class extends Livewire\Component {
             </x-sidebar.content>
         </x-sidebar>
     </x-sidebar.provider>
+    {{-- TODO: twMerge bug fixed class dosn't work with dashboard-notice   --}}
+    {{-- TODO: Add animation or switch completely component --}}
+    <div class="fixed bottom-5 left-5" x-init="setTimeout(() => $el.hidden = true, 5000)">
+        <x-dashboard-notice />
+    </div>
 </div>
