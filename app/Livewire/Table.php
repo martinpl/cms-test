@@ -16,6 +16,8 @@ trait Table
     #[Url]
     public $search = '';
 
+    public $selected = [];
+
     public function mountTable()
     {
         $this->view = $this->view ?? array_key_first($this->views);
@@ -44,10 +46,27 @@ trait Table
         );
     }
 
+    protected function bulkActions()
+    {
+        return [];
+    }
+
     // TODO: Builder?
     protected function table($search = false, $class = '', $draggable = false)
     {
         return view('livewire.table', compact('search', 'class', 'draggable'));
+    }
+
+    public function apply($action)
+    {
+        if (! $action) {
+            session()->flash('notice', 'Please select at least one item to perform this action on.');
+
+            return;
+        }
+
+        $this->$action($this->selected);
+        $this->selected = [];
     }
 
     public function getViewsProperty()

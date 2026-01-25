@@ -1,9 +1,11 @@
 @php
     $attributes = new Illuminate\View\ComponentAttributeBag();
     $columns = $this->columns();
+    $bulkActions = $this->bulkActions();
 @endphp
 
 <div {{ $attributes->twMerge(['relative flex flex-col gap-4', $class]) }}>
+    <x-dashboard-notice />
     <div class="flex justify-between">
         @if ($this->views)
             <x-tabs.list
@@ -31,14 +33,17 @@
         <x-table>
             <x-table.header class="bg-muted sticky top-0 z-10">
                 <x-table.row>
-                    @if ($draggable)
+                    @if ($draggable && !$this->items->isEmpty())
                         <x-table.head />
                     @endif
-                    {{-- <x-table.head>
-                        <div class="flex items-center justify-center">
-                            <x-checkbox />
-                        </div>
-                    </x-table.head> --}}
+                    @if ($bulkActions && !$this->items->isEmpty())
+                        <x-table.head>
+                            <div class="flex items-center justify-center">
+                                <x-checkbox @click="$wire.selected = $el.checked ? {{ $this->items->pluck('id')->toJson() }} : []"
+                                    ::checked="$wire.selected.sort().toString() == {{ $this->items->pluck('id')->toJson() }}.sort().toString()" />
+                            </div>
+                        </x-table.head>
+                    @endif
                     @foreach ($columns as $column)
                         <x-table.head>
                             {{ $column }}
@@ -57,11 +62,13 @@
                                 </x-button>
                             </x-table.cell>
                         @endif
-                        {{-- <x-table.cell class="align-baseline w-10">
-                            <div class="mt-0.5 flex items-center justify-center">
-                                <x-checkbox />
-                            </div>
-                        </x-table.cell> --}}
+                        @if ($bulkActions)
+                            <x-table.cell class="align-baseline w-10">
+                                <div class="mt-0.5 flex items-center justify-center">
+                                    <x-checkbox :value="$item->id" wire:model="selected" />
+                                </div>
+                            </x-table.cell>
+                        @endif
                         @foreach ($columns as $key => $fsdfsd)
                             <x-table.cell>
                                 @php($method = 'column' . ucfirst($key))
@@ -84,8 +91,21 @@
             </x-table.body>
         </x-table>
     </div>
-    {{-- TODO: Add support for non db pagination --}}
-    @if (method_exists($this->items, 'links'))
-        {{ $this->items->links() }}
-    @endif
+    <div class="flex justify-between">
+        @if ($bulkActions)
+            <div class="flex gap-2">
+                <x-native-select wire:ref="test">
+                    <x-native-select.option value="">Bulk actions</x-native-select.option>
+                    @foreach ($bulkActions as $key => $bulkAction)
+                        <x-native-select.option value="{{ $key }}">{{ $bulkAction }}</x-native-select.option>
+                    @endforeach
+                </x-native-select>
+                <x-button variant="outline" wire:click="apply($refs.test.value)">Apply</x-button>
+            </div>
+        @endif
+        {{-- TODO: Add support for non db pagination --}}
+        @if (method_exists($this->items, 'links'))
+            {{ $this->items->links() }}
+        @endif
+    </div>
 </div>

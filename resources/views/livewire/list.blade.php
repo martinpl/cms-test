@@ -1,6 +1,7 @@
 <?php
 
 use App\PostTypes\AnyPost;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 
@@ -150,19 +151,52 @@ new class extends \Livewire\Component
         unset($this->items);
     }
 
-    public function trash($postId)
+    public function trash($postIds)
     {
-        AnyPost::find($postId)->trash();
+        $ids = Arr::wrap($postIds);
+        foreach ($ids as $id) {
+            AnyPost::find($id)?->trash();
+        }
+
+        // TODO: Add undo
+        session()->flash('notice', count($ids).' item moved to the Trash.');
     }
 
-    public function restore($postId)
+    public function restore($postIds)
     {
-        AnyPost::find($postId)->untrash();
+        $ids = Arr::wrap($postIds);
+        foreach ($ids as $id) {
+            AnyPost::find($id)?->untrash();
+        }
+
+        // TODO; Add edit link
+        session()->flash('notice', count($ids).' item restored from the Trash.');
     }
 
-    public function destroy($postId)
+    public function destroy($postIds)
     {
-        AnyPost::destroy($postId);
+        $ids = Arr::wrap($postIds);
+        foreach ($ids as $id) {
+            AnyPost::destroy($id);
+        }
+
+        session()->flash('notice', count($ids).' item permanently deleted.');
+    }
+
+    protected function bulkActions()
+    {
+        $actions = [];
+
+        if ($this->view != 'trash') {
+            $actions['trash'] = 'Trash';
+        }
+
+        if ($this->view == 'trash') {
+            $actions['restore'] = 'Restore';
+            $actions['destroy'] = 'Delete Permanently';
+        }
+
+        return $actions;
     }
 }; ?>
 
