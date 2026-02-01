@@ -4,6 +4,9 @@ namespace App\Models\Traits;
 
 use App\Models\Meta;
 use App\PostTypes\AnyPost;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 trait HasMeta
 {
@@ -59,5 +62,50 @@ trait HasMeta
         unset($this->metaCache[$key]);
 
         return $this->morphMany(Meta::class, 'metable')->where('key', $key)->delete();
+    }
+
+    public function scopeWhereMeta(Builder $query, string $key, $value, $operator = '=')
+    {
+        $model = $query->getModel();
+
+        $selector = '';
+        $jsonSelector = str_contains($key, '->');
+        if ($jsonSelector) {
+            $selector = '->'.Str::after($key, '->');
+            $key = Str::before($key, '->');
+        }
+
+        // Single string is store with quotes "value"
+        if (! $jsonSelector && is_string($value)) {
+            $value = Str::wrap($value, '"');
+        }
+
+        return $query->whereExists(fn ($q) => $q->select(DB::raw(1))
+            ->from('meta')
+            ->whereColumn('metable_id', $model->getTable().'.id')
+            ->where('metable_type', get_class($model))
+            ->where('key', $key)
+            ->where("value{$selector}", $operator, $value)
+        );
+    }
+
+    public function scopeWhereMetaIn(Builder $query, string $key, $value)
+    {
+        $model = $query->getModel();
+
+        $selector = '';
+        $jsonSelector = str_contains($key, '->');
+        if ($jsonSelector) {
+            $selector = '->'.Str::after($key, '->');
+            $key = Str::before($key, '->');
+        }
+
+        return $query->whereExists(fn ($q) => $q->select(DB::raw(1))
+            ->from('meta')
+            ->whereColumn('metable_id', $model->getTable().'.id')
+            ->where('metable_type', get_class($model))
+            ->where('key', $key)
+            ->whereJsonContains("meta.value{$selector}", $value)
+        );
     }
 }
