@@ -69,9 +69,9 @@
                                 </div>
                             </x-table.cell>
                         @endif
-                        @foreach ($columns as $key => $fsdfsd)
+                        @foreach ($columns as $key => $value)
                             <x-table.cell>
-                                @php($method = 'column' . ucfirst($key))
+                                @php($method = Str::camel("column_{$key}"))
                                 @if (method_exists($this, $method))
                                     {{ $this->$method($item) }}
                                 @else
