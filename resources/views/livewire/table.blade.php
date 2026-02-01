@@ -75,7 +75,7 @@
                                 @if (method_exists($this, $method))
                                     {{ $this->$method($item) }}
                                 @else
-                                    {{ $item[$key] }}
+                                    {{ $item->$key }}
                                 @endif
                             </x-table.cell>
                         @endforeach
