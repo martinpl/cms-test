@@ -45,16 +45,13 @@ trait HasMeta
     public function setMeta($key, $value)
     {
         $isEmpty = $value === '';
-
-        if (! $isEmpty) {
-            $this->metaCache[$key] = $value;
-
-            return $this->morphMany(Meta::class, 'metable')->updateOrCreate(['key' => $key], ['value' => $value]);
-        }
-
         if ($isEmpty) {
             return $this->deleteMeta($key);
         }
+
+        $this->metaCache[$key] = $value;
+
+        return $this->morphMany(Meta::class, 'metable')->updateOrCreate(['key' => $key], ['value' => $value]);
     }
 
     public function deleteMeta($key)

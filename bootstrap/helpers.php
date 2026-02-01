@@ -16,6 +16,11 @@ function get_option($name, $default = null): mixed
 
 function set_option($name, $value, $autoload = null): bool
 {
+    $isEmpty = $value === '';
+    if ($isEmpty) {
+        return delete_option($name);
+    }
+
     $values = ['value' => $value];
     if (! is_null($autoload)) {
         $values['autoload'] = $autoload;
@@ -31,6 +36,12 @@ function set_option($name, $value, $autoload = null): bool
 
 function delete_option($name): bool
 {
+    $options = app('options');
+    if (isset($options[$name])) {
+        unset($options[$name]);
+        app()->instance('options', $options);
+    }
+
     return Option::where('name', $name)->delete() > 0;
 }
 
