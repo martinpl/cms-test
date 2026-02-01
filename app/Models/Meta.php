@@ -10,5 +10,9 @@ class Meta extends Model
 
     protected $fillable = ['key', 'value'];
 
+    protected $casts = [
+        'value' => 'array',
+    ];
+
     public $timestamps = false;
 }

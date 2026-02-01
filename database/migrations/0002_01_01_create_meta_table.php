@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->morphs('metable');
             $table->string('key');
-            $table->longText('value')->nullable();
+            $table->json('value')->nullable();
         });
     }
 
