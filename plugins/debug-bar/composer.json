@@ -1,5 +1,5 @@
 {
     "require": {
-        "barryvdh/laravel-debugbar": "^3.16"
+        "fruitcake/laravel-debugbar": "^4.0"
     }
 }

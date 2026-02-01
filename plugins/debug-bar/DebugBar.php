@@ -9,7 +9,7 @@ class DebugBar
     public function __construct()
     {
         require __DIR__.'/vendor/autoload.php';
-        app()->register(\Barryvdh\Debugbar\ServiceProvider::class);
+        app()->register(\Fruitcake\LaravelDebugbar\ServiceProvider::class);
         config(['debugbar.storage.enabled' => false]);
         // TODO: we should have helper for current plugin path?
     }
