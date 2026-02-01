@@ -9,6 +9,7 @@ use App\BlockType;
 use App\Hook;
 use App\Models\Option;
 use App\PostTypeRegistry;
+use App\Role;
 use App\TaxonomyType;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\ServiceProvider;
@@ -16,9 +17,6 @@ use Illuminate\View\ComponentAttributeBag;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         $this->app->singleton(Hook::class);
@@ -28,11 +26,9 @@ class AppServiceProvider extends ServiceProvider
         BlockEditor::register();
         $this->app->singleton('menu.admin', fn () => new AdminMenuList);
         $this->app->singleton('menu.admin-bar', fn () => new AdminMenuList);
+        $this->app->singleton(Role::class);
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
         if (app()->runningInConsole()) { // TODO: That should be check for migration command

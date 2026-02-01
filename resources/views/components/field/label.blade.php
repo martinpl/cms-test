@@ -5,6 +5,6 @@
         has-data-[state=checked]:bg-primary/5 has-data-[state=checked]:border-primary dark:has-data-[state=checked]:bg-primary/10",
 ])
 
-<x-label :$tag {{ $attributes->class($base) }}>
+<x-label :$tag {{ $attributes->twMerge($base) }}>
     {{ $slot }}
 </x-label>

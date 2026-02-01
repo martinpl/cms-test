@@ -1,7 +1,8 @@
 @props([
-    'base' => "group/field-group @container/field-group flex w-full flex-col gap-7 data-[slot=checkbox-group]:gap-3 [&>[data-slot=field-group]]:gap-4",
+    'tag' => 'div',
 ])
 
-<div {{ $attributes->class($base) }}>
+<x-tag :$tag
+    {{ $attributes->twMerge('group/field-group @container/field-group flex w-full flex-col gap-7 data-[slot=checkbox-group]:gap-3 [&>[data-slot=field-group]]:gap-4') }}>
     {{ $slot }}
-</div>
+</x-tag>
