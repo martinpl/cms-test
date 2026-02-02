@@ -16,8 +16,7 @@ function get_option($name, $default = null): mixed
 
 function set_option($name, $value, $autoload = null): bool
 {
-    $isEmpty = $value === '';
-    if ($isEmpty) {
+    if ($value === null || $value === '' || $value === []) {
         return delete_option($name);
     }
 

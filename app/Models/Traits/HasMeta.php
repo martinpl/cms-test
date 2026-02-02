@@ -44,8 +44,7 @@ trait HasMeta
 
     public function setMeta($key, $value)
     {
-        $isEmpty = $value === '';
-        if ($isEmpty) {
+        if ($value === null || $value === '' || $value === []) {
             return $this->deleteMeta($key);
         }
 
