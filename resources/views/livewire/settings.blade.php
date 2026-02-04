@@ -42,9 +42,15 @@ new class extends Livewire\Component
     {{ __('Site settings') }}
 </x-slot:title>
 
-<form wire:submit="submit">
-    @foreach ($this->fields as $field)
-        {{ $field }}
-    @endforeach
-    <x-button type="submit">Submit</x-button>
-</form>
+<x-field.group tag="form" wire:submit="submit">
+    <x-field.set>
+        @foreach ($this->fields as $field)
+            <x-field.group>
+                {{ $field }}
+            </x-field.group>
+        @endforeach
+    </x-field.set>
+    <x-field orientation="horizontal">
+        <x-button type="submit">Save Changes</x-button>
+    </x-field>
+</x-field.group>

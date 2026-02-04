@@ -102,7 +102,11 @@ new class extends Livewire\Component {
 
 <div>
     <x-dashboard-header title="Editor">
-        <div class="ml-auto flex gap-2">
+        <div class="mx-auto max-w-xl w-full">
+            {{-- TODO: Filled input styling / twMerge bug --}}
+            <x-input name="title" type="text" placeholder="Add title" wire:model.fill="title" value="{{ $this->post?->title }}" />
+        </div>
+        <div class="flex gap-2">
             @if ($this->post?->link())
                 <x-button variant="ghost" size="xs" :href="$this->post->link()" target="_blank">
                     <x-icon name="square-arrow-out-up-right" class="size-3.5" />
@@ -169,27 +173,29 @@ new class extends Livewire\Component {
                 </x-tabs>
             </x-sidebar.content>
         </x-sidebar>
-        <x-sidebar.inset class="gap-4 p-4 overflow-auto" style="height: calc(100svh - 85px);">
-            <x-input name="title" type="text" class="shrink-0" placeholder="Add title" wire:model.fill="title"
-                value="{{ $this->post?->title }}" />
+        <x-sidebar.inset class="overflow-auto" style="height: calc(100svh - 85px);">
             @foreach ($content as $block)
                 @php
                     $class = 'Components\\' . Str::studly($block['name']) . '\Schema';
                 @endphp
                 {{-- TODO: update only one block or cache another? --}}
                 <div @click="$nextTick(() => { selected = {{ $loop->index }} })" wire:key="block-{{ $loop->index }}"
-                    :class="selected == {{ $loop->index }} && 'border-t border-b p-4 -mx-4'">
+                    :class="selected == {{ $loop->index }} && {{ $loop->index == 0 ? "'border-b p-4 md:p-6'" : "'border-t border-b p-4 md:p-6'" }}">
                     @if (method_exists($class, 'fields'))
                         <div class="fields" x-show="selected == {{ $loop->index }}" x-cloak
                             @click.outside="selected = null; $wire.$refresh();">
-                            @foreach ($class::fields() as $field)
-                                @php
-                                    // TODO: validation
-                                    $field->model("content.{$loop->parent->index}.data");
-                                    $field->value(fn() => $content[$loop->parent->index]['data'][$field->name] ?? null); // TODO: This should not be callback
-                                @endphp
-                                {{ $field }}
-                            @endforeach
+                            <x-field.set>
+                                @foreach ($class::fields() as $field)
+                                    <x-field.group>
+                                        @php
+                                            // TODO: validation
+                                            $field->model("content.{$loop->parent->index}.data");
+                                            $field->value(fn() => $content[$loop->parent->index]['data'][$field->name] ?? null); // TODO: This should not be callback
+                                        @endphp
+                                        {{ $field }}
+                                    </x-field.group>
+                                @endforeach
+                            </x-field.set>
                         </div>
                     @endif
                     <div class="preview" x-show="selected != {{ $loop->index }}">

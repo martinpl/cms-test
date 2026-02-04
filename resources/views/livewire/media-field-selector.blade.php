@@ -4,8 +4,7 @@ use App\PostTypes\Attachment;
 use Livewire\Attributes\Computed;
 use Livewire\WithPagination;
 
-new class extends Livewire\Component
-{
+new class extends Livewire\Component {
     use WithPagination;
 
     public $model;
@@ -41,5 +40,10 @@ new class extends Livewire\Component
                 {{ $this->posts->links() }}
             </x-dialog.content>
         </x-dialog>
+    @endif
+    @if ($selected)
+        <button wire:click="$wire.$parent.$set('{{ $model }}', null)">
+            Remove
+        </button>
     @endif
 </div>

@@ -6,10 +6,12 @@
     $checkedStyle = 'checked:bg-primary dark:checked:bg-primary checked:border-primary';
 @endphp
 
-<div class="relative inline-flex">
-    <input type="checkbox" {{ $attributes->class([$baseStyle, $checkedStyle, 'appearance-none']) }} role="checkbox">
-    <span
-        class="text-transparent peer-checked:text-primary-foreground pointer-events-none grid place-content-center transition-none absolute inset-0">
-        <x-icon name="check" class="size-3.5" />
-    </span>
+<div class="flex">
+    <div class="relative inline-flex">
+        <input type="checkbox" {{ $attributes->class([$baseStyle, $checkedStyle, 'appearance-none']) }} role="checkbox">
+        <span
+            class="text-transparent peer-checked:text-primary-foreground pointer-events-none grid place-content-center transition-none absolute inset-0">
+            <x-icon name="check" class="size-3.5" />
+        </span>
+    </div>
 </div>

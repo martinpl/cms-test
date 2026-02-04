@@ -88,6 +88,8 @@ abstract class Field extends Component implements Htmlable
 
     public function toHtml()
     {
-        return Blade::renderComponent($this);
+        return Blade::render('components.fields.field-container', [
+            'field' => $this,
+        ]);
     }
 }
