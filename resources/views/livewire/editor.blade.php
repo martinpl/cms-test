@@ -126,12 +126,12 @@ new class extends Livewire\Component {
             </x-button>
         </div>
     </x-dashboard-header>
-    <x-sidebar.provider class="min-h-auto" x-data="{ selected: null }">
+    <x-sidebar.provider class="min-h-auto" x-data="{ selected: null }" x-init="$watch('selected', value => $wire.$refresh())">
         <x-sidebar collapsible="none" class="bg-transparent border-r h-auto">
             <x-sidebar.content class="pt-4">
                 <x-tabs defaultValue="inserter">
                     <div class="px-4">
-                        <x-tabs.list class="w-full h-8">
+                        <x-tabs.list class="w-full h-8" @click.stop="">
                             <x-tabs.trigger value="inserter" class="text-xs">
                                 <x-icon name="plus" /> Add
                             </x-tabs.trigger>
@@ -156,13 +156,14 @@ new class extends Livewire\Component {
                         <x-sidebar.menu>
                             @foreach ($content as $block)
                                 <x-sidebar.menu-item>
-                                    <x-sidebar.menu-button href="#" class="group text-sm font-medium justify-between">
+                                    <x-sidebar.menu-button href="#" class="group text-sm font-medium justify-between"
+                                        ::class="selected == {{ $loop->index }} && 'bg-sidebar-accent text-sidebar-accent-foreground'" @click.stop="selected = {{ $loop->index }}">
                                         <div class="flex items-center gap-2">
                                             <x-icon name="cuboid" class="size-3.5" stroke-width="1.5" />
                                             {{ $block['name'] }}
                                         </div>
                                         <x-button variant="ghost" size="icon" class="w-auto opacity-0 group-hover:opacity-100"
-                                            wire:click="remove({{ $loop->index }})">
+                                            wire:click.stop="remove({{ $loop->index }})">
                                             <x-icon name="eraser" class="size-3.5" stroke-width="1.5" />
                                         </x-button>
                                     </x-sidebar.menu-button>
@@ -179,11 +180,10 @@ new class extends Livewire\Component {
                     $class = 'Components\\' . Str::studly($block['name']) . '\Schema';
                 @endphp
                 {{-- TODO: update only one block or cache another? --}}
-                <div @click="$nextTick(() => { selected = {{ $loop->index }} })" wire:key="block-{{ $loop->index }}"
+                <div @click.stop="selected = {{ $loop->index }}" wire:key="block-{{ $loop->index }}"
                     :class="selected == {{ $loop->index }} && {{ $loop->index == 0 ? "'border-b p-4 md:p-6'" : "'border-t border-b p-4 md:p-6'" }}">
                     @if (method_exists($class, 'fields'))
-                        <div class="fields" x-show="selected == {{ $loop->index }}" x-cloak
-                            @click.outside="selected = null; $wire.$refresh();">
+                        <div class="fields" x-show="selected == {{ $loop->index }}" x-cloak @click.outside="selected = null">
                             <x-field.set>
                                 @foreach ($class::fields() as $field)
                                     <x-field.group>
@@ -198,13 +198,14 @@ new class extends Livewire\Component {
                             </x-field.set>
                         </div>
                     @endif
-                    <div class="preview" x-show="selected != {{ $loop->index }}">
+                    <div x-show="selected != {{ $loop->index }}">
                         {!! \App\BlockEditor::resolveComponent($block['name'], $content[$loop->index]['data']) !!}
                     </div>
                 </div>
             @endforeach
         </x-sidebar.inset>
-        <x-sidebar collapsible="none" class="bg-transparent sticky top-0 hidden h-svh border-l lg:flex" style="height: calc(100svh - 85px)">
+        <x-sidebar collapsible="none" class="bg-transparent sticky top-0 hidden h-svh border-l lg:flex" style="height: calc(100svh - 85px)"
+            @click.stop="">
             <x-sidebar.content class="pt-4">
                 <x-tabs defaultValue="page">
                     <div class="px-4">
@@ -220,24 +221,35 @@ new class extends Livewire\Component {
                     <x-tabs.content value="page" class="pb-4 overflow-auto" style="max-height: calc(100svh - 141px)">
                         <div class="px-4 pb-4 grid gap-4">
                             @if ($this->post?->link())
-                                <x-button variant="outline" wire:click="setAsHomePage({{ $this->post->id }})">
+                                <x-button variant="outline" size="sm" wire:click="setAsHomePage({{ $this->post->id }})">
                                     Set as homepage
                                 </x-button>
                             @endif
-                            <x-fields.media title="Thumbnail" wire:model="meta.thumbnail" />
-                            <div>
-                                Excerpt:
+                            <x-field tag="label">
+                                <x-field.label tag="div">
+                                    Featured image
+                                </x-field.label>
+                                <x-fields.media title="Thumbnail" wire:model="meta.thumbnail" />
+                            </x-field>
+                            <x-field tag="label">
+                                <x-field.label tag="div">
+                                    Excerpt
+                                </x-field.label>
                                 <x-textarea wire:model.fill="meta.excerpt"></x-textarea>
-                            </div>
-                            <div>
-                                Slug:
+                            </x-field>
+                            <x-field tag="label">
+                                <x-field.label tag="div">
+                                    Slug
+                                </x-field.label>
                                 <x-input type="text" wire:model.fill="name" value="{{ $this->post?->name }}" />
-                            </div>
-                            <div>
-                                Parent:
+                            </x-field>
+                            <x-field tag="label">
+                                <x-field.label tag="div">
+                                    Parent:
+                                </x-field.label>
                                 {{-- TODO: add combobox with search --}}
-                                <x-input type="number" wire:model.number.fill="parent" value="{{ $this->post?->parent_id }}" /><br>
-                            </div>
+                                <x-input type="number" wire:model.number.fill="parent" value="{{ $this->post?->parent_id }}" />
+                            </x-field>
                         </div>
                         @foreach (app(App\TaxonomyType::class)->findForPostType($this->postType) as $taxonomy)
                             @php
