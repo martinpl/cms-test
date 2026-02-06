@@ -88,7 +88,7 @@
                                 <path d="M5.636 5.636a9 9 0 1 0 12.728 12.728a9 9 0 0 0 -12.728 -12.728z"></path>
                                 <path d="M16.243 7.757a6 6 0 0 0 -8.486 0"></path>
                             </svg>
-                            <span class="text-base font-semibold">Acme Inc.</span>
+                            <span class="text-base font-semibold">{{ get_option('site_title', 'Acme Inc.') }}</span>
                         </a>
                     </li>
                 </ul>
