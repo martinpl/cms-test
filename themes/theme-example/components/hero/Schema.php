@@ -8,6 +8,12 @@ use App\View\Components\Fields\Text;
 
 class Schema
 {
+    public static function position()
+    {
+        // return 'side';
+        return 'content';
+    }
+
     public static function fields()
     {
         return [

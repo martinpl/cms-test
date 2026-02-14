@@ -14,6 +14,6 @@ $selected = Arr::get($this->$modelHead, $modelBody);
     @if ($selected)
         <img src="{{ Storage::url(Attachment::find($selected)->content) }}" style="height: 100px">
     @endif
-    <input type="hidden" wire:model="{{ $model }}" />
+    <input type="hidden" {{ $attributes }} />
     <livewire:media-field-selector :$model :$selected :wire:key="$model" />
 </div>

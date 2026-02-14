@@ -6,6 +6,7 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Str;
 use Illuminate\View\Component;
+use Illuminate\View\ComponentAttributeBag;
 
 abstract class Field extends Component implements Htmlable
 {
@@ -19,8 +20,11 @@ abstract class Field extends Component implements Htmlable
 
     public $rules;
 
+    public $live;
+
     public function __construct(public $title)
     {
+        $this->attributes = new ComponentAttributeBag;
         $this->name = Str::slug($title);
     }
 
@@ -38,7 +42,7 @@ abstract class Field extends Component implements Htmlable
 
     public function getWireModel()
     {
-        return $this->attributes->get('wire:model', "{$this->model}.{$this->name}");
+        return $this->attributes->whereStartsWith('wire:model')->first("{$this->model}.{$this->name}");
     }
 
     public function value(callable $value)
@@ -79,8 +83,23 @@ abstract class Field extends Component implements Htmlable
         return $this;
     }
 
+    public function live()
+    {
+        $this->live = true;
+
+        return $this;
+    }
+
+    public function getLive()
+    {
+        return $this->live;
+    }
+
     public function render()
     {
+        $live = $this->live ? '.live.debounce.400ms' : '';
+        $this->attributes->setAttributes(['wire:model'.$live => "{$this->model}.{$this->name}"]);
+
         $componentName = strtolower(class_basename($this));
 
         return view("components.fields.{$componentName}");

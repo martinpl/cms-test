@@ -126,7 +126,7 @@ new class extends Livewire\Component {
             </x-button>
         </div>
     </x-dashboard-header>
-    <x-sidebar.provider class="min-h-auto" x-data="{ selected: null }" x-init="$watch('selected', value => $wire.$refresh())">
+    <x-sidebar.provider class="min-h-auto" x-data="{ selected: null }">
         <x-sidebar collapsible="none" class="bg-transparent border-r h-auto">
             <x-sidebar.content class="pt-4">
                 <x-tabs defaultValue="inserter">
@@ -156,8 +156,8 @@ new class extends Livewire\Component {
                         <x-sidebar.menu>
                             @foreach ($content as $block)
                                 <x-sidebar.menu-item>
-                                    <x-sidebar.menu-button href="#" class="group text-sm font-medium justify-between"
-                                        ::class="selected == {{ $loop->index }} && 'bg-sidebar-accent text-sidebar-accent-foreground'" @click.stop="selected = {{ $loop->index }}">
+                                    <x-sidebar.menu-button class="group text-sm font-medium justify-between" ::class="selected == {{ $loop->index }} && 'bg-sidebar-accent text-sidebar-accent-foreground'"
+                                        tag="div" @click.stop="selected = {{ $loop->index }}">
                                         <div class="flex items-center gap-2">
                                             <x-icon name="cuboid" class="size-3.5" stroke-width="1.5" />
                                             {{ $block['name'] }}
@@ -176,30 +176,18 @@ new class extends Livewire\Component {
         </x-sidebar>
         <x-sidebar.inset class="overflow-auto" style="height: calc(100svh - 85px);">
             @foreach ($content as $block)
-                @php
-                    $class = 'Components\\' . Str::studly($block['name']) . '\Schema';
-                @endphp
+                @php $class = 'Components\\' . Str::studly($block['name']) . '\Schema'; @endphp
                 {{-- TODO: update only one block or cache another? --}}
                 <div @click.stop="selected = {{ $loop->index }}" wire:key="block-{{ $loop->index }}"
-                    :class="selected == {{ $loop->index }} && {{ $loop->index == 0 ? "'border-b p-4 md:p-6'" : "'border-t border-b p-4 md:p-6'" }}">
-                    @if (method_exists($class, 'fields'))
-                        <div class="fields" x-show="selected == {{ $loop->index }}" x-cloak @click.outside="selected = null">
-                            <x-field.set>
-                                @foreach ($class::fields() as $field)
-                                    <x-field.group>
-                                        @php
-                                            // TODO: validation
-                                            $field->model("content.{$loop->parent->index}.data");
-                                            $field->value(fn() => $content[$loop->parent->index]['data'][$field->name] ?? null); // TODO: This should not be callback
-                                        @endphp
-                                        {{ $field }}
-                                    </x-field.group>
-                                @endforeach
-                            </x-field.set>
+                    :class="selected == {{ $loop->index }} &&
+                        {{ $loop->index == 0 ? "'border-b'" : "'border-t border-b'" }}">
+                    @if (method_exists($class, 'fields') && $class::position() == 'content')
+                        <div class="p-4 md:p-6" x-show="selected == {{ $loop->index }}" x-cloak @click.outside="selected = null">
+                            <x-fields.fields :fields="$class::fields()" :live="true" model="content.{$loop->parent->index}.data" />
                         </div>
                     @endif
-                    <div x-show="selected != {{ $loop->index }}">
-                        {!! \App\BlockEditor::resolveComponent($block['name'], $content[$loop->index]['data']) !!}
+                    <div @if ($class::position() == 'content') x-show="selected != {{ $loop->index }}" @endif>
+                        {!! \App\BlockEditor::resolveComponent($block['name'], $this->content[$loop->index]['data']) !!}
                     </div>
                 </div>
             @endforeach
@@ -207,7 +195,7 @@ new class extends Livewire\Component {
         <x-sidebar collapsible="none" class="bg-transparent sticky top-0 hidden h-svh border-l lg:flex" style="height: calc(100svh - 85px)"
             @click.stop="">
             <x-sidebar.content class="pt-4">
-                <x-tabs defaultValue="page">
+                <x-tabs defaultValue="page" x-init="$watch('selected', (value) => { if (value != null) { tab = 'block' } })">
                     <div class="px-4">
                         <x-tabs.list class="w-full h-8">
                             <x-tabs.trigger value="page" class="text-xs">
@@ -296,7 +284,14 @@ new class extends Livewire\Component {
                         @endforeach
                     </x-tabs.content>
                     <x-tabs.content value="block" class="px-4 pb-4 overflow-auto" style="max-height: calc(100svh - 141px)">
-                        <div x-html="selected"></div>
+                        @foreach ($content as $block)
+                            @php $class = 'Components\\' . Str::studly($block['name']) . '\Schema'; @endphp
+                            @if (method_exists($class, 'fields') && $class::position() == 'side')
+                                <div x-show="selected == {{ $loop->index }}" x-cloak>
+                                    <x-fields.fields :fields="$class::fields()" :live="true" model="content.{$loop->parent->index}.data" />
+                                </div>
+                            @endif
+                        @endforeach
                     </x-tabs.content>
                 </x-tabs>
             </x-sidebar.content>

@@ -38,7 +38,7 @@ $alpineModel = preg_replace('/\.(\d+)\./', '[$1].', $model); // TODO?
                 </div>
                 <div class="p-4 md:p-6 space-y-4">
                     @foreach ($getSchema() as $field)
-                        {{ $field->model("{$model}.{$loop->parent->index}") }}
+                        {{ $field->live($getLive())->model("{$model}.{$loop->parent->index}") }}
                     @endforeach
                 </div>
             </div>

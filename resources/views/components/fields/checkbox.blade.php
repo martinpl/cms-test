@@ -1,1 +1,1 @@
-<x-checkbox :wire:model="$getWireModel()" />
+<x-checkbox :$attributes />

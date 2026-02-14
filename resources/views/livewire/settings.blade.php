@@ -43,13 +43,7 @@ new class extends Livewire\Component
 </x-slot:title>
 
 <x-field.group tag="form" wire:submit="submit">
-    <x-field.set>
-        @foreach ($this->fields as $field)
-            <x-field.group>
-                {{ $field }}
-            </x-field.group>
-        @endforeach
-    </x-field.set>
+    <x-fields :fields="$this->fields" />
     <x-field orientation="horizontal">
         <x-button type="submit">Save Changes</x-button>
     </x-field>

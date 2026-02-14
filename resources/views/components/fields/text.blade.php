@@ -1,1 +1,1 @@
-<x-input :wire:model="$getWireModel()" />
+<x-input :$attributes />
