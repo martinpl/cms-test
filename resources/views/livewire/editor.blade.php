@@ -241,7 +241,7 @@ new class extends Livewire\Component {
                         </div>
                         @foreach (app(App\TaxonomyType::class)->findForPostType($this->postType) as $taxonomy)
                             @php
-                                $taxonomies = App\Models\Taxonomy::where('type', $taxonomy['name'])->orderBy('title')->get();
+                                $taxonomies = App\Taxonomies\Taxonomy::where('type', $taxonomy['name'])->orderBy('title')->get();
                                 $selectedTaxonomies = $this->post?->terms->where('type', $taxonomy['name'])->pluck('id')->toArray() ?? [];
                             @endphp
                             <x-sidebar.separator class="mx-0" />

@@ -3,10 +3,10 @@
 namespace App\PostTypes;
 
 use App\Hook;
-use App\Models\Taxonomy;
 use App\Models\Traits\HasMeta;
 use App\Models\User;
 use App\PostTypeRegistry;
+use App\Taxonomies\Taxonomy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

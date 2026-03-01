@@ -30,12 +30,15 @@ new class extends \Livewire\Component
 
     public function save()
     {
-        App\Models\Taxonomy::updateOrCreate(['id' => $this->id], [
-            'title' => $this->editor['title'],
-            'description' => $this->editor['description'],
-            'type' => $this->taxonomyType['name'],
-            'parent_id' => $this->editor['parent_id'] ?: null,
-        ]);
+        App\Taxonomies\Taxonomy::updateOrCreate(
+            ['id' => $this->id],
+            [
+                'title' => $this->editor['title'],
+                'description' => $this->editor['description'],
+                'type' => $this->taxonomyType['name'],
+                'parent_id' => $this->editor['parent_id'] ?: null,
+            ],
+        );
     }
 
     protected function columns()
@@ -50,7 +53,7 @@ new class extends \Livewire\Component
 
     protected function items()
     {
-        return App\Models\Taxonomy::where('type', $this->taxonomyType)
+        return App\Taxonomies\Taxonomy::where('type', $this->taxonomyType)
             ->when($this->search, function ($query) {
                 $query->search($this->search);
             })
@@ -107,19 +110,19 @@ new class extends \Livewire\Component
 
     public function destroy($termId)
     {
-        App\Models\Taxonomy::destroy($termId);
+        App\Taxonomies\Taxonomy::destroy($termId);
     }
 
     public function render()
     {
-        $term = $this->id ? App\Models\Taxonomy::find($this->id) : null;
+        $term = $this->id ? App\Taxonomies\Taxonomy::find($this->id) : null;
         if ($this->id && ! $term) {
             abort(404);
         }
 
         return $this->view([
             'term' => $term,
-            'parents' => $this->taxonomyType['hierarchical'] ? App\Models\Taxonomy::where('type', $this->taxonomyType['name'])->where('id', '!=', $this->id)->get() : collect(),
+            'parents' => $this->taxonomyType['hierarchical'] ? App\Taxonomies\Taxonomy::where('type', $this->taxonomyType['name'])->where('id', '!=', $this->id)->get() : collect(),
         ]);
     }
 }; ?>

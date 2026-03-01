@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Taxonomies;
 
 use App\Models\Traits\HasMeta;
 use App\PostTypes\AnyPost;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -22,6 +23,26 @@ class Taxonomy extends Model
         'parent_id',
         'order',
     ];
+
+    public static $type = null;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        if (static::$type) {
+            $this->attributes['type'] = static::$type;
+        }
+    }
+
+    protected static function booted()
+    {
+        if (static::$type) {
+            static::addGlobalScope('type', function (Builder $builder) {
+                $builder->where('type', static::$type);
+            });
+        }
+    }
 
     protected static function boot()
     {

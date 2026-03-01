@@ -24,6 +24,16 @@ class TaxonomyType
         $this->list[$taxonomyType] = array_merge($defaults, $args);
     }
 
+    public function registerClasses($taxonomies)
+    {
+        foreach ($taxonomies as $taxonomy) {
+            $this->register($taxonomy::$type, [
+                ...$taxonomy::config(),
+                'class' => $taxonomy,
+            ]);
+        }
+    }
+
     public function find($name)
     {
         if (! empty($this->list[$name])) {
