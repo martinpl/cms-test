@@ -19,15 +19,6 @@ new class extends \Livewire\Component
         'parent_id' => null,
     ];
 
-    public function mount($taxonomyType, $postType)
-    {
-        $this->taxonomyType = app(App\TaxonomyType::class)->find($taxonomyType);
-        abort_if(! $this->taxonomyType, 404);
-
-        $postType = app(App\PostTypeRegistry::class)->find($postType);
-        abort_if(! $postType, 404);
-    }
-
     public function save()
     {
         App\Taxonomies\Taxonomy::updateOrCreate(
@@ -65,7 +56,7 @@ new class extends \Livewire\Component
         $title = Blade::render(
             <<<'BLADE'
                 <x-button
-                    :href="route('taxonomies', [$taxonomyType['name'], $postType, $term->id])"
+                    :href="route('taxonomies', [$taxonomyType['name'], $postType['name'], $term->id])"
                     variant="link"
                     class="text-foreground w-fit p-0 h-auto"
                 >
@@ -91,7 +82,7 @@ new class extends \Livewire\Component
     private function actions($term)
     {
         $actions = [
-            'edit' => '<a href="'.route('taxonomies', [$this->taxonomyType['name'], $this->postType, $term->id]).'">Edit</a>',
+            'edit' => '<a href="'.route('taxonomies', [$this->taxonomyType['name'], $this->postType['name'], $term->id]).'">Edit</a>',
             'delete' => '<button wire:click="destroy('.$term->id.')" class="text-destructive/80" wire:confirm="Are you sure you want to delete this term?">Delete</button>',
         ];
 
@@ -126,10 +117,6 @@ new class extends \Livewire\Component
         ]);
     }
 }; ?>
-
-<x-slot:title>
-    {{ $taxonomyType['plural'] }}
-</x-slot>
 
 <div class="flex gap-11">
     <form wire:submit="save" class="space-y-6 flex-4/12">

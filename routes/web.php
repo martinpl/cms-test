@@ -7,7 +7,7 @@ Route::prefix('dashboard')
     ->group(function () {
         Route::view('list/{postType}', 'list')->name('list');
         Route::view('editor/{postType}/{id?}', 'editor')->name('editor');
-        Route::livewire('taxonomies/{taxonomyType}/{postType}/{id?}', 'taxonomies')->name('taxonomies');
+        Route::view('taxonomies/{taxonomyType}/{postType}/{id?}', 'taxonomies')->name('taxonomies');
         Route::livewire('user/{user?}', 'user')->name('user');
     });
 

@@ -19,6 +19,7 @@ class TaxonomyType
             'hierarchical' => false, // TODO
             'order' => 0, // TODO
             'post_types' => [],
+            'editor' => 'taxonomies',
         ];
 
         $this->list[$taxonomyType] = array_merge($defaults, $args);
