@@ -79,7 +79,7 @@ trait HasMeta
         return $query->whereExists(fn ($q) => $q->select(DB::raw(1))
             ->from('meta')
             ->whereColumn('metable_id', $model->getTable().'.id')
-            ->where('metable_type', get_class($model))
+            ->where('metable_type', $model->getMorphClass())
             ->where('key', $key)
             ->where("value{$selector}", $operator, $value)
         );
@@ -99,7 +99,7 @@ trait HasMeta
         return $query->whereExists(fn ($q) => $q->select(DB::raw(1))
             ->from('meta')
             ->whereColumn('metable_id', $model->getTable().'.id')
-            ->where('metable_type', get_class($model))
+            ->where('metable_type', $model->getMorphClass())
             ->where('key', $key)
             ->whereJsonContains("meta.value{$selector}", $value)
         );

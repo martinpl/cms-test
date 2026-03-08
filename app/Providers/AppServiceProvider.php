@@ -7,6 +7,7 @@ use App\AdminMenu\AdminMenuList;
 use App\BlockEditor;
 use App\BlockType;
 use App\Hook;
+use App\MenuRegistry;
 use App\Models\Option;
 use App\PostTypeRegistry;
 use App\Role;
@@ -27,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('menu.admin', fn () => new AdminMenuList);
         $this->app->singleton('menu.admin-bar', fn () => new AdminMenuList);
         $this->app->singleton(Role::class);
+        $this->app->singleton(MenuRegistry::class);
     }
 
     public function boot(): void

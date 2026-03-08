@@ -66,6 +66,11 @@ class Taxonomy extends Model
         return $slug;
     }
 
+    public function getMorphClass()
+    {
+        return "taxonomy.{$this->type}";
+    }
+
     public function posts()
     {
         return $this->belongsToMany(AnyPost::class, 'term_relationships', 'term_id', 'post_id');

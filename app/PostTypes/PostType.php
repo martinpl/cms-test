@@ -102,19 +102,24 @@ abstract class PostType extends \Illuminate\Database\Eloquent\Model
         );
     }
 
-    public function link()
+    public function link($absolute = false)
     {
         $route = app(PostTypeRegistry::class)->find($this->type)['route'];
         if ($route === false) {
             return null;
         }
 
-        return route("single.{$this->type}", $this->slugStructure());
+        return route("single.{$this->type}", $this->slugStructure(), $absolute);
     }
 
     public function parent()
     {
         return $this->belongsTo(static::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(static::class, 'parent_id');
     }
 
     public function user()

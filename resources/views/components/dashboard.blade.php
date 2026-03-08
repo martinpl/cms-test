@@ -1,4 +1,4 @@
-@props(['title', 'hideHeader' => false, 'action' => ''])
+@props(['title', 'hideHeader' => false, 'action' => '', 'container' => null])
 
 {{-- TODO: Move out to php, add helper for admin menu --}}
 @php
@@ -152,7 +152,7 @@
                     {{ $action }}
                 </x-dashboard-header>
             @endif
-            <div {{ $attributes->twMerge('@container/main p-4 md:p-6') }}>
+            <div {{ $attributes->merge($container?->attributes->getAttributes() ?? [])->twMerge('@container/main p-4 md:p-6') }}>
                 {{ $slot }}
             </div>
         </main>
