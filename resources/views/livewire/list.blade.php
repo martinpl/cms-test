@@ -86,7 +86,7 @@ new class extends \Livewire\Component
                     variant="link"
                     class="text-foreground w-fit p-0 h-auto"
                 >
-                    {{ $post->title }}
+                    {{ $post->title ?: '(no title)' }}
                 </x-button>
                 @if ($post->status === 'draft')
                     <span class="text-muted-foreground">— Draft</span>

@@ -67,7 +67,7 @@ abstract class PostType extends \Illuminate\Database\Eloquent\Model
 
         static::saving(function ($post) {
             if (empty($post->name)) {
-                $post->name = $post->generateUniqueSlug($post->title);
+                $post->name = $post->generateUniqueSlug($post->title ?: rand());
             }
 
             if ($post->isDirty('name')) {
