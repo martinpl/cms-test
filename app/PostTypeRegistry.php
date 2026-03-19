@@ -37,6 +37,8 @@ class PostTypeRegistry
                 ...$postType::config(),
                 'class' => $postType,
             ]);
+
+            $postType::register();
         }
     }
 

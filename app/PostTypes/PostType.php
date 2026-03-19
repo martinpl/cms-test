@@ -42,6 +42,8 @@ abstract class PostType extends \Illuminate\Database\Eloquent\Model
         }
     }
 
+    public static function register() {}
+
     protected static function booted()
     {
         if (static::$type) {

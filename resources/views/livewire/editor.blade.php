@@ -40,6 +40,7 @@ new class extends Livewire\Component {
     public function add($name)
     {
         $this->content[] = [
+            'index' => count($this->content),
             'name' => $name,
             'data' => [],
         ];
@@ -176,19 +177,14 @@ new class extends Livewire\Component {
         </x-sidebar>
         <x-sidebar.inset class="overflow-auto" style="height: calc(100svh - 85px);">
             @foreach ($content as $block)
-                @php $class = 'Components\\' . Str::studly($block['name']) . '\Schema'; @endphp
+                @php
+                    $blockType = app(App\BlockType::class)->find($block['name']);
+                @endphp
                 {{-- TODO: update only one block or cache another? --}}
                 <div @click.stop="selected = {{ $loop->index }}" wire:key="block-{{ $loop->index }}"
                     :class="selected == {{ $loop->index }} &&
                         {{ $loop->index == 0 ? "'border-b'" : "'border-t border-b'" }}">
-                    @if (method_exists($class, 'fields') && $class::position() == 'content')
-                        <div class="p-4 md:p-6" x-show="selected == {{ $loop->index }}" x-cloak @click.outside="selected = null">
-                            <x-fields.fields :fields="$class::fields()" :live="true" model="content.{$loop->parent->index}.data" />
-                        </div>
-                    @endif
-                    <div @if ($class::position() == 'content') x-show="selected != {{ $loop->index }}" @endif>
-                        {!! \App\BlockEditor::resolveComponent($block['name'], $this->content[$loop->index]['data']) !!}
-                    </div>
+                    {!! $blockType['edit']($block) !!}
                 </div>
             @endforeach
         </x-sidebar.inset>
@@ -285,12 +281,10 @@ new class extends Livewire\Component {
                     </x-tabs.content>
                     <x-tabs.content value="block" class="px-4 pb-4 overflow-auto" style="max-height: calc(100svh - 141px)">
                         @foreach ($content as $block)
-                            @php $class = 'Components\\' . Str::studly($block['name']) . '\Schema'; @endphp
-                            @if (method_exists($class, 'fields') && $class::position() == 'side')
-                                <div x-show="selected == {{ $loop->index }}" x-cloak>
-                                    <x-fields.fields :fields="$class::fields()" :live="true" model="content.{$loop->parent->index}.data" />
-                                </div>
-                            @endif
+                            @php
+                                $blockType = app(App\BlockType::class)->find($block['name']);
+                            @endphp
+                            {!! $blockType['side']($block) !!}
                         @endforeach
                     </x-tabs.content>
                 </x-tabs>

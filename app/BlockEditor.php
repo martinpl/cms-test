@@ -28,8 +28,9 @@ class BlockEditor
 
             $html = '';
             $blocks = json_decode($content, true);
-            foreach ($blocks as $block) {
-                $html .= self::resolveComponent($block['name'], $block['data']);
+            foreach ($blocks as $index => $block) {
+                $blockType = app(BlockType::class)->find($block['name']);
+                $html .= $blockType['render']($block);
             }
 
             return $html;
@@ -49,13 +50,13 @@ class BlockEditor
         });
     }
 
-    public static function resolveComponent(string $name, array $data)
+    public static function resolveComponent(array $block)
     {
-        $class = 'Components\\'.Str::studly($name).'\\'.Str::studly($name);
+        $class = 'Components\\'.Str::studly($block['name']).'\\'.Str::studly($block['name']);
         if (class_exists($class)) {
-            return Blade::renderComponent(new $class($data));
+            return Blade::renderComponent(new $class($block['data']));
         } else {
-            return view('components.'.Str::slug($name).'.'.Str::slug($name), $data)->render();
+            return view('components.'.Str::slug($block['name']).'.'.Str::slug($block['name']), $block['data'])->render();
         }
     }
 }
