@@ -99,8 +99,7 @@ abstract class Field extends Component implements Htmlable
     {
         $live = $this->live ? '.live.debounce.400ms' : '';
         $this->attributes->setAttributes(['wire:model'.$live => "{$this->model}.{$this->name}"]);
-
-        $componentName = strtolower(class_basename($this));
+        $componentName = str(get_class($this))->classBasename()->kebab()->value;
 
         return view("components.fields.{$componentName}");
     }
