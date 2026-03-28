@@ -24,8 +24,7 @@ class MetaboxRegistry
         $metaboxes = [];
         foreach ($this->metaboxes[$location] as $metaboxGroup) {
             foreach ($metaboxGroup as $metabox) {
-                $view = $metabox['view'] instanceof \Closure ? $metabox['view'](...$context) : $metabox['view']->with($context);
-                $metabox['view'] = $view;
+                $metabox['view'] = $metabox['view'](...$context);
                 $metaboxes[] = $metabox;
             }
         }

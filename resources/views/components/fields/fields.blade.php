@@ -1,6 +1,6 @@
 @props(['fields' => [], 'model' => false, 'live' => false])
 
-<x-field.set>
+<x-field.set :$attributes>
     @foreach ($fields as $field)
         <x-field.group>
             @php

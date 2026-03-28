@@ -6,4 +6,5 @@ return [
     App\PostTypes\Page::class,
     App\PostTypes\MenuItem::class,
     App\PostTypes\Pattern::class,
+    App\PostTypes\Template::class,
 ];

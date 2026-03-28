@@ -2,13 +2,19 @@
 
 namespace App;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Str;
 
 // TODO: Move to facade?
 class BlockType
 {
-    public private(set) array $list;
+    public private(set) Collection $list;
+
+    public function __construct()
+    {
+        $this->list = collect();
+    }
 
     // TODO: Move to builder
     public function register($blockType, $args = [])
@@ -48,6 +54,7 @@ class BlockType
                     @endif
                 BLADE, compact('block', 'class'));
             },
+            'postTypes' => [],
         ];
 
         $this->list[$blockType] = array_merge($defaults, $args);

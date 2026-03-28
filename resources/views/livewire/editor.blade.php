@@ -29,6 +29,17 @@ new class extends Livewire\Component {
             $this->content = json_decode($this->post->getRawOriginal('content'), true) ?: [];
             $this->meta = $this->post->meta();
         }
+
+        if (!$this->post) {
+            $postType = app(App\PostTypeRegistry::class)->find($this->postType);
+            foreach ($postType['template'] as $index => $block) {
+                $this->content[] = [
+                    'index' => $index,
+                    'name' => $block[0],
+                    'data' => $block[1] ?? [],
+                ];
+            }
+        }
     }
 
     #[Computed]
@@ -144,7 +155,7 @@ new class extends Livewire\Component {
                     {{-- TODO: Change sides scroll width --}}
                     <x-tabs.content value="inserter" class="px-4 pb-4 overflow-auto" style="max-height: calc(100svh - 141px)">
                         <div class="grid grid-cols-3">
-                            @foreach (app(\App\BlockType::class)->list ?? [] as $slug => $block)
+                            @foreach (app(\App\BlockType::class)->list->filter(fn($item) => !$item['postTypes'] || in_array($this->postType, $item['postTypes'])) as $slug => $block)
                                 <x-button variant="ghost" wire:click="add(`{{ $slug }}`)"
                                     class="text-xs font-normal flex-col h-20 gap-3">
                                     <x-icon name="cuboid" class="size-5" stroke-width="1.5" />
@@ -235,6 +246,10 @@ new class extends Livewire\Component {
                                 <x-input type="number" wire:model.number.fill="parent" value="{{ $this->post?->parent_id }}" />
                             </x-field>
                         </div>
+                        {{-- TODO: Move editor / post type features to metabox  --}}
+                        @foreach ([...app(App\MetaboxRegistry::class)->get('editor.side', [$this->post]), ...app(App\MetaboxRegistry::class)->get("editor.side.{$this->postType}", [$this->post])] as $metabox)
+                            {{ $metabox['view'] }}
+                        @endforeach
                         @foreach (app(App\TaxonomyType::class)->findForPostType($this->postType) as $taxonomy)
                             @php
                                 $taxonomies = App\Taxonomies\Taxonomy::where('type', $taxonomy['name'])->orderBy('title')->get();

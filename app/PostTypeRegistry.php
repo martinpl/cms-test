@@ -25,6 +25,7 @@ class PostTypeRegistry
             'editor' => 'editor',
             'list' => 'list',
             'class' => null,
+            'template' => [],
         ];
 
         $this->list[$postType] = array_merge($defaults, $args);

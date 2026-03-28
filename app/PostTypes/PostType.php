@@ -99,8 +99,8 @@ abstract class PostType extends \Illuminate\Database\Eloquent\Model
     protected function content(): Attribute
     {
         return Attribute::make(
-            get: fn ($value, $attributes) => app(Hook::class)->applyFilters('post.content', $value, $attributes),
-            set: fn ($value, $attributes) => app(Hook::class)->applyFilters('post.save.content', $value, $attributes),
+            get: fn ($value) => app(Hook::class)->applyFilters('post.content', $value, $this),
+            set: fn ($value) => app(Hook::class)->applyFilters('post.save.content', $value, $this),
         );
     }
 
