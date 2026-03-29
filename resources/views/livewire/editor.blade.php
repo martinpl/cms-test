@@ -1,5 +1,7 @@
 <?php
 
+use App\Facades\BlockType;
+use App\Facades\Metabox;
 use App\PostTypes\AnyPost;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
@@ -155,7 +157,7 @@ new class extends Livewire\Component {
                     {{-- TODO: Change sides scroll width --}}
                     <x-tabs.content value="inserter" class="px-4 pb-4 overflow-auto" style="max-height: calc(100svh - 141px)">
                         <div class="grid grid-cols-3">
-                            @foreach (app(\App\BlockType::class)->list->filter(fn($item) => !$item['postTypes'] || in_array($this->postType, $item['postTypes'])) as $slug => $block)
+                            @foreach (BlockType::list()->filter(fn($item) => !$item['postTypes'] || in_array($this->postType, $item['postTypes'])) as $slug => $block)
                                 <x-button variant="ghost" wire:click="add(`{{ $slug }}`)"
                                     class="text-xs font-normal flex-col h-20 gap-3">
                                     <x-icon name="cuboid" class="size-5" stroke-width="1.5" />
@@ -189,7 +191,7 @@ new class extends Livewire\Component {
         <x-sidebar.inset class="overflow-auto" style="height: calc(100svh - 85px);">
             @foreach ($content as $block)
                 @php
-                    $blockType = app(App\BlockType::class)->find($block['name']);
+                    $blockType = BlockType::find($block['name']);
                 @endphp
                 {{-- TODO: update only one block or cache another? --}}
                 <div @click.stop="selected = {{ $loop->index }}" wire:key="block-{{ $loop->index }}"
@@ -247,8 +249,8 @@ new class extends Livewire\Component {
                             </x-field>
                         </div>
                         {{-- TODO: Move editor / post type features to metabox  --}}
-                        @foreach ([...app(App\MetaboxRegistry::class)->get('editor.side', [$this->post]), ...app(App\MetaboxRegistry::class)->get("editor.side.{$this->postType}", [$this->post])] as $metabox)
-                            {{ $metabox['view'] }}
+                        @foreach (Metabox::get(['editor.side', "editor.side.{$this->postType}"]) as $metabox)
+                            {{ $metabox['callback']($this->post) }}
                         @endforeach
                         @foreach (app(App\TaxonomyType::class)->findForPostType($this->postType) as $taxonomy)
                             @php
@@ -297,7 +299,7 @@ new class extends Livewire\Component {
                     <x-tabs.content value="block" class="px-4 pb-4 overflow-auto" style="max-height: calc(100svh - 141px)">
                         @foreach ($content as $block)
                             @php
-                                $blockType = app(App\BlockType::class)->find($block['name']);
+                                $blockType = BlockType::find($block['name']);
                             @endphp
                             {!! $blockType['side']($block) !!}
                         @endforeach

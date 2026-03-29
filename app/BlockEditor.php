@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Facades\BlockType;
+use App\Facades\Hook;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Str;
 
@@ -16,7 +18,7 @@ class BlockEditor
     protected static function contentRead()
     {
         // TODO: Add hook attributes
-        app(Hook::class)->addFilter('post.content', function ($content, $post): string {
+        Hook::addFilter('post.content', function ($content, $post): string {
             $editor = app(PostTypeRegistry::class)->find($post->type)['editor']; // TODO: awkward
             if ($editor != 'editor') {
                 return $content;
@@ -29,7 +31,7 @@ class BlockEditor
             $html = '';
             $blocks = json_decode($content, true);
             foreach ($blocks as $index => $block) {
-                $blockType = app(BlockType::class)->find($block['name']);
+                $blockType = BlockType::find($block['name']);
                 $html .= $blockType['render']($block);
             }
 
@@ -40,7 +42,7 @@ class BlockEditor
     protected static function contentSave()
     {
         // TODO: Type will not be available if we provide it in wrong order (after content) on save. I'm not sure if I like passing $attributes anyway
-        app(Hook::class)->addFilter('post.save.content', function ($content, $post) {
+        Hook::addFilter('post.save.content', function ($content, $post) {
             $editor = app(PostTypeRegistry::class)->find($post->type)['editor'];
             if ($editor != 'editor') {
                 return $content;

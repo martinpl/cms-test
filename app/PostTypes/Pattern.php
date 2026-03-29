@@ -2,6 +2,7 @@
 
 namespace App\PostTypes;
 
+use App\Facades\BlockType;
 use Illuminate\Support\Facades\Blade;
 
 class Pattern extends PostType
@@ -22,7 +23,7 @@ class Pattern extends PostType
     {
         // TODO: Use dropdown as input
         // TODO: Prevent stacking in infinite loop
-        app(\App\BlockType::class)->register('pattern', [
+        BlockType::register('pattern', [
             'name' => 'Pattern',
             'render' => function ($block) {
                 return Blade::render(<<<'BLADE'

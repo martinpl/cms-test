@@ -2,7 +2,7 @@
 
 namespace App\PostTypes;
 
-use App\Hook;
+use App\Facades\Hook;
 use App\Models\Traits\HasMeta;
 use App\Models\User;
 use App\PostTypeRegistry;
@@ -99,8 +99,8 @@ abstract class PostType extends \Illuminate\Database\Eloquent\Model
     protected function content(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => app(Hook::class)->applyFilters('post.content', $value, $this),
-            set: fn ($value) => app(Hook::class)->applyFilters('post.save.content', $value, $this),
+            get: fn ($value) => Hook::applyFilters('post.content', $value, $this),
+            set: fn ($value) => Hook::applyFilters('post.save.content', $value, $this),
         );
     }
 

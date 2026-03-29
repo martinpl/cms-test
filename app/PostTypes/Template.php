@@ -2,7 +2,9 @@
 
 namespace App\PostTypes;
 
-use App\Hook;
+use App\Facades\BlockType;
+use App\Facades\Hook;
+use App\Facades\Metabox;
 use App\View\Components\Fields\NativeSelect;
 use Illuminate\View\ComponentAttributeBag;
 
@@ -32,29 +34,26 @@ class Template extends PostType
 
     protected static function registerMetabox()
     {
-        app(\App\MetaboxRegistry::class)->register(
-            false,
-            'editor.side.page', // TODO: Add post type "support"
-            function () {
-                return view('components.fields.fields', [
-                    'attributes' => new ComponentAttributeBag(['class' => 'px-4 pb-4']),
-                    'fields' => [
-                        NativeSelect::make('Template')
-                            ->model('meta')
-                            // TODO: Add combobox / search
-                            ->options(Template::all()
-                                ->mapWithKeys(fn ($item) => [
-                                    $item->id => $item->name,
-                                ])->all()),
-                    ],
-                ]);
-            },
+        // TODO: Add post type "support"
+        Metabox::register('template', false, 'editor.side.page',
+            fn () => view('components.fields.fields', [
+                'attributes' => new ComponentAttributeBag(['class' => 'px-4 pb-4']),
+                'fields' => [
+                    NativeSelect::make('Template')
+                        ->model('meta')
+                        // TODO: Add combobox / search
+                        ->options(Template::all()
+                            ->mapWithKeys(fn ($item) => [
+                                $item->id => $item->name,
+                            ])->all()),
+                ],
+            ])
         );
     }
 
     protected static function registerContentBlock()
     {
-        app(\App\BlockType::class)->register('content', [
+        BlockType::register('content', [
             'name' => 'Content',
             'postTypes' => [Template::$type],
             'render' => function () {
@@ -72,7 +71,7 @@ class Template extends PostType
 
     protected static function adjustPostContent()
     {
-        app(Hook::class)->addFilter('post.content', function ($content, $post): string {
+        Hook::addFilter('post.content', function ($content, $post): string {
             if ($post->meta('template')) { // TODO: Add post type "support"
                 $template = Template::find($post->meta('template'));
                 $content = str_replace('__TEMPLATE__', $content, $template->content);

@@ -1,15 +1,14 @@
 <?php
 
-namespace App;
+namespace App\Foundation;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Str;
 
-// TODO: Move to facade?
 class BlockType
 {
-    public private(set) Collection $list;
+    protected Collection $list;
 
     public function __construct()
     {
@@ -17,7 +16,7 @@ class BlockType
     }
 
     // TODO: Move to builder
-    public function register($blockType, $args = [])
+    public function register($blockType, $args = []): void
     {
         // TODO: Namespace to prevent conflicts?
         if (isset($this->list[$blockType])) {
@@ -60,12 +59,17 @@ class BlockType
         $this->list[$blockType] = array_merge($defaults, $args);
     }
 
-    public function find($name)
+    public function find($name): ?array
     {
         if (! empty($this->list[$name])) {
             return $this->list[$name];
         }
 
         return null;
+    }
+
+    public function list(): Collection
+    {
+        return $this->list;
     }
 }

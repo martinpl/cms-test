@@ -5,10 +5,7 @@ namespace App\Providers;
 use App\AdminMenu\AdminMenu;
 use App\AdminMenu\AdminMenuList;
 use App\BlockEditor;
-use App\BlockType;
-use App\Hook;
 use App\MenuRegistry;
-use App\MetaboxRegistry;
 use App\Models\Option;
 use App\PostTypeRegistry;
 use App\Role;
@@ -21,16 +18,16 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->singleton(Hook::class);
+        $this->app->singleton(\App\Foundation\Hook::class);
+        $this->app->singleton(\App\Foundation\Metabox::class);
         $this->app->singleton(PostTypeRegistry::class);
         $this->app->singleton(TaxonomyType::class);
-        $this->app->singleton(BlockType::class);
+        $this->app->singleton(\App\Foundation\BlockType::class);
         BlockEditor::register();
         $this->app->singleton('menu.admin', fn () => new AdminMenuList);
         $this->app->singleton('menu.admin-bar', fn () => new AdminMenuList);
         $this->app->singleton(Role::class);
         $this->app->singleton(MenuRegistry::class);
-        $this->app->singleton(MetaboxRegistry::class);
     }
 
     public function boot(): void

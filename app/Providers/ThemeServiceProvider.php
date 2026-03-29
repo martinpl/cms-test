@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\AdminMenu\AdminMenu;
+use App\Facades\BlockType;
 use App\Theme;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
@@ -69,7 +70,7 @@ class ThemeServiceProvider extends ServiceProvider
             }
 
             $slug = Str::slug($meta['name']);
-            app(\App\BlockType::class)->register($slug, $meta);
+            BlockType::register($slug, $meta);
         }
     }
 
