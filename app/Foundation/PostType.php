@@ -30,7 +30,7 @@ class PostType
         $this->list[$postType] = array_merge($defaults, $args);
     }
 
-    public function registerClasses(array $postTypes): void
+    public function registerFromClasses(array $postTypes): void
     {
         foreach ($postTypes as $postType) {
             $this->register($postType::$type, [

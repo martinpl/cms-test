@@ -11,7 +11,7 @@ class PostTypeServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        PostType::registerClasses(config('post-types'));
+        PostType::registerFromClasses(config('post-types'));
         $this->addRoutes();
     }
 

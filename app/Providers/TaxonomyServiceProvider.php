@@ -9,6 +9,6 @@ class TaxonomyServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        Taxonomy::registerClasses(config('taxonomies'));
+        Taxonomy::registerFromClasses(config('taxonomies'));
     }
 }

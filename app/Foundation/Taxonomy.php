@@ -25,7 +25,7 @@ class Taxonomy
         $this->list[$taxonomy] = array_merge($defaults, $args);
     }
 
-    public function registerClasses(array $taxonomies): void
+    public function registerFromClasses(array $taxonomies): void
     {
         foreach ($taxonomies as $taxonomy) {
             $this->register($taxonomy::$type, [

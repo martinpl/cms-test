@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\AdminMenu\AdminMenu;
 use App\AdminMenu\AdminMenuList;
 use App\BlockEditor;
-use App\Facades\Taxonomy as TaxonomyFacade;
 use App\Models\Option;
 use App\Role;
 use Illuminate\Support\HtmlString;
@@ -64,19 +63,5 @@ class AppServiceProvider extends ServiceProvider
             return Option::where('autoload', true)->select('name', 'value')->get()->pluck('value', 'name')->toArray();
         });
 
-        // TODO: Move out to dedicated taxonomies classes with register via config
-        TaxonomyFacade::register('category', [
-            'title' => __('Category'),
-            'plural' => __('Categories'),
-            'hierarchical' => true,
-            'post_types' => ['post'],
-        ]);
-
-        TaxonomyFacade::register('tag', [
-            'title' => __('Tag'),
-            'plural' => __('Tags'),
-            'hierarchical' => false,
-            'post_types' => ['post'],
-        ]);
     }
 }
