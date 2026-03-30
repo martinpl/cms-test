@@ -2,13 +2,13 @@
 
 namespace App\Providers;
 
-use App\TaxonomyType;
+use App\Facades\Taxonomy;
 use Illuminate\Support\ServiceProvider;
 
 class TaxonomyServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        app(TaxonomyType::class)->registerClasses(config('taxonomies'));
+        Taxonomy::registerClasses(config('taxonomies'));
     }
 }

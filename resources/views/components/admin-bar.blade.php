@@ -1,6 +1,7 @@
 {{-- TODO: Move to php + shouldRender --}}
 @php
     use App\AdminMenu\AdminMenu;
+    use App\Facades\PostType;
     use App\PostTypeRegistry;
 
     if (auth()->check()) {
@@ -29,7 +30,7 @@
                 ->icon('plus'),
         );
 
-        foreach (app(PostTypeRegistry::class)->list as $postType) {
+        foreach (PostType::list() as $postType) {
             app('menu.admin-bar')->add(
                 AdminMenu::make($postType['title'])
                     ->parent(__('New'))

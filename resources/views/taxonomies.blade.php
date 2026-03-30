@@ -1,11 +1,11 @@
 @php
-    $taxonomyType = app(App\TaxonomyType::class)->find($taxonomyType);
-    abort_if(!$taxonomyType, 404);
+    $taxonomy = App\Facades\Taxonomy::find($taxonomy);
+    abort_if(!$taxonomy, 404);
 
-    $postType = app(App\PostTypeRegistry::class)->find($postType);
+    $postType = App\Facades\PostType::find($postType);
     abort_if(!$postType, 404);
 @endphp
 
-<x-dashboard :title="$taxonomyType['plural']">
-    <livewire:dynamic-component :is="$taxonomyType['editor']" :$taxonomyType :$postType :id="request()->route('id')" />
+<x-dashboard :title="$taxonomy['plural']">
+    <livewire:dynamic-component :is="$taxonomy['editor']" :$taxonomy :$postType :id="request()->route('id')" />
 </x-dashboard>

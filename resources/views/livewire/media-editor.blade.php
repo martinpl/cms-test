@@ -1,7 +1,8 @@
 <?php
  
-use Livewire\Attributes\Locked;
+use App\Facades\PostType;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Locked;
  
 new class extends Livewire\Component {
     #[Locked]
@@ -12,7 +13,7 @@ new class extends Livewire\Component {
 
     public function mount() 
     {
-        $postType = app(App\PostTypeRegistry::class)->find($this->postType);
+        $postType = PostType::find($this->postType);
         abort_if(!$postType, 404);
 
         if (!$this->post) {

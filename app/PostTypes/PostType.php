@@ -3,9 +3,9 @@
 namespace App\PostTypes;
 
 use App\Facades\Hook;
+use App\Facades\PostType as PostTypeFacade;
 use App\Models\Traits\HasMeta;
 use App\Models\User;
-use App\PostTypeRegistry;
 use App\Taxonomies\Taxonomy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -106,7 +106,7 @@ abstract class PostType extends \Illuminate\Database\Eloquent\Model
 
     public function link($absolute = false)
     {
-        $route = app(PostTypeRegistry::class)->find($this->type)['route'];
+        $route = PostTypeFacade::find($this->type)['route'];
         if ($route === false) {
             return null;
         }
@@ -168,11 +168,11 @@ abstract class PostType extends \Illuminate\Database\Eloquent\Model
         });
     }
 
-    public function terms($taxonomyType = null)
+    public function terms($taxonomy = null)
     {
         return $this->belongsToMany(Taxonomy::class, 'term_relationships', 'post_id', 'term_id')
-            ->when($taxonomyType, function ($query) use ($taxonomyType) {
-                $query->where('type', $taxonomyType);
+            ->when($taxonomy, function ($query) use ($taxonomy) {
+                $query->where('type', $taxonomy);
             });
     }
 

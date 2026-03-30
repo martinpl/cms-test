@@ -1,6 +1,6 @@
 <?php
 
-use App\MenuRegistry;
+use App\Facades\Menu;
 
 /**
  * Name: Theme Example
@@ -12,7 +12,7 @@ class ThemeExample
 {
     public function __construct()
     {
-        app(MenuRegistry::class)->register([
+        Menu::register([
             'primary' => 'Primary',
         ]);
     }

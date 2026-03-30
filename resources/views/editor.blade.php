@@ -1,5 +1,5 @@
 @php
-    $postType = app(App\PostTypeRegistry::class)->find($postType);
+    $postType = App\Facades\PostType::find($postType);
     abort_if(!$postType, 404);
 @endphp
 

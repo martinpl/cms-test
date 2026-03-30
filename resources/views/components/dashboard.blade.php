@@ -2,7 +2,7 @@
 
 {{-- TODO: Move out to php, add helper for admin menu --}}
 @php
-    foreach (app(App\PostTypeRegistry::class)->list as $postType) {
+    foreach (App\Facades\PostType::list() as $postType) {
         app('menu.admin')->add(
             \App\AdminMenu\AdminMenu::make($postType['plural'])
                 ->link(fn() => route('list', $postType['name']))
@@ -10,13 +10,13 @@
                 ->icon($postType['icon']),
         );
 
-        foreach (app(App\TaxonomyType::class)->findForPostType($postType['name']) as $taxonomy) {
+        foreach (App\Facades\Taxonomy::findForPostType($postType['name']) as $taxonomy) {
             app('menu.admin')->add(
                 \App\AdminMenu\AdminMenu::make($taxonomy['title'])
                     ->link(fn() => route('taxonomies', [$taxonomy['name'], $postType['name']]))
                     ->current(
                         fn() => request()->routeIs('taxonomies') &&
-                            request()->route('taxonomyType') == $taxonomy['name'] &&
+                            request()->route('taxonomy') == $taxonomy['name'] &&
                             request()->route('postType') == $postType['name'],
                     )
                     ->parent($postType['plural']),

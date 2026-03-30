@@ -4,6 +4,7 @@ namespace App;
 
 use App\Facades\BlockType;
 use App\Facades\Hook;
+use App\Facades\PostType;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Str;
 
@@ -19,7 +20,7 @@ class BlockEditor
     {
         // TODO: Add hook attributes
         Hook::addFilter('post.content', function ($content, $post): string {
-            $editor = app(PostTypeRegistry::class)->find($post->type)['editor']; // TODO: awkward
+            $editor = PostType::find($post->type)['editor']; // TODO: awkward
             if ($editor != 'editor') {
                 return $content;
             }
@@ -43,7 +44,7 @@ class BlockEditor
     {
         // TODO: Type will not be available if we provide it in wrong order (after content) on save. I'm not sure if I like passing $attributes anyway
         Hook::addFilter('post.save.content', function ($content, $post) {
-            $editor = app(PostTypeRegistry::class)->find($post->type)['editor'];
+            $editor = PostType::find($post->type)['editor'];
             if ($editor != 'editor') {
                 return $content;
             }

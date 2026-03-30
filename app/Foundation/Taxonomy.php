@@ -1,19 +1,19 @@
 <?php
 
-namespace App;
+namespace App\Foundation;
 
-class TaxonomyType
+class Taxonomy
 {
-    public private(set) array $list;
+    protected array $list;
 
-    public function register($taxonomyType, $args = [])
+    public function register(string $taxonomy, array $args = []): void
     {
-        if (isset($this->list[$taxonomyType])) {
-            throw new \Exception("Taxonomy type '{$taxonomyType}' already exists.");
+        if (isset($this->list[$taxonomy])) {
+            throw new \Exception("Taxonomy type '{$taxonomy}' already exists.");
         }
 
         $defaults = [
-            'name' => $taxonomyType,
+            'name' => $taxonomy,
             'title' => __('Taxonomy'),
             'plural' => __('Taxonomies'),
             'hierarchical' => false, // TODO
@@ -22,10 +22,10 @@ class TaxonomyType
             'editor' => 'taxonomies',
         ];
 
-        $this->list[$taxonomyType] = array_merge($defaults, $args);
+        $this->list[$taxonomy] = array_merge($defaults, $args);
     }
 
-    public function registerClasses($taxonomies)
+    public function registerClasses(array $taxonomies): void
     {
         foreach ($taxonomies as $taxonomy) {
             $this->register($taxonomy::$type, [
@@ -35,7 +35,7 @@ class TaxonomyType
         }
     }
 
-    public function find($name)
+    public function find(string $name): ?array
     {
         if (! empty($this->list[$name])) {
             return $this->list[$name];
@@ -44,7 +44,7 @@ class TaxonomyType
         return null;
     }
 
-    public function findForPostType($postType)
+    public function findForPostType(string $postType): array
     {
         return array_filter($this->list, fn ($taxonomy) => in_array($postType, $taxonomy['post_types']));
     }

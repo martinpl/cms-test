@@ -5,8 +5,7 @@ use App\Taxonomies\Menu;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 
-new class extends Livewire\Component
-{
+new class extends Livewire\Component {
     #[Url]
     public $selected = '';
 
@@ -27,7 +26,7 @@ new class extends Livewire\Component
             ->orderBy('order') // TODO: Should be default
             ->get()
             ->map(
-                fn ($item, $index) => [
+                fn($item, $index) => [
                     'id' => $item->id,
                     'title' => $item->title,
                     'order' => $index,
@@ -100,7 +99,7 @@ new class extends Livewire\Component
     public function addItem($title, $meta)
     {
         $this->items->push([
-            'id' => 'TBD'.rand(),
+            'id' => 'TBD' . rand(),
             'title' => $title,
             'order' => count($this->items),
             'parent' => null,
@@ -184,7 +183,7 @@ new class extends Livewire\Component
                 </x-sidebar.group-label>
                 <x-sidebar.group-content>
                     <x-sidebar.menu>
-                        @foreach (app(App\MenuRegistry::class)->list as $key => $menu)
+                        @foreach (\App\Facades\Menu::list() as $key => $menu)
                             <x-sidebar.menu-item wire:key="{{ rand() }}">
                                 <x-sidebar.menu-button tag="label">
                                     <x-checkbox wire:model.fill="locations" value="{{ $key }}" :checked="in_array($key, $this->menu?->meta('locations', []) ?? [])" />

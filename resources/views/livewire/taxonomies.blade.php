@@ -3,11 +3,10 @@
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 
-new class extends \Livewire\Component
-{
+new class extends \Livewire\Component {
     use App\Livewire\Table;
 
-    public $taxonomyType;
+    public $taxonomy;
 
     public $postType;
 
@@ -26,7 +25,7 @@ new class extends \Livewire\Component
             [
                 'title' => $this->editor['title'],
                 'description' => $this->editor['description'],
-                'type' => $this->taxonomyType['name'],
+                'type' => $this->taxonomy['name'],
                 'parent_id' => $this->editor['parent_id'] ?: null,
             ],
         );
@@ -44,7 +43,7 @@ new class extends \Livewire\Component
 
     protected function items()
     {
-        return App\Taxonomies\Taxonomy::where('type', $this->taxonomyType)
+        return App\Taxonomies\Taxonomy::where('type', $this->taxonomy)
             ->when($this->search, function ($query) {
                 $query->search($this->search);
             })
@@ -56,7 +55,7 @@ new class extends \Livewire\Component
         $title = Blade::render(
             <<<'BLADE'
                 <x-button
-                    :href="route('taxonomies', [$taxonomyType['name'], $postType['name'], $term->id])"
+                    :href="route('taxonomies', [$taxonomy['name'], $postType['name'], $term->id])"
                     variant="link"
                     class="text-foreground w-fit p-0 h-auto"
                 >
@@ -67,7 +66,7 @@ new class extends \Livewire\Component
             ,
             [
                 'term' => $term,
-                'taxonomyType' => $this->taxonomyType,
+                'taxonomy' => $this->taxonomy,
                 'postType' => $this->postType,
                 'actions' => $this->actions($term),
             ],
@@ -82,8 +81,8 @@ new class extends \Livewire\Component
     private function actions($term)
     {
         $actions = [
-            'edit' => '<a href="'.route('taxonomies', [$this->taxonomyType['name'], $this->postType['name'], $term->id]).'">Edit</a>',
-            'delete' => '<button wire:click="destroy('.$term->id.')" class="text-destructive/80" wire:confirm="Are you sure you want to delete this term?">Delete</button>',
+            'edit' => '<a href="' . route('taxonomies', [$this->taxonomy['name'], $this->postType['name'], $term->id]) . '">Edit</a>',
+            'delete' => '<button wire:click="destroy(' . $term->id . ')" class="text-destructive/80" wire:confirm="Are you sure you want to delete this term?">Delete</button>',
         ];
 
         return $this->rowActions($actions);
@@ -107,13 +106,13 @@ new class extends \Livewire\Component
     public function render()
     {
         $term = $this->id ? App\Taxonomies\Taxonomy::find($this->id) : null;
-        if ($this->id && ! $term) {
+        if ($this->id && !$term) {
             abort(404);
         }
 
         return $this->view([
             'term' => $term,
-            'parents' => $this->taxonomyType['hierarchical'] ? App\Taxonomies\Taxonomy::where('type', $this->taxonomyType['name'])->where('id', '!=', $this->id)->get() : collect(),
+            'parents' => $this->taxonomy['hierarchical'] ? App\Taxonomies\Taxonomy::where('type', $this->taxonomy['name'])->where('id', '!=', $this->id)->get() : collect(),
         ]);
     }
 }; ?>
@@ -128,7 +127,7 @@ new class extends \Livewire\Component
                     </x-field.label>
                     <x-input type="text" placeholder="Title" value="{{ $term?->title }}" wire:model.fill="editor.title" />
                 </x-field>
-                @if ($this->taxonomyType['hierarchical'])
+                @if ($this->taxonomy['hierarchical'])
                     <x-field tag="label">
                         <x-field.label tag="div">
                             Parent Category

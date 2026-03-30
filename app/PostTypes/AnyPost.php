@@ -2,13 +2,13 @@
 
 namespace App\PostTypes;
 
-use App\PostTypeRegistry;
+use App\Facades\PostType as PostTypeFacade;
 
 class AnyPost extends PostType
 {
     public function newFromBuilder($attributes = [], $connection = null)
     {
-        $class = app(PostTypeRegistry::class)->find($attributes->type)['class'];
+        $class = PostTypeFacade::find($attributes->type)['class'];
         if ($class) {
             $model = new $class;
             $model = $model->newInstance([], true);

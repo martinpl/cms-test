@@ -2,6 +2,8 @@
 
 use App\Facades\BlockType;
 use App\Facades\Metabox;
+use App\Facades\PostType;
+use App\Facades\Taxonomy;
 use App\PostTypes\AnyPost;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
@@ -33,7 +35,7 @@ new class extends Livewire\Component {
         }
 
         if (!$this->post) {
-            $postType = app(App\PostTypeRegistry::class)->find($this->postType);
+            $postType = PostType::find($this->postType);
             foreach ($postType['template'] as $index => $block) {
                 $this->content[] = [
                     'index' => $index,
@@ -252,7 +254,7 @@ new class extends Livewire\Component {
                         @foreach (Metabox::get(['editor.side', "editor.side.{$this->postType}"]) as $metabox)
                             {{ $metabox['callback']($this->post) }}
                         @endforeach
-                        @foreach (app(App\TaxonomyType::class)->findForPostType($this->postType) as $taxonomy)
+                        @foreach (Taxonomy::findForPostType($this->postType) as $taxonomy)
                             @php
                                 $taxonomies = App\Taxonomies\Taxonomy::where('type', $taxonomy['name'])->orderBy('title')->get();
                                 $selectedTaxonomies = $this->post?->terms->where('type', $taxonomy['name'])->pluck('id')->toArray() ?? [];

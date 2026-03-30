@@ -5,11 +5,9 @@ namespace App\Providers;
 use App\AdminMenu\AdminMenu;
 use App\AdminMenu\AdminMenuList;
 use App\BlockEditor;
-use App\MenuRegistry;
+use App\Facades\Taxonomy as TaxonomyFacade;
 use App\Models\Option;
-use App\PostTypeRegistry;
 use App\Role;
-use App\TaxonomyType;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\ComponentAttributeBag;
@@ -20,14 +18,14 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(\App\Foundation\Hook::class);
         $this->app->singleton(\App\Foundation\Metabox::class);
-        $this->app->singleton(PostTypeRegistry::class);
-        $this->app->singleton(TaxonomyType::class);
+        $this->app->singleton(\App\Foundation\PostType::class);
+        $this->app->singleton(\App\Foundation\Taxonomy::class);
         $this->app->singleton(\App\Foundation\BlockType::class);
         BlockEditor::register();
         $this->app->singleton('menu.admin', fn () => new AdminMenuList);
         $this->app->singleton('menu.admin-bar', fn () => new AdminMenuList);
         $this->app->singleton(Role::class);
-        $this->app->singleton(MenuRegistry::class);
+        $this->app->singleton(\App\Foundation\Menu::class);
     }
 
     public function boot(): void
@@ -67,14 +65,14 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // TODO: Move out to dedicated taxonomies classes with register via config
-        app(TaxonomyType::class)->register('category', [
+        TaxonomyFacade::register('category', [
             'title' => __('Category'),
             'plural' => __('Categories'),
             'hierarchical' => true,
             'post_types' => ['post'],
         ]);
 
-        app(TaxonomyType::class)->register('tag', [
+        TaxonomyFacade::register('tag', [
             'title' => __('Tag'),
             'plural' => __('Tags'),
             'hierarchical' => false,

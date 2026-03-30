@@ -1,14 +1,13 @@
 <?php
 
-namespace App;
+namespace App\Foundation;
 
-// TODO: Move to facade?
-class PostTypeRegistry
+class PostType
 {
-    public private(set) array $list;
+    protected array $list;
 
     // TODO: Move to builder
-    public function register($postType, $args = [])
+    public function register(string $postType, array $args = []): void
     {
         // TODO: Namespace to prevent conflicts?
         if (isset($this->list[$postType])) {
@@ -31,7 +30,7 @@ class PostTypeRegistry
         $this->list[$postType] = array_merge($defaults, $args);
     }
 
-    public function registerClasses($postTypes)
+    public function registerClasses(array $postTypes): void
     {
         foreach ($postTypes as $postType) {
             $this->register($postType::$type, [
@@ -43,12 +42,17 @@ class PostTypeRegistry
         }
     }
 
-    public function find($name)
+    public function find(string $name): ?array
     {
         if (! empty($this->list[$name])) {
             return $this->list[$name];
         }
 
         return null;
+    }
+
+    public function list(): array
+    {
+        return $this->list;
     }
 }

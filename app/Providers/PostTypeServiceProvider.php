@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
+use App\Facades\PostType;
 use App\Http\Controllers\PostTypeController;
-use App\PostTypeRegistry;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -11,7 +11,7 @@ class PostTypeServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        app(PostTypeRegistry::class)->registerClasses(config('post-types'));
+        PostType::registerClasses(config('post-types'));
         $this->addRoutes();
     }
 
@@ -22,7 +22,7 @@ class PostTypeServiceProvider extends ServiceProvider
                 ->middleware('web')
                 ->name('home');
 
-            foreach (app(PostTypeRegistry::class)->list as $postType) {
+            foreach (PostType::list() as $postType) {
                 if ($postType['route'] === false) {
                     continue;
                 }
