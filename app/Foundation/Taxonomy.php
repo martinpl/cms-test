@@ -2,9 +2,16 @@
 
 namespace App\Foundation;
 
+use Illuminate\Support\Collection;
+
 class Taxonomy
 {
-    protected array $list;
+    protected Collection $list;
+
+    public function __construct()
+    {
+        $this->list = collect();
+    }
 
     public function register(string $taxonomy, array $args = []): void
     {
@@ -16,7 +23,9 @@ class Taxonomy
             'name' => $taxonomy,
             'title' => __('Taxonomy'),
             'plural' => __('Taxonomies'),
+            'label' => $args['title'] ?? __('Taxonomies'),
             'hierarchical' => false, // TODO
+            'public' => true,
             'order' => 0, // TODO
             'post_types' => [],
             'editor' => 'taxonomies',
@@ -37,15 +46,14 @@ class Taxonomy
 
     public function find(string $name): ?array
     {
-        if (! empty($this->list[$name])) {
-            return $this->list[$name];
-        }
+        return $this->list->filter(fn ($taxonomy) => $taxonomy['name'] === $name)->first();
 
-        return null;
     }
 
-    public function findForPostType(string $postType): array
+    public function findForPostType(string $postType): Collection
     {
-        return array_filter($this->list, fn ($taxonomy) => in_array($postType, $taxonomy['post_types']));
+        return $this->list
+            ->filter(fn ($taxonomy) => $taxonomy['public'])
+            ->filter(fn ($taxonomy) => in_array($postType, $taxonomy['post_types']));
     }
 }

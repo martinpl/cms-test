@@ -2,9 +2,16 @@
 
 namespace App\Foundation;
 
+use Illuminate\Support\Collection;
+
 class PostType
 {
-    protected array $list;
+    protected Collection $list;
+
+    public function __construct()
+    {
+        $this->list = collect();
+    }
 
     // TODO: Move to builder
     public function register(string $postType, array $args = []): void
@@ -18,6 +25,7 @@ class PostType
             'name' => $postType,
             'title' => __('Post'),
             'plural' => __('Posts'),
+            'label' => $args['title'] ?? __('Posts'),
             'icon' => 'square-2-stack',
             'order' => 0, // TODO
             'route' => $postType,
@@ -44,14 +52,10 @@ class PostType
 
     public function find(string $name): ?array
     {
-        if (! empty($this->list[$name])) {
-            return $this->list[$name];
-        }
-
-        return null;
+        return $this->list->filter(fn ($postType) => $postType['name'] == $name)->first();
     }
 
-    public function list(): array
+    public function list(): Collection
     {
         return $this->list;
     }

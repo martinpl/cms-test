@@ -4,7 +4,7 @@
 @php
     foreach (App\Facades\PostType::list() as $postType) {
         app('menu.admin')->add(
-            \App\AdminMenu\AdminMenu::make($postType['plural'])
+            \App\AdminMenu\AdminMenu::make($postType['label'])
                 ->link(fn() => route('list', $postType['name']))
                 ->current(fn() => request()->routeIs('list') && request()->route('postType') == $postType['name'])
                 ->icon($postType['icon']),
@@ -12,14 +12,14 @@
 
         foreach (App\Facades\Taxonomy::findForPostType($postType['name']) as $taxonomy) {
             app('menu.admin')->add(
-                \App\AdminMenu\AdminMenu::make($taxonomy['title'])
+                \App\AdminMenu\AdminMenu::make($taxonomy['label'])
                     ->link(fn() => route('taxonomies', [$taxonomy['name'], $postType['name']]))
                     ->current(
                         fn() => request()->routeIs('taxonomies') &&
                             request()->route('taxonomy') == $taxonomy['name'] &&
                             request()->route('postType') == $postType['name'],
                     )
-                    ->parent($postType['plural']),
+                    ->parent($postType['label']), // TODO: Should be unique
             );
         }
     }

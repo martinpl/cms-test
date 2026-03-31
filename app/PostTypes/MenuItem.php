@@ -2,7 +2,6 @@
 
 namespace App\PostTypes;
 
-// TODO: Side menu title
 class MenuItem extends PostType
 {
     public static $type = 'menu-item';
@@ -12,6 +11,7 @@ class MenuItem extends PostType
         return [
             'title' => __('Menu Item'),
             'plural' => __('Menu Items'),
+            'label' => __('Menus'),
             'icon' => 'compass',
             'list' => 'menu',
             'route' => false,

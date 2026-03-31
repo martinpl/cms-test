@@ -2,7 +2,6 @@
 
 namespace App\Taxonomies;
 
-// TODO: Hide from menu
 class Menu extends Taxonomy
 {
     public static $type = 'menu';
@@ -12,6 +11,7 @@ class Menu extends Taxonomy
         return [
             'title' => __('Menu'),
             'plural' => __('Menus'),
+            'public' => false,
             'post_types' => [\App\PostTypes\MenuItem::$type],
         ];
     }
