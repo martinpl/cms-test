@@ -23,7 +23,7 @@ class Taxonomy
             'name' => $taxonomy,
             'title' => __('Taxonomy'),
             'plural' => __('Taxonomies'),
-            'label' => $args['title'] ?? __('Taxonomies'),
+            'label' => $args['plural'] ?? __('Taxonomies'),
             'hierarchical' => false, // TODO
             'public' => true,
             'order' => 0, // TODO

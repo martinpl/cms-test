@@ -25,7 +25,7 @@ class PostType
             'name' => $postType,
             'title' => __('Post'),
             'plural' => __('Posts'),
-            'label' => $args['title'] ?? __('Posts'),
+            'label' => $args['plural'] ?? __('Posts'),
             'icon' => 'square-2-stack',
             'order' => 0, // TODO
             'route' => $postType,

@@ -265,7 +265,7 @@ new class extends Livewire\Component {
                                     <x-collapsible.trigger>
                                         <x-sidebar.group-label
                                             class="group/label text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground w-full text-sm">
-                                            {{ $taxonomy['plural'] }}
+                                            {{ $taxonomy['label'] }}
                                             <x-icon name="chevron-right"
                                                 class="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
                                         </x-sidebar.group-label>
