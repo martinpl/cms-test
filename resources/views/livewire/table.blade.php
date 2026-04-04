@@ -4,7 +4,7 @@
     $bulkActions = $this->bulkActions();
 @endphp
 
-<div {{ $attributes->twMerge(['relative flex flex-col gap-4', $class]) }}>
+<div {{ $attributes->twMerge('relative flex flex-col gap-4', $class) }}>
     <x-dashboard-notice />
     <div class="flex justify-between">
         @if ($this->views)

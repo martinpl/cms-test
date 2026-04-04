@@ -103,7 +103,6 @@ new #[Layout('components.layouts.auth')] class extends Livewire\Component {
             </x-field>
 
             @if (Route::has('password.request'))
-                {{-- TODO: twMerge bug end-0 is stripped --}}
                 <x-button :href="route('password.request')" variant="link" class="inline absolute end-0 top-0 text-sm p-0" wire:navigate>
                     {{ __('Forgot your password?') }}
                 </x-button>

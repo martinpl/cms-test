@@ -1,7 +1,6 @@
 <x-dashboard title="Zoo" class="p-0 md:p-0">
     <x-sidebar.provider>
         <x-sidebar.inset>
-            {{-- TODO: twMerge shadow merge issue --}}
             <x-card id="button" class="border-0 border-b rounded-none shadow-none">
                 <x-card.header>
                     <x-card.title>Button</x-card.title>
@@ -68,7 +67,6 @@
                         <x-badge variant="secondary">Secondary</x-badge>
                         <x-badge variant="destructive">Destructive</x-badge>
                         <x-badge variant="outline">Outline</x-badge>
-                        {{-- TODO: twMerge bug --}}
                         <x-badge variant="secondary" class="bg-blue-500 text-white dark:bg-blue-600">
                             <x-icon name="check" />
                             Verified

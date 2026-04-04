@@ -8,4 +8,3 @@ Experimental CMS that resembles WordPress features with better defaults and with
 - [FullStack - Livewire](https://livewire.laravel.com/) | [Frontend - Alpine.js](http://alpinejs.dev/)
 - [Styling / components - shadcn](https://ui.shadcn.com/)
 - [Icons - lucide](https://lucide.dev/)
-- [twMerge](https://github.com/GoodM4ven/PACKAGE_LARAVEL_tailwind-merge)

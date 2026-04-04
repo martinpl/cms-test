@@ -29,7 +29,6 @@
     ];
 @endphp
 
-{{-- TODO: Copy tailwind-merge pacakge as raw code  --}}
-<x-tag :tag="$attributes->buttonTag()" {{ $attributes->twMerge([$base, $styles['variant'][$variant], $styles['size'][$size]]) }}>
+<x-tag :tag="$attributes->buttonTag()" {{ $attributes->twMerge($base, $styles['variant'][$variant], $styles['size'][$size]) }}>
     {{ $slot }}
 </x-tag>

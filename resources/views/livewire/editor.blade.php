@@ -119,8 +119,8 @@ new class extends Livewire\Component {
 <div>
     <x-dashboard-header title="Editor">
         <div class="mx-auto max-w-xl w-full">
-            {{-- TODO: Filled input styling / twMerge bug --}}
-            <x-input name="title" type="text" placeholder="Add title" wire:model.fill="title" value="{{ $this->post?->title }}" />
+            <x-input class="bg-muted border-transparent shadow-none" name="title" type="text" placeholder="Add title"
+                wire:model.fill="title" value="{{ $this->post?->title }}" />
         </div>
         <div class="flex gap-2">
             @if ($this->post?->link())
@@ -310,7 +310,6 @@ new class extends Livewire\Component {
             </x-sidebar.content>
         </x-sidebar>
     </x-sidebar.provider>
-    {{-- TODO: twMerge bug fixed class dosn't work with dashboard-notice   --}}
     {{-- TODO: Add animation or switch completely component --}}
     <div class="fixed bottom-5 left-5" x-init="setTimeout(() => $el.hidden = true, 5000)">
         <x-dashboard-notice />
