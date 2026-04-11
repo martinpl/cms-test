@@ -27,6 +27,8 @@ class Template extends PostType
 
     public static function register()
     {
+        Page::addSupport('template');
+        Post::addSupport('template');
         self::registerMetabox();
         self::registerContentBlock();
         self::adjustPostContent();
@@ -34,9 +36,12 @@ class Template extends PostType
 
     protected static function registerMetabox()
     {
-        // TODO: Add post type "support"
-        Metabox::register('template', false, 'editor.side.page',
-            fn () => view('components.fields.fields', [
+        Metabox::register('template', false, 'editor.side.page', function ($post) {
+            if (! $post->supports('template')) {
+                return;
+            }
+
+            return view('components.fields.fields', [
                 'attributes' => new ComponentAttributeBag(['class' => 'px-4 pb-4']),
                 'fields' => [
                     NativeSelect::make('Template')
@@ -47,8 +52,8 @@ class Template extends PostType
                                 $item->id => $item->name,
                             ])->all()),
                 ],
-            ])
-        );
+            ]);
+        });
     }
 
     protected static function registerContentBlock()
@@ -72,7 +77,7 @@ class Template extends PostType
     protected static function adjustPostContent()
     {
         Hook::addFilter('post.content', function ($content, $post): string {
-            if ($post->meta('template')) { // TODO: Add post type "support"
+            if ($post->supports('template') && $post->meta('template')) {
                 $template = Template::find($post->meta('template'));
                 $content = str_replace('__TEMPLATE__', $content, $template->content);
             }

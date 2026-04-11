@@ -187,4 +187,19 @@ abstract class PostType extends \Illuminate\Database\Eloquent\Model
         $this->status = 'draft';
         $this->save();
     }
+
+    public static function supports($feature): bool
+    {
+        return PostTypeFacade::supports(static::$type, $feature);
+    }
+
+    public static function addSupport($feature)
+    {
+        return PostTypeFacade::addSupport(static::$type, $feature);
+    }
+
+    public static function removeSupport($feature)
+    {
+        return PostTypeFacade::removeSupport(static::$type, $feature);
+    }
 }

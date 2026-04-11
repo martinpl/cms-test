@@ -32,6 +32,7 @@ class PostType
             'editor' => 'editor',
             'list' => 'list',
             'class' => null,
+            'supports' => [],
             'template' => [],
         ];
 
@@ -58,5 +59,37 @@ class PostType
     public function list(): Collection
     {
         return $this->list;
+    }
+
+    public function supports(string $name, string $feature): bool
+    {
+        $postType = $this->find($name);
+        if (! $postType) {
+            return false;
+        }
+
+        return in_array($feature, $postType['supports']);
+    }
+
+    public function addSupport(string $name, string|array $feature)
+    {
+        $postType = $this->find($name);
+        if (! $postType) {
+            return;
+        }
+
+        $postType['supports'] = array_merge($postType['supports'], (array) $feature);
+        $this->list->put($name, $postType);
+    }
+
+    public function removeSupport(string $name, string|array $feature)
+    {
+        $postType = $this->find($name);
+        if (! $postType) {
+            return;
+        }
+
+        $postType['supports'] = array_diff($postType['supports'], (array) $feature);
+        $this->list->put($name, $postType);
     }
 }
