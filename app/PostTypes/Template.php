@@ -6,7 +6,6 @@ use App\Facades\BlockType;
 use App\Facades\Hook;
 use App\Facades\Metabox;
 use App\View\Components\Fields\NativeSelect;
-use Illuminate\View\ComponentAttributeBag;
 
 class Template extends PostType
 {
@@ -36,24 +35,20 @@ class Template extends PostType
 
     protected static function registerMetabox()
     {
-        Metabox::register('template', false, 'editor.side.page', function ($post) {
-            if (! $post->supports('template')) {
-                return;
-            }
-
-            return view('components.fields.fields', [
-                'attributes' => new ComponentAttributeBag(['class' => 'px-4 pb-4']),
-                'fields' => [
-                    NativeSelect::make('Template')
-                        ->model('meta')
-                        // TODO: Add combobox / search
-                        ->options(Template::all()
-                            ->mapWithKeys(fn ($item) => [
-                                $item->id => $item->name,
-                            ])->all()),
-                ],
-            ]);
-        });
+        Metabox::make()
+            ->id('template')
+            ->location('editor.side.page')
+            ->when(fn ($post): mixed => $post->supports('template'))
+            ->fields([
+                NativeSelect::make('Template')
+                    ->model('meta') // TODO
+                    // TODO: Add combobox / search / lazy
+                    ->options(Template::all()
+                        ->mapWithKeys(fn ($item) => [
+                            $item->id => $item->name,
+                        ])->all()
+                    ),
+            ])->register();
     }
 
     protected static function registerContentBlock()

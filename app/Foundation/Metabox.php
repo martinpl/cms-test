@@ -2,31 +2,89 @@
 
 namespace App\Foundation;
 
+use App\Facades\Metabox as MetaboxFacade;
+
 class Metabox
 {
-    protected array $metaboxes = [];
+    protected ?string $id = null;
 
-    public function register(string $id, string|false $title, string $location, callable $callback, int $priority = 10): void
+    public ?string $title = null;
+
+    public ?string $location = null;
+
+    public int $priority = 10;
+
+    public ?\Closure $condition = null;
+
+    public ?\Closure $callback = null;
+
+    public function id(string $id): self
     {
-        $this->metaboxes[$location][] = [
-            'id' => $id,
-            'title' => $title,
-            'callback' => $callback,
-            'priority' => $priority,
-        ];
+        $this->id = $id;
+
+        return $this;
     }
 
-    public function get(string|array $location): array
+    public function title(string|false $title): self
     {
-        $locations = (array) $location;
-        $metaboxes = [];
-        foreach ($locations as $location) {
-            $metaboxes[] = $this->metaboxes[$location] ?? [];
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function location(string $location): self
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    public function priority(int $priority): self
+    {
+        $this->priority = $priority;
+
+        return $this;
+    }
+
+    public function when(callable $condition): self
+    {
+        $this->condition = $condition;
+
+        return $this;
+    }
+
+    public function callback(callable $callback): self
+    {
+        $this->callback = $callback;
+
+        return $this;
+    }
+
+    public function fields(array $fields): self
+    {
+        $this->callback(function () use ($fields) {
+            // TODO: Maybe Fields API?
+            return view('components.fields.fields', [
+                'fields' => $fields,
+            ]);
+        });
+
+        return $this;
+    }
+
+    public function register(): void
+    {
+        if (! $this->id) {
+            throw new \InvalidArgumentException('Metabox requires id.');
         }
 
-        $metaboxes = array_merge(...$metaboxes);
-        usort($metaboxes, fn ($a, $b) => $a['priority'] <=> $b['priority']);
+        MetaboxFacade::register($this);
+    }
 
-        return $metaboxes;
+    public function render($args)
+    {
+        if ($this->condition == null || ($this->condition)($args)) {
+            echo ($this->callback)($args);
+        }
     }
 }

@@ -8,6 +8,6 @@ class Metabox extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return \App\Foundation\Metabox::class;
+        return \App\Foundation\MetaboxManager::class;
     }
 }
