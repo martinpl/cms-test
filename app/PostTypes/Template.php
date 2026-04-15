@@ -37,8 +37,9 @@ class Template extends PostType
     {
         Metabox::make()
             ->id('template')
-            ->location('editor.side.page')
+            ->location('editor.side')
             ->when(fn ($post): mixed => $post->supports('template'))
+            ->wrapper('components.metabox-side-item')
             ->fields([
                 NativeSelect::make('Template')
                     ->model('meta') // TODO
@@ -48,7 +49,8 @@ class Template extends PostType
                             $item->id => $item->name,
                         ])->all()
                     ),
-            ])->register();
+            ])
+            ->register();
     }
 
     protected static function registerContentBlock()

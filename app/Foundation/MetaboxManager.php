@@ -18,13 +18,13 @@ class MetaboxManager
         $this->metaboxes[] = $metabox;
     }
 
-    public function get(string|array $location, $args)
+    public function get(string|array $location, $args, $wrapper)
     {
         $metaboxes = $this->metaboxes->whereIn('location', $location)
             ->sortBy('priority');
 
         foreach ($metaboxes as $metabox) {
-            $metabox->render($args);
+            echo $metabox->render($args, $wrapper);
         }
     }
 

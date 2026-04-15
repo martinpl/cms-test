@@ -18,6 +18,8 @@ class Metabox
 
     public ?\Closure $callback = null;
 
+    public ?string $wrapper = null;
+
     public function id(string $id): self
     {
         $this->id = $id;
@@ -72,6 +74,13 @@ class Metabox
         return $this;
     }
 
+    public function wrapper(string $view): self
+    {
+        $this->wrapper = $view;
+
+        return $this;
+    }
+
     public function register(): void
     {
         if (! $this->id) {
@@ -81,10 +90,14 @@ class Metabox
         MetaboxFacade::register($this);
     }
 
-    public function render($args)
+    public function render($args, $wrapper)
     {
         if ($this->condition == null || ($this->condition)($args)) {
-            echo ($this->callback)($args);
+            // TODO: Default view
+            return view($this->wrapper ?? $wrapper, [
+                'title' => $this->title,
+                'callback' => ($this->callback)($args),
+            ]);
         }
     }
 }

@@ -251,10 +251,8 @@ new class extends Livewire\Component {
                             </x-field>
                         </div>
                         {{-- TODO: Move editor / post type features to metabox  --}}
-                        <div class="px-4 pb-4 grid gap-4">
-                            {{-- TODO: directive --}}
-                            {{ Metabox::get(['editor.side', "editor.side.{$this->postType}"], $this->post) }}
-                        </div>
+                        {{-- TODO: directive --}}
+                        {{ Metabox::get(['editor.side', "editor.side.{$this->postType}"], $this->post, 'components.metabox-side') }}
                         @foreach (Taxonomy::findForPostType($this->postType) as $taxonomy)
                             @php
                                 $taxonomies = App\Taxonomies\Taxonomy::where('type', $taxonomy['name'])->orderBy('title')->get();
