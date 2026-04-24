@@ -13,7 +13,7 @@ new class extends Livewire\Component {
     public $id;
 
     #[Locked]
-    public $postType;
+    public $type;
 
     public $name = '';
 
@@ -35,14 +35,22 @@ new class extends Livewire\Component {
         }
 
         if (!$this->post) {
-            $postType = PostType::find($this->postType);
-            foreach ($postType['template'] as $index => $block) {
+            foreach ($this->postType()['template'] as $index => $block) {
                 $this->content[] = [
                     'index' => $index,
                     'name' => $block[0],
                     'data' => $block[1] ?? [],
                 ];
             }
+        }
+
+    }
+
+    public function boot()
+    {
+        if (!$this->post) {
+            $postClass = $this->postType()['class'] ?? AnyPost::class;
+            $this->post = new $postClass();
         }
     }
 
@@ -81,13 +89,13 @@ new class extends Livewire\Component {
         $this->post = AnyPost::updateOrCreate(
             ['id' => $this->id],
             [
-                'type' => $this->postType,
+                'type' => $this->type,
                 'status' => $status,
                 'name' => $this->name,
                 'title' => $this->title,
                 'user_id' => request()->user()->id,
                 'content' => $this->content,
-                'parent_id' => $this->parent,
+                'parent_id' => $this->parent ?: null,
             ],
         );
         $this->post->terms()->sync($this->terms);
@@ -97,7 +105,7 @@ new class extends Livewire\Component {
 
         if ($this->post->wasRecentlyCreated) {
             $this->redirectRoute('editor', [
-                'postType' => $this->postType,
+                'postType' => $this->type,
                 'id' => $this->post->id,
             ]);
         }
@@ -105,6 +113,11 @@ new class extends Livewire\Component {
         $this->name = $this->post->name;
 
         session()->flash('notice', 'Page update.');
+    }
+
+    public function postType()
+    {
+        return PostType::find($this->type);
     }
 
     public function setAsHomePage($id)
@@ -159,7 +172,7 @@ new class extends Livewire\Component {
                     {{-- TODO: Change sides scroll width --}}
                     <x-tabs.content value="inserter" class="px-4 pb-4 overflow-auto" style="max-height: calc(100svh - 141px)">
                         <div class="grid grid-cols-3">
-                            @foreach (BlockType::list()->filter(fn($item) => !$item['postTypes'] || in_array($this->postType, $item['postTypes'])) as $slug => $block)
+                            @foreach (BlockType::list()->filter(fn($item) => !$item['postTypes'] || in_array($this->type, $item['postTypes'])) as $slug => $block)
                                 <x-button variant="ghost" wire:click="add(`{{ $slug }}`)"
                                     class="text-xs font-normal flex-col h-20 gap-3">
                                     <x-icon name="cuboid" class="size-5" stroke-width="1.5" />
@@ -210,7 +223,7 @@ new class extends Livewire\Component {
                     <div class="px-4">
                         <x-tabs.list class="w-full h-8">
                             <x-tabs.trigger value="page" class="text-xs">
-                                Page
+                                {{ $this->postType()['title'] }}
                             </x-tabs.trigger>
                             <x-tabs.trigger value="block" class="text-xs">
                                 Block
@@ -218,42 +231,9 @@ new class extends Livewire\Component {
                         </x-tabs.list>
                     </div>
                     <x-tabs.content value="page" class="pb-4 overflow-auto" style="max-height: calc(100svh - 141px)">
-                        <div class="px-4 pb-4 grid gap-4">
-                            @if ($this->post?->link())
-                                <x-button variant="outline" size="sm" wire:click="setAsHomePage({{ $this->post->id }})">
-                                    Set as homepage
-                                </x-button>
-                            @endif
-                            <x-field tag="label">
-                                <x-field.label tag="div">
-                                    Featured image
-                                </x-field.label>
-                                <x-fields.media title="Thumbnail" wire:model="meta.thumbnail" />
-                            </x-field>
-                            <x-field tag="label">
-                                <x-field.label tag="div">
-                                    Excerpt
-                                </x-field.label>
-                                <x-textarea wire:model.fill="meta.excerpt"></x-textarea>
-                            </x-field>
-                            <x-field tag="label">
-                                <x-field.label tag="div">
-                                    Slug
-                                </x-field.label>
-                                <x-input type="text" wire:model.fill="name" value="{{ $this->post?->name }}" />
-                            </x-field>
-                            <x-field tag="label">
-                                <x-field.label tag="div">
-                                    Parent:
-                                </x-field.label>
-                                {{-- TODO: add combobox with search --}}
-                                <x-input type="number" wire:model.number.fill="parent" value="{{ $this->post?->parent_id }}" />
-                            </x-field>
-                        </div>
-                        {{-- TODO: Move editor / post type features to metabox  --}}
                         {{-- TODO: directive --}}
-                        {{ Metabox::get(['editor.side', "editor.side.{$this->postType}"], $this->post, 'components.metabox-side') }}
-                        @foreach (Taxonomy::findForPostType($this->postType) as $taxonomy)
+                        {{ Metabox::get(['editor.side', "editor.side.{$this->type}"], $this->post, 'components.metabox-side') }}
+                        @foreach (Taxonomy::findForPostType($this->type) as $taxonomy)
                             @php
                                 $taxonomies = App\Taxonomies\Taxonomy::where('type', $taxonomy['name'])->orderBy('title')->get();
                                 $selectedTaxonomies = $this->post?->terms->where('type', $taxonomy['name'])->pluck('id')->toArray() ?? [];
@@ -282,8 +262,7 @@ new class extends Livewire\Component {
                                                                     @checked(in_array($taxonomy->id, $selectedTaxonomies))>
                                                                 <span
                                                                     class="pointer-events-none hidden peer-checked:grid place-content-center absolute inset-0">
-                                                                    <x-icon name="check"
-                                                                        class="size-3 text-sidebar-primary-foreground" />
+                                                                    <x-icon name="check" class="size-3 text-sidebar-primary-foreground" />
                                                                 </span>
                                                             </div>
                                                             {{ $taxonomy->title }}

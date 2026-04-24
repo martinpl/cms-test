@@ -13,6 +13,7 @@ class Page extends PostType
             'plural' => __('Pages'),
             'icon' => 'notebook-text',
             'route' => '',
+            'supports' => ['home', 'thumbnail', 'excerpt', 'template', 'hierarchical'],
         ];
     }
 }

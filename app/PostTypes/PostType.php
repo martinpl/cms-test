@@ -10,10 +10,11 @@ use App\Taxonomies\Taxonomy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
-abstract class PostType extends \Illuminate\Database\Eloquent\Model
+abstract class PostType extends Model
 {
     use HasFactory;
     use HasMeta;
@@ -111,7 +112,12 @@ abstract class PostType extends \Illuminate\Database\Eloquent\Model
             return null;
         }
 
-        return route("single.{$this->type}", $this->slugStructure(), $absolute);
+        $slugStructure = $this->slugStructure();
+        if (! $slugStructure) {
+            return null;
+        }
+
+        return route("single.{$this->type}", $slugStructure, $absolute);
     }
 
     public function parent()

@@ -3,33 +3,25 @@
 namespace App\Foundation;
 
 use App\Facades\Metabox as MetaboxFacade;
+use Illuminate\Support\Facades\Blade;
 
 class Metabox
 {
     protected ?string $id = null;
 
-    public ?string $title = null;
-
     public ?string $location = null;
 
     public int $priority = 10;
 
-    public ?\Closure $condition = null;
+    protected ?\Closure $condition = null;
 
-    public ?\Closure $callback = null;
+    protected ?\Closure $callback = null;
 
-    public ?string $wrapper = null;
+    protected array $with = [];
 
     public function id(string $id): self
     {
         $this->id = $id;
-
-        return $this;
-    }
-
-    public function title(string|false $title): self
-    {
-        $this->title = $title;
 
         return $this;
     }
@@ -62,9 +54,13 @@ class Metabox
         return $this;
     }
 
-    public function fields(array $fields): self
+    public function fields(callable|array $fields): self
     {
-        $this->callback(function () use ($fields) {
+        $this->callback(function ($args) use ($fields) {
+            if (is_callable($fields)) {
+                $fields = $fields($args);
+            }
+
             // TODO: Maybe Fields API?
             return view('components.fields.fields', [
                 'fields' => $fields,
@@ -74,9 +70,20 @@ class Metabox
         return $this;
     }
 
-    public function wrapper(string $view): self
+    public function blade($string): self
     {
-        $this->wrapper = $view;
+        $this->callback(fn () => Blade::render($string));
+
+        return $this;
+    }
+
+    public function with(array|string $key, mixed $value = null): self
+    {
+        if (is_array($key)) {
+            $this->with = array_merge($this->with, $key);
+        } else {
+            $this->with[$key] = $value;
+        }
 
         return $this;
     }
@@ -93,10 +100,9 @@ class Metabox
     public function render($args, $wrapper)
     {
         if ($this->condition == null || ($this->condition)($args)) {
-            // TODO: Default view
-            return view($this->wrapper ?? $wrapper, [
-                'title' => $this->title,
+            return view($wrapper, [
                 'callback' => ($this->callback)($args),
+                ...$this->with,
             ]);
         }
     }

@@ -1,17 +1,16 @@
 <?php
 
-$model = $getWireModel();
+$model = $self->model;
 $modelHead = Str::before($model, '.');
 $modelBody = Str::after($model, '.');
-$items = Arr::get($this->$modelHead, $modelBody) ?? [];
-$alpineModel = preg_replace('/\.(\d+)\./', '[$1].', $model); // TODO?
-
+$sessionValue = Arr::get($this->$modelHead, $modelBody);
+$items = $sessionValue ?? (value($self->value) ?? []);
 ?>
 
 <div>
     <div class="space-y-2">
         @foreach ($items as $item)
-            <div class="border border-border rounded-lg bg-card transition-all" wire:key="{{ $model }}-{{ $loop->index }}">
+            <div class="border border-border rounded-lg bg-card transition-all" wire:key="{{ $model }}-{{ rand() }}">
                 <div class="flex items-center gap-2 px-3 py-2 bg-muted/40 rounded-t-lg">
                     {{-- TODO --}}
                     {{-- <div class="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground">
@@ -31,14 +30,15 @@ $alpineModel = preg_replace('/\.(\d+)\./', '[$1].', $model); // TODO?
                     <x-icon name="copy" />
                 </x-button> --}}
                         <x-button variant="ghost" size="icon" class="h-7 w-7 text-muted-foreground hover:text-destructive"
-                            @click="$wire.{{ $alpineModel }}.splice({{ $loop->index }}, 1); $wire.$refresh()" title="Remove row">
+                            @click="$wire.$set('{{ $model }}', Object.values($wire.$get('{{ $model }}')).filter((_, i) => i !== {{ $loop->index }}))"
+                            title="Remove row">
                             <x-icon name="trash-2" />
                         </x-button>
                     </div>
                 </div>
                 <div class="p-4 md:p-6 space-y-4">
-                    @foreach ($getSchema() as $field)
-                        {{ $field->live($getLive())->model("{$model}.{$loop->parent->index}") }}
+                    @foreach ($self->schema as $field)
+                        {{ $field->live($self->live)->model("{$model}.{$loop->parent->index}." . $field->name)->value($item[$field->name] ?? null) }}
                     @endforeach
                 </div>
             </div>

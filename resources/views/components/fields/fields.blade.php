@@ -6,13 +6,11 @@
             @php
                 // TODO: validation
                 if ($model) {
-                    $field->model("content.{$loop->parent->index}.data");
-                }
-                if ($live) {
-                    $field->live();
+                    // TODO: that should be passed / not hardcoded
+                    $field->model("content.{$loop->parent->index}.data." . $field->name);
                 }
             @endphp
-            {{ $field }}
+            {{ $field->live($live) }}
         </x-field.group>
     @endforeach
 </x-field.set>

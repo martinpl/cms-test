@@ -4,12 +4,12 @@ use Livewire\Attributes\Computed;
 
 new class extends Livewire\Component
 {
-    public array $data;
+    public array $data = [];
 
     public function mount()
     {
         foreach ($this->fields as $field) {
-            $this->data[$field->name] = $field->getValue();
+            $this->data[$field->name] = value($field->value);
         }
     }
 
@@ -33,7 +33,7 @@ new class extends Livewire\Component
         }
 
         foreach ($this->fields as $field) {
-            ($field->set)($this->data[$field->name]);
+            ($field->save)($this->data[$field->name]);
         }
     }
 }; ?>

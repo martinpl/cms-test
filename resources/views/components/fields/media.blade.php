@@ -3,10 +3,11 @@
 use App\PostTypes\Attachment;
 use Illuminate\Support\Facades\Storage;
 
-$model = $getWireModel();
+$model = $self->model;
 $modelHead = Str::before($model, '.');
 $modelBody = Str::after($model, '.');
-$selected = Arr::get($this->$modelHead, $modelBody);
+$sessionValue = Arr::get($this->$modelHead, $modelBody);
+$selected = $sessionValue ?? value($self->value);
 
 ?>
 <div>

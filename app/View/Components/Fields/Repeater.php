@@ -4,23 +4,13 @@ namespace App\View\Components\Fields;
 
 class Repeater extends Field
 {
-    protected $schema;
-
-    public function getValue()
-    {
-        return ($this->value)() ?? [];
-    }
+    public $schema;
 
     public function schema($schema)
     {
         $this->schema = $schema;
 
         return $this;
-    }
-
-    public function getSchema()
-    {
-        return $this->schema;
     }
 
     public function render()

@@ -3,6 +3,8 @@
 namespace App\PostTypes;
 
 use App\Facades\Taxonomy;
+use App\Taxonomies\Category;
+use App\Taxonomies\Tag;
 
 class Post extends PostType
 {
@@ -14,14 +16,15 @@ class Post extends PostType
             'title' => __('Post'),
             'plural' => __('Posts'),
             'icon' => 'newspaper',
+            'supports' => ['home', 'thumbnail', 'excerpt', 'template', 'hierarchical'],
         ];
     }
 
     public static function register()
     {
         Taxonomy::registerFromClasses([
-            \App\Taxonomies\Category::class,
-            \App\Taxonomies\Tag::class,
+            Category::class,
+            Tag::class,
         ]);
     }
 }

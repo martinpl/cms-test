@@ -26,8 +26,6 @@ class Template extends PostType
 
     public static function register()
     {
-        Page::addSupport('template');
-        Post::addSupport('template');
         self::registerMetabox();
         self::registerContentBlock();
         self::adjustPostContent();
@@ -39,7 +37,6 @@ class Template extends PostType
             ->id('template')
             ->location('editor.side')
             ->when(fn ($post): mixed => $post->supports('template'))
-            ->wrapper('components.metabox-side-item')
             ->fields([
                 NativeSelect::make('Template')
                     ->model('meta') // TODO
@@ -50,6 +47,8 @@ class Template extends PostType
                         ])->all()
                     ),
             ])
+            ->with('seamless', true)
+            ->priority(8)
             ->register();
     }
 

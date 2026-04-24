@@ -10,22 +10,25 @@ use Illuminate\View\ComponentAttributeBag;
 
 abstract class Field extends Component implements Htmlable
 {
-    public $model = 'data';
-
     public $name;
+
+    public $model;
 
     public $value;
 
-    public $set;
+    public $save;
 
     public $rules;
 
-    public $live;
+    public $live = false;
+
+    public $fill;
 
     public function __construct(public $title)
     {
         $this->attributes = new ComponentAttributeBag;
         $this->name = Str::slug($title);
+        $this->model = 'data.'.$this->name;
     }
 
     public static function make($name)
@@ -40,30 +43,16 @@ abstract class Field extends Component implements Htmlable
         return $this;
     }
 
-    public function getWireModel()
-    {
-        return $this->attributes->whereStartsWith('wire:model')->first("{$this->model}.{$this->name}");
-    }
-
-    public function value(callable $value)
+    public function value(mixed $value)
     {
         $this->value = $value;
 
         return $this;
     }
 
-    public function getValue()
+    public function save(callable $save)
     {
-        if ($this->value) {
-            return ($this->value)();
-        }
-
-        return null;
-    }
-
-    public function set(callable $set)
-    {
-        $this->set = $set;
+        $this->save = $save;
 
         return $this;
     }
@@ -71,7 +60,7 @@ abstract class Field extends Component implements Htmlable
     public function option($name, $autoload = false)
     {
         $this->value(fn () => get_option($name));
-        $this->set(fn ($value) => set_option($name, $value, $autoload));
+        $this->save(fn ($value) => set_option($name, $value, $autoload));
 
         return $this;
     }
@@ -83,22 +72,38 @@ abstract class Field extends Component implements Htmlable
         return $this;
     }
 
-    public function live()
+    public function live(bool $live = true)
     {
-        $this->live = true;
+        $this->live = $live;
 
         return $this;
     }
 
-    public function getLive()
+    public function fill()
     {
-        return $this->live;
+        $this->fill = true;
+
+        return $this;
+    }
+
+    public function self()
+    {
+        return $this;
     }
 
     public function render()
     {
-        $live = $this->live ? '.live.debounce.400ms' : '';
-        $this->attributes->setAttributes(['wire:model'.$live => "{$this->model}.{$this->name}"]);
+        $modifiers = '';
+
+        if ($this->live) {
+            $modifiers .= '.live.debounce.400ms';
+        }
+
+        if ($this->fill) {
+            $modifiers .= '.fill';
+        }
+
+        $this->attributes->setAttributes(['wire:model'.$modifiers => $this->model]);
         $componentName = str(get_class($this))->classBasename()->kebab()->value;
 
         return view("components.fields.{$componentName}");

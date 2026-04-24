@@ -36,7 +36,13 @@ class PostType
             'template' => [],
         ];
 
-        $this->list[$postType] = array_merge($defaults, $args);
+        $args = array_merge($defaults, $args);
+
+        if ($args['route'] !== false) {
+            $args['supports'][] = 'route';
+        }
+
+        $this->list[$postType] = $args;
     }
 
     public function registerFromClasses(array $postTypes): void
