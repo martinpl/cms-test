@@ -7,7 +7,7 @@ $model = $self->model;
 $modelHead = Str::before($model, '.');
 $modelBody = Str::after($model, '.');
 $sessionValue = Arr::get($this->$modelHead, $modelBody);
-$selected = $sessionValue ?? value($self->value);
+$selected = $sessionValue ?? $self->loadValue();
 
 ?>
 <div>

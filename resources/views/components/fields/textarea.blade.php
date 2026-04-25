@@ -1,1 +1,1 @@
-<x-textarea :$attributes>{{ value($self->value) }}</x-textarea>
+<x-textarea :$attributes>{{ $self->loadValue() }}</x-textarea>

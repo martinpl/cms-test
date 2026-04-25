@@ -1,1 +1,1 @@
-<x-input :$attributes :value="value($self->value)" />
+<x-input :$attributes :value="$self->loadValue()" />

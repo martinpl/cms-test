@@ -1,1 +1,1 @@
-<x-checkbox :$attributes :checked="value($self->value)" />
+<x-checkbox :$attributes :checked="$self->loadValue()" />

@@ -16,6 +16,8 @@ abstract class Field extends Component implements Htmlable
 
     public $value;
 
+    public $default = null;
+
     public $save;
 
     public $rules;
@@ -89,6 +91,11 @@ abstract class Field extends Component implements Htmlable
     public function self()
     {
         return $this;
+    }
+
+    public function loadValue()
+    {
+        return value($this->value) ?? $this->default;
     }
 
     public function render()

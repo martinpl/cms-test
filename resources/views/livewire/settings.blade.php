@@ -2,14 +2,13 @@
 
 use Livewire\Attributes\Computed;
 
-new class extends Livewire\Component
-{
+new class extends Livewire\Component {
     public array $data = [];
 
     public function mount()
     {
         foreach ($this->fields as $field) {
-            $this->data[$field->name] = value($field->value);
+            $this->data[$field->name] = $field->loadValue();
         }
     }
 
@@ -24,7 +23,7 @@ new class extends Livewire\Component
         $validation = [];
         foreach ($this->fields as $field) {
             if ($field->rules) {
-                $validation['data.'.$field->name] = $field->rules;
+                $validation['data.' . $field->name] = $field->rules;
             }
         }
 

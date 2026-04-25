@@ -4,6 +4,8 @@ namespace App\View\Components\Fields;
 
 class Repeater extends Field
 {
+    public $default = [];
+
     public $schema;
 
     public function schema($schema)

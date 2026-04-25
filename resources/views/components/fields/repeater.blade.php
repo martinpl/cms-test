@@ -3,8 +3,9 @@
 $model = $self->model;
 $modelHead = Str::before($model, '.');
 $modelBody = Str::after($model, '.');
+// TODO: Awkward
 $sessionValue = Arr::get($this->$modelHead, $modelBody);
-$items = $sessionValue ?? (value($self->value) ?? []);
+$items = $sessionValue ?? $self->loadValue();
 ?>
 
 <div>
@@ -38,7 +39,7 @@ $items = $sessionValue ?? (value($self->value) ?? []);
                 </div>
                 <div class="p-4 md:p-6 space-y-4">
                     @foreach ($self->schema as $field)
-                        {{ $field->live($self->live)->model("{$model}.{$loop->parent->index}." . $field->name)->value($item[$field->name] ?? null) }}
+                        {{ $field->live($self->live)->model("{$model}.{$loop->parent->index}." . $field->name)->value($item[$field->name] ?? $field->default) }}
                     @endforeach
                 </div>
             </div>
