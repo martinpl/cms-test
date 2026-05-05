@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Facades\PostType;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostTypeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -11,6 +12,10 @@ class PostTypeServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
+        if ($this->app->runningInConsole()) {
+            return;
+        }
+
         PostType::registerFromClasses(config('post-types'));
         $this->addRoutes();
     }
@@ -18,7 +23,7 @@ class PostTypeServiceProvider extends ServiceProvider
     protected function addRoutes()
     {
         $this->app->booted(function () {
-            Route::get('/', \App\Http\Controllers\HomeController::class)
+            Route::get('/', HomeController::class)
                 ->middleware('web')
                 ->name('home');
 
