@@ -19,8 +19,8 @@ new class extends Livewire\Component
     protected function counts()
     {
         return [
-            'all' => $this->rawItems->where('mustUse', false)->count(),
-            'must-use' => $this->rawItems->where('mustUse', true)->count(),
+            'all' => $this->rawItems->where('mustUse', '!=', "true")->count(),
+            'must-use' => $this->rawItems->where('mustUse', "true")->count(),
         ];
     }
 
@@ -48,7 +48,7 @@ new class extends Livewire\Component
     protected function items()
     {
         return $this->rawItems->reject(function ($plugin) {
-            return $this->view == 'must-use' ? ! $plugin->mustUse : $plugin->mustUse;
+            return $this->view == 'must-use' ? $plugin->mustUse != "true" : $plugin->mustUse == "true";
         });
     }
 
@@ -63,7 +63,7 @@ new class extends Livewire\Component
     private function actions($plugin)
     {
         $actions = [];
-        if ($plugin->mustUse) {
+        if ($plugin->mustUse == "true") {
             return;
         }
 

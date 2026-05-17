@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\AdminMenu\AdminMenu;
 use App\Plugin;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
 
 class PluginServiceProvider extends ServiceProvider
 {
@@ -26,14 +25,16 @@ class PluginServiceProvider extends ServiceProvider
     protected function load()
     {
         foreach (Plugin::list() as $meta) {
-            if (! $meta['mustUse'] && ! Plugin::isActive($meta['path'])) {
+            if ($meta['mustUse'] !== 'true' && ! Plugin::isActive($meta['path'])) {
                 return;
             }
 
-            $path = base_path($meta['path']);
-            require_once $path;
-            $pluginName = Str::studly(basename($path, '.php'));
-            new $pluginName;
+            $class = str($meta['path'])
+                ->replace(['/', '.php'], ['\\', ''])
+                ->ucfirst()
+                ->toString();
+
+            app()->register($class);
         }
     }
 }

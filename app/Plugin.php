@@ -9,10 +9,7 @@ class Plugin
 {
     public static function list(): array
     {
-        $paths = [
-            ...glob(base_path('mu-plugins/*')),
-            ...glob(base_path('plugins/*')),
-        ];
+        $paths = glob(base_path('plugins/*'));
         $list = [];
 
         foreach ($paths as $path) {
@@ -34,6 +31,7 @@ class Plugin
                 'version' => 'Version',
                 'author' => 'Author',
                 'description' => 'Description',
+                'mustUse' => 'Must Use',
             ]);
 
             if (! $meta['name']) {
@@ -44,7 +42,6 @@ class Plugin
             $list[] = [
                 ...$meta,
                 'path' => $basePath,
-                'mustUse' => str_starts_with($basePath, 'mu-plugins/'),
             ];
         }
 
