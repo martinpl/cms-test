@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Livewire\Livewire;
 
 class ThemeServiceProvider extends ServiceProvider
 {
@@ -26,9 +27,9 @@ class ThemeServiceProvider extends ServiceProvider
 
         View::addLocation(base_path('themes/'.get_option('theme')));
         Blade::anonymousComponentPath('themes/'.get_option('theme'));
+        Livewire::addLocation(base_path('themes/'.get_option('theme').'/components'));
         $this->load();
         $this->registerBlocks();
-        $this->classAutoloader('themes/'.get_option('theme').'/components', 'Components');
     }
 
     protected function load()
@@ -38,14 +39,17 @@ class ThemeServiceProvider extends ServiceProvider
         }
 
         $currentTheme = get_option('theme');
-        foreach (Theme::list() as $path => $theme) {
+        foreach (Theme::list() as $theme) {
             if ($currentTheme != $theme['slug']) {
                 continue;
             }
 
-            $pluginName = basename($path, '.php');
-            require $path;
-            new $pluginName;
+            $class = str($theme['path'])
+                ->replace(['/', '.php'], ['\\', ''])
+                ->ucfirst()
+                ->toString();
+
+            app()->register($class);
         }
     }
 
@@ -72,21 +76,5 @@ class ThemeServiceProvider extends ServiceProvider
             $slug = Str::slug($meta['name']);
             BlockType::register($slug, $meta);
         }
-    }
-
-    protected function classAutoloader($directory, $namespace)
-    {
-        spl_autoload_register(function ($class) use ($directory, $namespace) {
-            if (str_starts_with($class, $namespace)) {
-                $path = str_replace("$namespace\\", '', $class);
-                $parts = explode('\\', $path);
-                $parts[0] = Str::kebab($parts[0]);
-                $path = implode('/', $parts);
-                $file = base_path("{$directory}/{$path}.php");
-                if (file_exists($file)) {
-                    include $file;
-                }
-            }
-        });
     }
 }

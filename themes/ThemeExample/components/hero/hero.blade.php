@@ -8,15 +8,14 @@
 @props([
     'title' => '',
     'image' => null,
-    'repeater' => []
+    'repeater' => [],
 ])
 
 <section>
     Title: {{ $title }}
-    Image: 
+    Image:
     @if ($image)
         <img src="{{ Storage::url(Attachment::find($image)->content) }}" style="height: 100px">
     @endif
     @dump($repeater)
 </section>
-

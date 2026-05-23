@@ -5,8 +5,8 @@ namespace App;
 use App\Facades\BlockType;
 use App\Facades\Hook;
 use App\Facades\PostType;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Str;
+use Livewire\Livewire;
 
 class BlockEditor
 {
@@ -55,10 +55,10 @@ class BlockEditor
 
     public static function resolveComponent(array $block)
     {
-        $class = 'Components\\'.Str::studly($block['name']).'\\'.Str::studly($block['name']);
-        if (class_exists($class)) {
-            return Blade::renderComponent(new $class($block['data']));
+        if (BlockType::resolveClass($block['name'])) {
+            return Livewire::mount($block['name'], $block['data']);
         } else {
+            // TODO: Lets go livewire only
             return view('components.'.Str::slug($block['name']).'.'.Str::slug($block['name']), $block['data'])->render();
         }
     }

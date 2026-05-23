@@ -30,7 +30,10 @@ class Theme
 
             $meta['slug'] = basename($path);
 
-            $list[$file] = $meta;
+            $list[] = [
+                ...$meta,
+                'path' => Str::after($file, base_path('/')),
+            ];
         }
 
         return $list;

@@ -38,10 +38,9 @@ class Plugin
                 $meta['name'] = $pluginName;
             }
 
-            $basePath = Str::after($file, base_path('/'));
             $list[] = [
                 ...$meta,
-                'path' => $basePath,
+                'path' => Str::after($file, base_path('/')),
             ];
         }
 

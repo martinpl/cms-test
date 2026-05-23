@@ -1,16 +1,17 @@
 <?php
 
-namespace Components\Hero;
-
 use App\View\Components\Fields\Media;
 use App\View\Components\Fields\Repeater;
 use App\View\Components\Fields\Text;
+use Livewire\Component;
 
-class Schema
+new class extends Component
 {
+    // TODO: Move to attribute to fields or API?
     public static function position()
     {
         // return 'side';
+
         return 'content';
     }
 
@@ -31,4 +32,4 @@ class Schema
                 ]),
         ];
     }
-}
+};
