@@ -2,4 +2,6 @@
     Name: Simple
 -->
 
-Simple
+<div>
+    Simple
+</div>

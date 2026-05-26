@@ -62,10 +62,10 @@ class ThemeServiceProvider extends ServiceProvider
         }
 
         $path = base_path("themes/{$theme}/components");
-        $dirs = File::directories($path);
-        foreach ($dirs as $dir) {
-            $basename = basename($dir);
-            $meta = extract_metadata("$dir/{$basename}.blade.php", [
+        $files = collect(File::allFiles($path))
+            ->filter(fn ($file) => str_ends_with($file->getFilename(), '.blade.php'));
+        foreach ($files as $path) {
+            $meta = extract_metadata($path, [
                 'name' => 'Name',
             ]);
 

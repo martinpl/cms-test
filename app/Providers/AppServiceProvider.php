@@ -6,6 +6,9 @@ use App\Actions\AddEditorMetaboxes;
 use App\AdminMenu\AdminMenu;
 use App\AdminMenu\AdminMenuList;
 use App\BlockEditor;
+use App\ClasslessLivewire\Compiler;
+use App\ClasslessLivewire\Factory;
+use App\ClasslessLivewire\Finder;
 use App\Foundation\BlockType;
 use App\Foundation\Hook;
 use App\Foundation\Menu;
@@ -17,11 +20,13 @@ use App\Role;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\ComponentAttributeBag;
+use Livewire\Compiler\CacheManager;
 
 class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->classlessLivewire();
         $this->app->singleton(Hook::class);
         $this->app->singleton(Metabox::class);
         $this->app->singleton(PostType::class);
@@ -72,5 +77,32 @@ class AppServiceProvider extends ServiceProvider
 
         // TODO: Move to register() in editor
         (new AddEditorMetaboxes)();
+    }
+
+    // TODO: Shorthand implementation + we could try push that to Livewire
+    private function classlessLivewire()
+    {
+        $this->app->singleton('livewire.factory', function ($app) {
+            return new Factory(
+                $app['livewire.finder'],
+                $app['livewire.compiler']
+            );
+        });
+
+        $this->app->singleton('livewire.finder', function () {
+            $finder = new Finder;
+
+            $finder->addLocation(classNamespace: config('livewire.class_namespace'));
+
+            return $finder;
+        });
+
+        $this->app->singleton('livewire.compiler', function () {
+            return new Compiler(
+                new CacheManager(
+                    rtrim(config('view.compiled'), '/\\').'/livewire'
+                )
+            );
+        });
     }
 }
