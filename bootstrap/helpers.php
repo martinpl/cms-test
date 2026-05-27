@@ -61,3 +61,8 @@ function extract_metadata(string $file, array $defaultHeaders): array
 
     return $headers;
 }
+
+function post()
+{
+    return app('post');
+}

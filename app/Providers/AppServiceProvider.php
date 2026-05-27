@@ -37,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('menu.admin-bar', fn () => new AdminMenuList);
         $this->app->singleton(Role::class);
         $this->app->singleton(Menu::class);
+        app()->instance('post', null);
     }
 
     public function boot(): void

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\AdminMenu\AdminMenu;
 use App\PostTypes\AnyPost;
-use Illuminate\Support\Str;
 
 class PostTypeController
 {
@@ -26,12 +25,9 @@ class PostTypeController
 
         $templates = ["page-{$post->id}", "page-{$post->name}", "single-{$postType}", 'single', 'index'];
         $templates = array_map(fn ($template) => "templates.{$template}", $templates);
-        $postType = Str::camel($postType);
+        app()->instance('post', $post);
 
-        return view()->first($templates, [
-            $postType => $post,
-            'postType' => $postType,
-        ]);
+        return view()->first($templates);
     }
 
     protected function wrongSlugStructure($post)

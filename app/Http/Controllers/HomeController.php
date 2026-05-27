@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\AdminMenu\AdminMenu;
 use App\PostTypes\AnyPost;
-use Illuminate\Support\Str;
 
 class HomeController
 {
@@ -24,11 +23,8 @@ class HomeController
 
         $templates = ['home', "page-{$post->id}", "page-{$post->name}", "single-{$post->type}", 'single', 'index'];
         $templates = array_map(fn ($template) => "templates.{$template}", $templates);
-        $postType = Str::camel($post->type);
+        app()->instance('post', $post);
 
-        return view()->first($templates, [
-            $postType => $post,
-            'postType' => $postType,
-        ]);
+        return view()->first($templates);
     }
 }

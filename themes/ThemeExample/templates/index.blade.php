@@ -1,8 +1,8 @@
 <x-canvas>
-    {{ $$postType->title }}
-    {!! $$postType->content !!}
+    {{ post()->title }}
+    {!! post()->content !!}
     <br>
-    @dump($$postType->terms->pluck('type', 'title')->toArray())
-    @dump($$postType->terms('tag')->pluck('title')->toArray())
+    @dump(post()->terms->pluck('type', 'title')->toArray())
+    @dump(post()->terms('tag')->pluck('title')->toArray())
     <x-footer />
 </x-canvas>
