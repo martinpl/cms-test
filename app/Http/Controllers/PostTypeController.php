@@ -2,36 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\AdminMenu\AdminMenu;
 use App\PostTypes\AnyPost;
+use App\PostTypes\PostType;
 
-class PostTypeController
+class PostTypeController extends Controller
 {
     public function __invoke($name, $postType)
     {
         $post = AnyPost::findBySlugStructure($name, $postType);
-        $canSeeDraft = $post?->status == 'draft' && auth()->check();
-        $hidden = $post?->status != 'publish' && ! $canSeeDraft;
-        if (! $post || $hidden) {
-            abort(404);
-        }
 
         if ($this->wrongSlugStructure($post)) {
-            return redirect()->route("single.{$post->type}", ['name' => $post->slugStructure()] + request()->query());
+            return redirect()->route(
+                "single.{$post->type}",
+                ['name' => $post->slugStructure()] + request()->query(),
+            );
         }
 
-        app('menu.admin-bar')->add(AdminMenu::make(__('Edit Page'))
-            ->link(fn () => route('editor', [$post->type, $post->id]))->icon('pencil'));
-
-        $templates = ["page-{$post->id}", "page-{$post->name}", "single-{$postType}", 'single', 'index'];
-        $templates = array_map(fn ($template) => "templates.{$template}", $templates);
-        app()->instance('post', $post);
-
-        return view()->first($templates);
+        return $this->render($post, [
+            "page-{$post?->id}",
+            "page-{$post?->name}",
+            "single-{$postType}",
+            'single',
+            'index',
+        ]);
     }
 
-    protected function wrongSlugStructure($post)
+    protected function wrongSlugStructure(?PostType $post): bool
     {
-        return $post?->parent_id && request()->getPathInfo() != route("single.{$post->type}", $post->slugStructure(), absolute: false);  // TODO: route() -> $post->link()?
+        return $post?->parent_id && request()->getPathInfo() !== $post->link(false);
     }
 }
