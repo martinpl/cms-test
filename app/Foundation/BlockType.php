@@ -23,38 +23,40 @@ class BlockType
             throw new \Exception("Block type '{$blockType}' already exists.");
         }
 
+        $class = $this->resolveClass($blockType);
         $defaults = [
             'name' => $blockType,
+            'class' => $class,
             'render' => fn ($block) => BlockEditor::resolveComponent($block),
             'edit' => function ($block) {
-                $class = $this->resolveClass($block['name']);
-
                 return Blade::render(<<<'BLADE'
-                   @if (method_exists($class, 'fields') && $class::position() == 'content')
+                    @if ($fields = App\Facades\Fields::get('block', $block['name'], model: "content.{$block['index']}.data", live: true))
                         <div class="p-4 md:p-6" x-show="selected == {{ $block['index'] }}" x-cloak @click.outside="selected = null">
-                            <x-fields :fields="$class::fields()" :live="true" model="content.{$block['index']}.data" />
+                            {{ $fields }}
                         </div>
                     @endif
-                    <div @if (method_exists($class, 'position') && $class::position() == 'content') x-show="selected != {{ $block['index'] }}" @endif>
+                    <div @if ($fields) x-show="selected != {{ $block['index'] }}" @endif>
                         {!! \App\BlockEditor::resolveComponent($block) !!}
                     </div>
-                BLADE, compact('block', 'class'));
+                BLADE, compact('block'));
             },
             'side' => function ($block) {
-                $class = $this->resolveClass($block['name']);
-
                 return Blade::render(<<<'BLADE'
-                    @if (method_exists($class, 'fields') && $class::position() == 'side')
+                    @if ($fields = App\Facades\Fields::get('block.side', $block['name'], model: "content.{$block['index']}.data", live: true))
                         <div x-show="selected == {{ $block['index'] }}" x-cloak>
-                            <x-fields :fields="$class::fields()" :live="true" model="content.{$block['index']}.data" />
+                            {{ $fields }}
                         </div>
                     @endif
-                BLADE, compact('block', 'class'));
+                BLADE, compact('block'));
             },
             'postTypes' => [],
         ];
 
         $this->list[$blockType] = array_merge($defaults, $args);
+
+        if ($class && method_exists($class, 'register')) {
+            $class::register();
+        }
     }
 
     // Copy of Livewire\Factory\Factory->resolveComponentNameAndClass()

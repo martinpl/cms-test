@@ -10,6 +10,7 @@ use App\ClasslessLivewire\Compiler;
 use App\ClasslessLivewire\Factory;
 use App\ClasslessLivewire\Finder;
 use App\Foundation\BlockType;
+use App\Foundation\Fields;
 use App\Foundation\Hook;
 use App\Foundation\Menu;
 use App\Foundation\Metabox;
@@ -32,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(PostType::class);
         $this->app->singleton(Taxonomy::class);
         $this->app->singleton(BlockType::class);
+        $this->app->singleton(Fields::class);
         BlockEditor::register();
         $this->app->singleton('menu.admin', fn () => new AdminMenuList);
         $this->app->singleton('menu.admin-bar', fn () => new AdminMenuList);

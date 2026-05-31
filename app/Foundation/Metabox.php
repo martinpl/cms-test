@@ -2,6 +2,7 @@
 
 namespace App\Foundation;
 
+use App\Facades\Fields;
 use App\Facades\Metabox as MetaboxFacade;
 use Illuminate\Support\Facades\Blade;
 
@@ -61,10 +62,9 @@ class Metabox
                 $fields = $fields($args);
             }
 
-            // TODO: Maybe Fields API?
-            return view('components.fields.fields', [
-                'fields' => $fields,
-            ]);
+            return Fields::make()
+                ->fields($fields)
+                ->render();
         });
 
         return $this;

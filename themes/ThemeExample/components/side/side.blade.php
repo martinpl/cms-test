@@ -4,18 +4,18 @@
 
 <?php
 
+use App\Facades\Fields;
 use App\View\Components\Fields\Text;
 use Livewire\Component;
 
 new class extends Component {
-    public static function position()
-    {
-        return 'side';
-    }
 
-    public static function fields()
+    public static function register()
     {
-        return [Text::make('Title')];
+        Fields::make()
+            ->fields([Text::make('Title')])
+            ->location('block.side', 'side')
+            ->register();
     }
 };
 
